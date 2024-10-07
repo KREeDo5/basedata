@@ -8,14 +8,6 @@ FROM category
 WHERE id_parent_category IS NULL;
 
 
-получение всех тредов
-	получение: список всех тредов(id, название, дата создания, статус, автор(имя, изображение))
-
-USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
-FROM thread, user
-WHERE thread.id_user = user.id;
-
 получение дочерних категорий конкретной категории по названию
 	отправка: id категории
 	получение: список дочерних категорий(id, название)
@@ -26,6 +18,16 @@ FROM category
 WHERE id_parent_category = <id родителя>;
 
 
+получение всех тредов
+	получение: список всех тредов(id, название, дата создания, статус, автор(имя, изображение))
+
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id
+AND thread.visibility = 'visible';
+
+
 получение тредов конкретной категории
 	отправка: id категории
 	получение: список тредов категории(id, название, дата создания, статус, автор(имя, изображение))
@@ -34,7 +36,8 @@ USE forum;
 SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
-AND thread.id_category = <id категории>;
+AND thread.id_category = <id категории>
+AND thread.visibility = 'visible';
 
 
 получение сообщений треда
@@ -59,7 +62,8 @@ LEFT JOIN user
 ON message.id_user = user.id
 LEFT JOIN message_image
 ON message.id = message_image.id_message
-WHERE id_thread = <id треда>;
+WHERE message.id_thread = <id треда>
+AND message.visibility = 'visible';
 ////////////////////////////////// надо поправить вывод картинок сообщений МБ
 
 
@@ -70,7 +74,8 @@ WHERE id_thread = <id треда>;
 USE forum;
 SELECT COUNT(*)
 FROM message
-WHERE id_thread = <id треда>;
+WHERE id_thread = <id треда>
+AND visibility = 'visible';
 
 
 получение данных профиля
@@ -102,7 +107,8 @@ USE forum;
 SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
-AND thread.title LIKE '%<название>%';
+AND thread.title LIKE '%<название>%'
+AND thread.visibility = 'visible';
 
 
 получение отсортированного списка тредов
@@ -114,6 +120,7 @@ SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, use
 FROM thread, user
 WHERE thread.id_user = user.id
 AND thread.id_category = <id категории>
+AND thread.visibility = 'visible'
 ORDER BY <аргумент сортировки>;
 
 
@@ -124,7 +131,8 @@ ORDER BY <аргумент сортировки>;
 USE forum;
 SELECT COUNT(*) 
 FROM thread
-WHERE id_user = <id пользователя>;
+WHERE id_user = <id пользователя>
+AND visibility = 'visible';
 
 
 получение количества написанных пользователем сообщений (инфа для профиля)
@@ -134,7 +142,8 @@ WHERE id_user = <id пользователя>;
 USE forum;
 SELECT COUNT(*)
 FROM message
-WHERE id_user = <id пользователя>;
+WHERE id_user = <id пользователя>
+AND visibility = 'visible';
 
 
 [post]
@@ -220,23 +229,62 @@ VALUES (<id сообщения>, '<путь>');
 	отправка: id треда, статус
 	получение: сообщение об успехе/ошибке
 
+USE forum;
+UPDATE thread
+SET status = '<статус>'
+WHERE id = <id треда>;
+/////////////////////// возможно надо переключателем??? хз
+
+
 подписка
 	отправка: id пользователя, id пользователя
 	получение: сообщение об успехе/ошибке
+
+USE forum;
+INSERT INTO user_has_subscribe 
+VALUES (<id пользователя>, <id пользователя>);
+
 
 [delete]
 удаление треда
 	отправка: id треда
 	получение: сообщение об успехе/ошибке
 
+USE forum;
+UPDATE message
+SET visibility = 'hidden'
+WHERE id_thread = <id треда>;
+
+UPDATE thread 
+SET visibility = 'hidden'
+WHERE id = <id треда>;
+
+
 удаление сообщения
 	отправка: id сообщения
 	получение: сообщение об успехе/ошибке
+
+USE forum;
+UPDATE message
+SET visibility = 'hidden'
+WHERE id = <id сообщения>;
+
 
 отписка
 	отправка: id пользователя, id пользователя
 	получение: сообщение об успехе/ошибке
 
+USE forum;
+DELETE FROM user_has_subscribe
+WHERE id_user = <id пользователя>
+AND subscription = <id пользователя>;
+
+
 удаление фотографии профиля
 	отправка: id пользователя
 	получение: сообщение об успехе/ошибке
+
+USE forum;
+UPDATE user
+SET image_path = NULL
+WHERE id = <id пользователя>;
