@@ -34,7 +34,7 @@ USE forum;
 SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
-AND id_category = <id категории>;
+AND thread.id_category = <id категории>;
 
 
 получение сообщений треда
@@ -43,45 +43,99 @@ AND id_category = <id категории>;
 		Тред: название, описание, список изображений(путь), дата создания, автор(имя, изображение); 
 		список сообщений треда(id, автор(имя, изображение), текст, дата отправки, список изображений(путь))
 
-user.image_path
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
-AND thread.id = 3;
+AND thread.id = <id треда>;
 
 SELECT path
 FROM thread_image
-WHERE id_thread = 3;
+WHERE id_thread = <id треда>;
 
-SELECT message.id, message.text, message.created_at, user.name, user.image_path
-FROM message, user
-WHERE message.id_user = user.id
-AND id_thread = 3;
-/////////////////////////// надо вывести картинки сообщений
+SELECT message.id, message.text, message_image.path, message.created_at, user.name, user.image_path
+FROM message
+LEFT JOIN user
+ON message.id_user = user.id
+LEFT JOIN message_image
+ON message.id = message_image.id_message
+WHERE id_thread = <id треда>;
+////////////////////////////////// надо поправить вывод картинок сообщений МБ
 
 
 получение количества сообщений треда
 	отправка: id треда
 	получение: количество сообщений треда(число)
 
+USE forum;
+SELECT COUNT(*)
+FROM message
+WHERE id_thread = <id треда>;
+
+
 получение данных профиля
 	отправка: id пользователя
 	получение: роль, имя, дата регистрации, изображение, описание, подписки(список пользователей(имя, изображение)), подписчики(список пользователей(имя, изображение))
 
+USE forum;
+SELECT user.name, user.image_path, role.title, user.registration_date, user.description
+FROM user, role
+WHERE user.id_role = role.id
+AND user.id = <id пользователя>;
+
+SELECT user.name, user.image_path
+FROM user_has_subscribe, user
+WHERE user_has_subscribe.subscription = user.id
+AND user_has_subscribe.id_user = <id пользователя>;
+
+SELECT user.name, user.image_path
+FROM user_has_subscribe, user
+WHERE user_has_subscribe.id_user = user.id
+AND user_has_subscribe.subscription = <id пользователя>;
+
+
 поиск тредов по названию
 	отправка: строка
-	получение: список тредов в названиях которых есть эта строка(id, название, автор, дата создания, статус)
+	получение: список тредов в названиях которых есть эта строка(id, название, дата создания, статус, автор(имя, изображение))
+
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id
+AND thread.title LIKE '%<название>%';
+
 
 получение отсортированного списка тредов
 	отправка: id категории, аргумент(?) сортировки (по дате создания, по колличеству сообщений, по статусу, по дате последнего сообщения мб)
-	получение: отсортированный список тредов категории(id, название, автор, дата создания, статус)
+	получение: отсортированный список тредов категории(id, название, дата создания, статус, автор(имя, изображение))
+
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id
+AND thread.id_category = <id категории>
+ORDER BY <аргумент сортировки>;
+
 
 получение количества созданных пользователем тредов (инфа для профиля)
 	отправка: id пользователя
 	получение: количество тредов(число)
 
+USE forum;
+SELECT COUNT(*) 
+FROM thread
+WHERE id_user = <id пользователя>;
+
+
 получение количества написанных пользователем сообщений (инфа для профиля)
 	отправка: id пользователя
 	получение: количество сообщений(число)
+
+USE forum;
+SELECT COUNT(*)
+FROM message
+WHERE id_user = <id пользователя>;
+
 
 [post]
 регистрация пользователя
