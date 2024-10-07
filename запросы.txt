@@ -2,22 +2,62 @@
 получение всех категорий
 	получение: список всех категорий без родителей(id, название)
 
+USE forum;
+SELECT id, title
+FROM category
+WHERE id_parent_category IS NULL;
+
+
 получение всех тредов
-	получение: список всех тредов(id, название)
+	получение: список всех тредов(id, название, дата создания, статус, автор(имя, изображение))
+
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id;
 
 получение дочерних категорий конкретной категории по названию
 	отправка: id категории
 	получение: список дочерних категорий(id, название)
 
+USE forum;
+SELECT id, title
+FROM category
+WHERE id_parent_category = <id родителя>;
+
+
 получение тредов конкретной категории
 	отправка: id категории
-	получение: список тредов категории(id, название, автор, дата создания, статус)
+	получение: список тредов категории(id, название, дата создания, статус, автор(имя, изображение))
+
+USE forum;
+SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id
+AND id_category = <id категории>;
+
 
 получение сообщений треда
 	отправка: id треда
 	получение: 
-		Тред: название, описание, список изображений(путь), дата создания, автор(имя, изображение, роль); 
-		список 	сообщений треда(id, автор(имя, изображение, роль), текст, дата отправки, список изображений(путь))
+		Тред: название, описание, список изображений(путь), дата создания, автор(имя, изображение); 
+		список сообщений треда(id, автор(имя, изображение), текст, дата отправки, список изображений(путь))
+
+user.image_path
+FROM thread, user
+WHERE thread.id_user = user.id
+AND thread.id = 3;
+
+SELECT path
+FROM thread_image
+WHERE id_thread = 3;
+
+SELECT message.id, message.text, message.created_at, user.name, user.image_path
+FROM message, user
+WHERE message.id_user = user.id
+AND id_thread = 3;
+/////////////////////////// надо вывести картинки сообщений
+
 
 получение количества сообщений треда
 	отправка: id треда
