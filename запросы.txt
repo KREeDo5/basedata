@@ -12,7 +12,7 @@ WHERE id_parent_category IS NULL;
 	получение: список всех тредов(id, название, дата создания, статус, автор(имя, изображение))
 
 USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id;
 
@@ -31,7 +31,7 @@ WHERE id_parent_category = <id родителя>;
 	получение: список тредов категории(id, название, дата создания, статус, автор(имя, изображение))
 
 USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
 AND thread.id_category = <id категории>;
@@ -44,7 +44,7 @@ AND thread.id_category = <id категории>;
 		список сообщений треда(id, автор(имя, изображение), текст, дата отправки, список изображений(путь))
 
 USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
 AND thread.id = <id треда>;
@@ -99,7 +99,7 @@ AND user_has_subscribe.subscription = <id пользователя>;
 	получение: список тредов в названиях которых есть эта строка(id, название, дата создания, статус, автор(имя, изображение))
 
 USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
 AND thread.title LIKE '%<название>%';
@@ -110,7 +110,7 @@ AND thread.title LIKE '%<название>%';
 	получение: отсортированный список тредов категории(id, название, дата создания, статус, автор(имя, изображение))
 
 USE forum;
-SELECT thread.id, thread.title, thread.created_at, thread.closed, user.name, user.image_path
+SELECT thread.id, thread.title, thread.created_at, thread.status, user.name, user.image_path
 FROM thread, user
 WHERE thread.id_user = user.id
 AND thread.id_category = <id категории>
@@ -142,25 +142,79 @@ WHERE id_user = <id пользователя>;
 	отправка: логин, пароль, имя
 	получение: сообщение об успехе/ошибке
 
+USE forum;
+INSERT INTO user (login, password, name, id_role)
+VALUES ('<логин>', '<пароль>', '<имя>', 3);	// С ролью тут как-будто бы хардкод, мб переделать??
+
+
 авторизация пользователя
 	отправка: логин, пароль
 	получение: сообщение об успехе/ошибке
 
 редактирование пользователя
-	отправка: id, пароль, имя, изображение, описание
+	отправка: id, имя, описание
 	получение: сообщение об успехе/ошибке
 
-создание категории
-	отправка: название
+USE forum;
+UPDATE user 
+SET name = '<имя>',
+    description = '<описание>'
+WHERE user.id = <id пользователя>;
+
+
+изменение пароля
+	отправка: id, пароль
 	получение: сообщение об успехе/ошибке
+
+USE forum;
+UPDATE user 
+SET `password` = '<пароль>'
+WHERE user.id = <id пользователя>;
+
+
+изменение изображения профиля
+	отправка: id, изображение
+	получение: сообщение об успехе/ошибке
+
+USE forum;
+UPDATE user
+SET image_path = '<путь>'
+WHERE user.id = <id пользователя>;
+
+
+создание категории
+	отправка: название, id родительской категории
+	получение: сообщение об успехе/ошибке
+
+USE forum;
+INSERT INTO category (title, id_parent_category)
+VALUES ('<название>', <id родительской категории>);
+
 
 создание треда
 	отправка: название, описание, id пользователя, список изображений(файл), категория
 	получение: сообщение об успехе/ошибке
 
+USE forum;
+INSERT INTO thread (title, text, id_category, id_user)
+VALUES ('<название>', '<текст>', <id категории>, <id пользователя>);
+
+INSERT INTO thread_image (id_thread, path)	// возможно в циклке
+VALUES (<id треда>, '<путь>');
+////////////////////////////// возможно надо транзакцией
+
 отправка сообщения
 	отправка: id треда, текст, id пользователя, список изображений(файл)
 	получение: сообщение об успехе/ошибке
+
+USE forum;
+INSERT INTO message (text, id_thread, id_user)
+VALUES ('<текст>', <id треда>, <id пользователя>);
+
+INSERT INTO message_image (id_message, path)	// возможно в циклке
+VALUES (<id сообщения>, '<путь>');
+////////////////////////////// возможно надо транзакцией
+
 
 изменение статуса треда
 	отправка: id треда, статус
@@ -183,6 +237,6 @@ WHERE id_user = <id пользователя>;
 	отправка: id пользователя, id пользователя
 	получение: сообщение об успехе/ошибке
 
-удвление фотографии профиля
+удаление фотографии профиля
 	отправка: id пользователя
 	получение: сообщение об успехе/ошибке
