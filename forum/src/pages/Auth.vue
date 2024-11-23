@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Button from '../components/Button.vue'
 import Modal from '../components/Modal.vue'
@@ -16,6 +16,8 @@ const form = ref({
 
 const isModalVisible = ref(false)
 const modalMessage = ref('')
+const countdown = ref(5)
+let countdownInterval = null
 
 const toggleMode = () => {
   isLogin.value = !isLogin.value
@@ -32,20 +34,37 @@ const handleSubmit = () => {
   ) {
     modalMessage.value = 'Пожалуйста, заполните все поля.'
     isModalVisible.value = true
+    startCountdown()
     return
   }
   router.push('/')
 }
 
+const startCountdown = () => {
+  countdown.value = 3
+  if (countdownInterval) clearInterval(countdownInterval)
+  countdownInterval = setInterval(() => {
+    countdown.value -= 1
+    if (countdown.value <= 0) {
+      closeModal()
+    }
+  }, 1000)
+}
+
 const closeModal = () => {
   isModalVisible.value = false
+  if (countdownInterval) clearInterval(countdownInterval)
 }
+
+watch(isModalVisible, (newVal) => {
+  if (!newVal && countdownInterval) clearInterval(countdownInterval)
+})
 </script>
 
 <template>
   <div class="flex items-center justify-center min-h-screen">
     <!-- Модальное окно -->
-    <Modal :isVisible="isModalVisible" :message="modalMessage" @close="closeModal" />
+    <Modal :isVisible="isModalVisible" :message="modalMessage" :countdown="countdown" />
 
     <!-- Основной контент -->
     <div class="w-full max-w-[500px] relative">
