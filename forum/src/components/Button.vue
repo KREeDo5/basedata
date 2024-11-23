@@ -20,7 +20,7 @@ export default {
     },
   },
   computed: {
-    buttonClass() {
+    buttonStyle() {
       switch (this.variant) {
         case 'rounded':
           return 'bg-base-grey hover:bg-base-asphalt text-base-blue font-w400 text-base rounded-xl outline outline-1 outline-base-blue'
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <button :class="buttonClass" :style="{ padding: `${paddingY} ${paddingX}` }">
+  <button :class="buttonStyle" :style="{ padding: `${paddingY} ${paddingX}` }">
     {{ text }}
   </button>
 </template>

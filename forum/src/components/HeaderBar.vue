@@ -5,10 +5,10 @@ import Button from '../components/Button.vue'
 <template>
   <header>
     <nav>
-      <RouterLink to="/">
+      <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
         <Button text="Войти" />
       </RouterLink>
-      <RouterLink to="/about">
+      <RouterLink :to="{ path: '/auth', query: { mode: 'register' } }">
         <Button variant="free" text="Создать аккаунт" />
       </RouterLink>
       <Button variant="rounded" text="Сохранить" />
