@@ -1,0 +1,14 @@
+body {
+  background-color: rgb(48, 48, 48);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  &.body-white {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+header {
+  background-color: rgb(27, 27, 27);
+  height: 75px;
+}
