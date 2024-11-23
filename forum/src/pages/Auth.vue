@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Button from '../components/Button.vue'
+import Modal from '../components/Modal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,9 @@ const form = ref({
   name: '',
   password: '',
 })
+
+const isModalVisible = ref(false)
+const modalMessage = ref('')
 
 const toggleMode = () => {
   isLogin.value = !isLogin.value
@@ -26,16 +30,25 @@ const handleSubmit = () => {
     form.value.password === '' ||
     (!isLogin.value && form.value.name === '')
   ) {
-    // отображение ошибки
+    modalMessage.value = 'Пожалуйста, заполните все поля.'
+    isModalVisible.value = true
     return
   }
   router.push('/')
+}
+
+const closeModal = () => {
+  isModalVisible.value = false
 }
 </script>
 
 <template>
   <div class="flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-[500px]">
+    <!-- Модальное окно -->
+    <Modal :isVisible="isModalVisible" :message="modalMessage" @close="closeModal" />
+
+    <!-- Основной контент -->
+    <div class="w-full max-w-[500px] relative">
       <div class="h-1.5 bg-base-blue"></div>
       <div class="h-1.5 bg-white"></div>
       <div class="h-1.5 bg-base-red"></div>
@@ -53,7 +66,6 @@ const handleSubmit = () => {
               id="login"
               placeholder="Логин"
               class="w-full p-2 rounded-xl bg-base-grey text-gray-300 focus:outline-none focus:ring-1 focus:ring-base-blue text-center"
-              required
             />
           </div>
           <div v-if="!isLogin" class="mb-4">
@@ -72,7 +84,6 @@ const handleSubmit = () => {
               id="password"
               placeholder="Пароль"
               class="w-full p-2 rounded-xl bg-base-grey text-gray-300 focus:outline-none focus:ring-1 focus:ring-base-blue text-center"
-              required
             />
           </div>
           <Button
