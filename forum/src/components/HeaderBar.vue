@@ -31,7 +31,7 @@ const showUserInfo = computed(() => props.isAuthenticated && !props.isAuthPage)
       </RouterLink>
     </div>
     <div v-if="showUserInfo">
-      <RouterLink to="/" class="flex items-center space-x-2">
+      <RouterLink to="/profile" class="flex items-center space-x-2">
         <img :src="userAvatar" alt="User Avatar" class="avatar" />
         <span class="text-white">{{ userName }}</span>
       </RouterLink>
