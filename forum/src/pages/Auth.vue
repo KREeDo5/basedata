@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import HeaderBar from '../components/HeaderBar.vue'
 import Button from '../components/Button.vue'
 import Modal from '../components/Modal.vue'
 
@@ -62,6 +63,7 @@ watch(isModalVisible, (newVal) => {
 </script>
 
 <template>
+  <HeaderBar :isAuthPage="true" />
   <div class="flex items-center justify-center min-h-screen">
     <!-- Модальное окно -->
     <Modal :isVisible="isModalVisible" :message="modalMessage" :countdown="countdown" />
