@@ -9,8 +9,16 @@ const props = defineProps({
   userAvatar: String,
 })
 
+//временное решение до реализации получения данных об авторизации пользователя
+const emit = defineEmits(['toggle-auth'])
+
 const showAuthButtons = computed(() => !props.isAuthenticated && !props.isAuthPage)
 const showUserInfo = computed(() => props.isAuthenticated && !props.isAuthPage)
+
+const toggleAuthentication = () => {
+  //временное решение до реализации получения данных об авторизации пользователя
+  emit('toggle-auth')
+}
 </script>
 
 <template>
@@ -22,6 +30,12 @@ const showUserInfo = computed(() => props.isAuthenticated && !props.isAuthPage)
       </div>
     </RouterLink>
 
+    <!-- Временная кнопка для переключения состояния isAuthenticated -->
+    <Button
+      @click="toggleAuthentication"
+      variant="admin"
+      :text="props.isAuthenticated ? 'Выйти' : 'Войти'"
+    />
     <div v-if="showAuthButtons" class="flex items-center space-x-2">
       <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
         <Button text="Войти" />
