@@ -22,33 +22,35 @@ const toggleAuthentication = () => {
 </script>
 
 <template>
-  <header class="mx-auto flex items-center justify-between px-[200px]">
-    <RouterLink to="/">
-      <div class="flex items-center space-x-2">
-        <img src="/logo.png" alt="Logo" class="h-[60px] w-[60px]" />
-        <span class="text-lg font-w400 text-base-gold">VOLGA-FORUM</span>
-      </div>
-    </RouterLink>
+  <header class="flex items-center">
+    <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
+      <RouterLink to="/">
+        <div class="flex items-center space-x-2">
+          <img src="/logo.png" alt="Logo" class="h-[60px] w-[60px]" />
+          <span class="text-lg font-w400 text-base-gold">VOLGA-FORUM</span>
+        </div>
+      </RouterLink>
 
-    <!-- Временная кнопка для переключения состояния isAuthenticated -->
-    <Button
-      @click="toggleAuthentication"
-      variant="admin"
-      :text="props.isAuthenticated ? 'Выйти' : 'Войти'"
-    />
-    <div v-if="showAuthButtons" class="flex items-center space-x-2">
-      <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
-        <Button text="Войти" />
-      </RouterLink>
-      <RouterLink :to="{ path: '/auth', query: { mode: 'register' } }">
-        <Button variant="free" text="Создать аккаунт" />
-      </RouterLink>
-    </div>
-    <div v-if="showUserInfo">
-      <RouterLink to="/profile" class="flex items-center space-x-2">
-        <img :src="userAvatar" alt="User Avatar" class="avatar" />
-        <span class="text-white">{{ userName }}</span>
-      </RouterLink>
+      <!-- Временная кнопка для переключения состояния isAuthenticated -->
+      <Button
+        @click="toggleAuthentication"
+        variant="admin"
+        :text="props.isAuthenticated ? 'Выйти' : 'Войти'"
+      />
+      <div v-if="showAuthButtons" class="flex items-center space-x-2">
+        <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
+          <Button text="Войти" />
+        </RouterLink>
+        <RouterLink :to="{ path: '/auth', query: { mode: 'register' } }">
+          <Button variant="free" text="Создать аккаунт" />
+        </RouterLink>
+      </div>
+      <div v-if="showUserInfo">
+        <RouterLink to="/profile" class="flex items-center space-x-2">
+          <img :src="userAvatar" alt="User Avatar" class="avatar" />
+          <span class="text-white">{{ userName }}</span>
+        </RouterLink>
+      </div>
     </div>
   </header>
 </template>

@@ -28,6 +28,8 @@ export default {
           return 'text-base-light-grey font-w400 text-base rounded-xl hover:outline hover:outline-1 hover:outline-base-light-grey'
         case 'admin':
           return 'bg-base-red text-white font-w500 text-base rounded-xl hover:bg-base-light-red'
+        case 'edit':
+          return 'bg-base-grey text-white font-w500 text-base rounded-xl hover:bg-base-asphalt'
         default:
           return 'bg-base-blue text-white font-w500 text-base rounded-xl hover:bg-base-light-blue'
       }
