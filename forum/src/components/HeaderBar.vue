@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import Button from '../components/Button.vue'
+import Avatar from './Avatar.vue'
 
 const props = defineProps({
   isAuthPage: Boolean,
@@ -47,7 +48,7 @@ const toggleAuthentication = () => {
       </div>
       <div v-if="showUserInfo">
         <RouterLink to="/profile" class="flex items-center space-x-2">
-          <img :src="userAvatar" alt="User Avatar" class="avatar" />
+          <Avatar :src="userAvatar" />
           <span class="text-white">{{ userName }}</span>
         </RouterLink>
       </div>

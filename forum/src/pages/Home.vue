@@ -5,7 +5,7 @@ import HeaderBar from '../components/HeaderBar.vue'
 
 const isAuthenticated = ref(false) // Заменить для переключения авторизован/неавторизован
 const userName = ref('Иван Иванов') // Пример
-const userAvatar = ref('path/to/avatar.jpg') // Пример
+const userAvatar = ref('') // Пример
 
 const toggleAuth = () => {
   //временное решение до реализации получения данных об авторизации пользователя

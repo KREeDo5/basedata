@@ -4,12 +4,16 @@ import { ref } from 'vue'
 import HeaderBar from '../components/HeaderBar.vue'
 import Button from '../components/Button.vue'
 import SubscriptionBlock from '../components/SubscriptionBlock.vue'
+import Avatar from '../components/Avatar.vue'
 
 import { subscribers as subscribersData } from '../../fake-api/subscribers-api'
 import { subscriptions as subscriptionsData } from '../../fake-api/subscriptions-api'
 
 const subscriberList = ref(subscribersData)
 const subscriptionList = ref(subscriptionsData)
+
+const avatarUrl =
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Vladimir_Putin_September_5%2C_2022_%28cropped%29.jpg/260px-Vladimir_Putin_September_5%2C_2022_%28cropped%29.jpg'
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const subscriptionList = ref(subscriptionsData)
       <div class="flex justify-between gap-9">
         <!-- Левая сторона -->
         <div class="flex flex-col w-[250px]">
-          <div class="avatar w-full h-[300px] bg-white rounded-2xl mb-[8px]"></div>
+          <Avatar :src="avatarUrl" size="big" class="mb-[8px]" />
           <div class="flex flex-col space-y-[6px] text-center">
             <Button variant="edit" text="Редактировать" />
             <Button variant="edit" text="Сменить пароль" />
@@ -33,15 +37,15 @@ const subscriptionList = ref(subscriptionsData)
           <div class="name mb-6">
             <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Имя</h3>
             <div class="bg-base-grey rounded-xl px-4 py-3">
-              <p class="text-xl text-gray-400">Gabe Newell</p>
+              <p class="text-xl text-gray-400">Король сего мира</p>
             </div>
           </div>
           <div class="about-me">
             <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Обо мне</h3>
             <div class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3">
               <p class="text-xl text-gray-400">
-                Провожу самые крутые вечеринки в Калифорнии! <br />
-                Основатель VolgaAutumn
+                Люблю свою страну! <br />
+                За Русь матушку постою грудью своей
               </p>
             </div>
           </div>
