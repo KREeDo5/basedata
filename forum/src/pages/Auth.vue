@@ -64,7 +64,7 @@ watch(isModalVisible, (newVal) => {
 
 <template>
   <HeaderBar :isAuthPage="true" />
-  <div class="flex items-center justify-center min-h-screen">
+  <div class="flex items-center justify-center mt-10">
     <!-- Модальное окно -->
     <Modal :isVisible="isModalVisible" :message="modalMessage" :countdown="countdown" />
 
