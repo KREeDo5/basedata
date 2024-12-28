@@ -1,4 +1,5 @@
 <script setup>
+import axios from 'axios'
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import HeaderBar from '../components/HeaderBar.vue'
@@ -26,7 +27,7 @@ const toggleMode = () => {
   router.push({ path: '/auth', query: { mode: isLogin.value ? 'login' : 'register' } })
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   console.log('Form submitted:', form.value)
   if (
     form.value.login === '' ||
@@ -38,7 +39,21 @@ const handleSubmit = () => {
     startCountdown()
     return
   }
-  router.push('/')
+
+  try {
+    const response = await axios.post('http://79.137.184.176:8001/registration/check', {
+      name: form.value.name,
+      login: form.value.login,
+      password: form.value.password,
+    })
+    console.log('Registration successful:', response.data)
+    router.push('/')
+  } catch (error) {
+    console.error('Registration failed:', error)
+    modalMessage.value = 'Ошибка регистрации. Попробуйте еще раз.'
+    isModalVisible.value = true
+    startCountdown()
+  }
 }
 
 const startCountdown = () => {
