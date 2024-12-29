@@ -8,6 +8,7 @@ export default {
         'base-grey': '#303030',
         'base-asphalt': '#363636',
         'base-light-grey': '#D6D6D6',
+        'base-grey2': '#D1D1D1',
         'base-gold': '#C0A062',
         'base-blue': '#4DAFE3',
         'base-light-blue': '#57C5FF',

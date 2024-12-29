@@ -26,7 +26,7 @@ const avatarUrl =
         <!-- Левая сторона -->
         <div class="flex flex-col w-[250px]">
           <Avatar :src="avatarUrl" size="big" class="mb-[8px]" />
-          <div class="flex flex-col space-y-[6px] text-center">
+          <div class="flex flex-col space-y-[6px]">
             <Button variant="edit" text="Редактировать" />
             <Button variant="edit" text="Сменить пароль" />
           </div>

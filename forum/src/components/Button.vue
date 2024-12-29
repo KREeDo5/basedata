@@ -21,17 +21,18 @@ export default {
   },
   computed: {
     buttonStyle() {
+      const baseStyle = 'flex justify-center items-center rounded-xl'
       switch (this.variant) {
         case 'rounded':
-          return 'bg-base-grey hover:bg-base-asphalt text-base-blue font-w400 text-base rounded-xl outline outline-1 outline-base-blue'
+          return `${baseStyle} bg-base-grey hover:bg-base-asphalt text-base-blue font-w400 text-base outline outline-1 outline-base-blue`
         case 'free':
-          return 'text-base-light-grey font-w400 text-base rounded-xl hover:outline hover:outline-1 hover:outline-base-light-grey'
+          return `${baseStyle} text-base-light-grey font-w400 text-basehover:outline hover:outline-1 hover:outline-base-light-grey`
         case 'admin':
-          return 'bg-base-red text-white font-w500 text-base rounded-xl hover:bg-base-light-red'
+          return `${baseStyle} bg-base-red text-white font-w500 text-base hover:bg-base-light-red`
         case 'edit':
-          return 'bg-base-grey text-white font-w500 text-base rounded-xl hover:bg-base-asphalt'
+          return `${baseStyle} bg-base-grey text-white font-w500 text-base hover:bg-base-asphalt`
         default:
-          return 'bg-base-blue text-white font-w500 text-base rounded-xl hover:bg-base-light-blue'
+          return `${baseStyle} bg-base-blue text-white font-w500 text-base hover:bg-base-light-blue`
       }
     },
   },
