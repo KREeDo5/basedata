@@ -30,28 +30,16 @@ class User extends Model
                 ->where('password', $loginData->input('password'))
                 ->exists())
             {
-                $response = {
-                    'success' => true,
-                    'error' => '',
-                }
-                return response()->json($response, 200);
+                return response()->json(['result' => 'success'], 200);
             }
             else
             {
-                $response = {
-                    'success' => false,
-                    'error' => 'wrong password',
-                }
-                return response()->json(($response, 401);
+                return response()->json(['error' => 'wrong password'], 401);
             }
         }
         else
         {
-            $response = {
-                'success' => false,
-                'error' => 'wrong login',
-            }
-            return response()->json($response, 401);
+            return response()->json(['error' => 'wrong login'], 401);
         }
     }
 
@@ -72,26 +60,14 @@ class User extends Model
             }
             else
             {
-                $response = {
-                    'success' => false,
-                    'error' => 'this username is already exists',
-                }
-                return response()->json($response, 409);
+                return response()->json(['error' => 'this username is already exists'], 409);
             }
         }
         else
         {
-            $response = {
-                'success' => false,
-                'error' => 'this login is already exists',
-            }
-            return response()->json($response, 409);
+            return response()->json(['error' => 'this login is already exists'], 409);
         }
-        $response = {
-            'success' => true,
-            'error' => '',
-        }
-        return response()->json($response, 200);
+        return response()->json(['result' => 'success'], 200);
     }
 
     public function getUserInfo($id)
