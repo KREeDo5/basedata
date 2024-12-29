@@ -30,7 +30,7 @@ class User extends Model
                 ->where('password', $loginData->input('password'))
                 ->exists())
             {
-                return response()->json('success', 200);
+                return response()->json(['result' => 'success'], 200);
             }
             else
             {
@@ -67,7 +67,7 @@ class User extends Model
         {
             return response()->json(['error' => 'this login is already exists'], 409);
         }
-        return response()->json('success', 200);
+        return response()->json(['result' => 'success'], 200);
     }
 
     public function getUserInfo($id)
