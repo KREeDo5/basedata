@@ -1,25 +1,20 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useAuthStore } from '@/stores/AuthStore'
+
 import Button from '../components/Button.vue'
 import Avatar from './Avatar.vue'
 
 const props = defineProps({
   isAuthPage: Boolean,
-  isAuthenticated: Boolean,
-  userName: String,
-  userAvatar: String,
 })
 
-//временное решение до реализации получения данных об авторизации пользователя
-const emit = defineEmits(['toggle-auth'])
+const authStore = useAuthStore()
+const userAvatar = ref(authStore.user?.avatarUrl || '')
+const name = ref(authStore.user?.name || 'Без имени')
 
-const showAuthButtons = computed(() => !props.isAuthenticated && !props.isAuthPage)
-const showUserInfo = computed(() => props.isAuthenticated && !props.isAuthPage)
-
-const toggleAuthentication = () => {
-  //временное решение до реализации получения данных об авторизации пользователя
-  emit('toggle-auth')
-}
+const showAuthButtons = computed(() => !authStore.isAuthenticated && !props.isAuthPage)
+const showUserInfo = computed(() => authStore.isAuthenticated && !props.isAuthPage)
 </script>
 
 <template>
@@ -32,12 +27,6 @@ const toggleAuthentication = () => {
         </div>
       </RouterLink>
 
-      <!-- Временная кнопка для переключения состояния isAuthenticated -->
-      <Button
-        @click="toggleAuthentication"
-        variant="admin"
-        :text="props.isAuthenticated ? 'Выйти' : 'Войти'"
-      />
       <div v-if="showAuthButtons" class="flex items-center space-x-2">
         <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
           <Button text="Войти" />
@@ -49,7 +38,7 @@ const toggleAuthentication = () => {
       <div v-if="showUserInfo">
         <RouterLink to="/profile" class="flex items-center space-x-2">
           <Avatar :src="userAvatar" />
-          <span class="text-white">{{ userName }}</span>
+          <span class="text-white">{{ name }}</span>
         </RouterLink>
       </div>
     </div>

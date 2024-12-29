@@ -2,12 +2,17 @@
 import axios from 'axios'
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/AuthStore'
+
 import HeaderBar from '../components/HeaderBar.vue'
 import Button from '../components/Button.vue'
 import Modal from '../components/Modal.vue'
 
 const route = useRoute()
 const router = useRouter()
+
+const authStore = useAuthStore()
+
 const isLogin = ref(route.query.mode !== 'register')
 
 const form = ref({
@@ -28,31 +33,36 @@ const toggleMode = () => {
 }
 
 const handleSubmit = async () => {
-  console.log('Form submitted:', form.value)
-  if (
-    form.value.login === '' ||
-    form.value.password === '' ||
-    (!isLogin.value && form.value.name === '')
-  ) {
-    modalMessage.value = 'Пожалуйста, заполните все поля.'
-    isModalVisible.value = true
-    startCountdown()
-    return
-  }
-
   try {
-    const response = await axios.post('http://79.137.184.176:8001/registration/check', {
-      name: form.value.name,
-      login: form.value.login,
-      password: form.value.password,
-    })
-    console.log('Registration successful:', response.data)
-    router.push('/')
+    if (
+      form.value.login === '' ||
+      form.value.password === '' ||
+      (!isLogin.value && form.value.name === '')
+    ) {
+      modalMessage.value = 'Пожалуйста, заполните все поля.'
+      isModalVisible.value = true
+      startCountdown()
+      return
+    }
+
+    if (isLogin.value) {
+      // Авторизация
+      await authStore.login({
+        login: form.value.login,
+        password: form.value.password,
+      })
+    } else {
+      // Регистрация
+      await authStore.register({
+        login: form.value.login,
+        name: form.value.name,
+        password: form.value.password,
+      })
+    }
+
+    router.push('/') // Перенаправление после успешного входа
   } catch (error) {
-    console.error('Registration failed:', error)
-    modalMessage.value = 'Ошибка регистрации. Попробуйте еще раз.'
-    isModalVisible.value = true
-    startCountdown()
+    alert('Ошибка: ' + error.message)
   }
 }
 

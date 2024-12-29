@@ -1,10 +1,26 @@
 <script setup>
 import { ref } from 'vue'
 
-import HeaderBar from '../components/HeaderBar.vue'
-import Button from '../components/Button.vue'
-import SubscriptionBlock from '../components/SubscriptionBlock.vue'
-import Avatar from '../components/Avatar.vue'
+import { useAuthStore } from '@/stores/AuthStore'
+import { useRouter } from 'vue-router'
+
+import HeaderBar from '@/components/HeaderBar.vue'
+import Button from '@/components/Button.vue'
+import SubscriptionBlock from '@/components/SubscriptionBlock.vue'
+import Avatar from '@/components/Avatar.vue'
+import FilePickerDrop from '../components/FilePickerDrop.vue'
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+const avatarUrl = ref(authStore.user.avatarUrl || '')
+const name = ref(authStore.user.name || 'Без имени')
+const aboutMe = ref(authStore.user.aboutMe || 'Расскажите о себе')
+
+const logout = () => {
+  authStore.logout()
+  router.push('/auth')
+}
 
 import { subscribers as subscribersData } from '../../fake-api/subscribers-api'
 import { subscriptions as subscriptionsData } from '../../fake-api/subscriptions-api'
@@ -12,8 +28,31 @@ import { subscriptions as subscriptionsData } from '../../fake-api/subscriptions
 const subscriberList = ref(subscribersData)
 const subscriptionList = ref(subscriptionsData)
 
-const avatarUrl =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Vladimir_Putin_September_5%2C_2022_%28cropped%29.jpg/260px-Vladimir_Putin_September_5%2C_2022_%28cropped%29.jpg'
+const isEditing = ref(false)
+
+const toggleEditMode = () => {
+  if (isEditing.value) {
+    // Сохранение изменений
+    authStore.setUser(
+      {
+        ...authStore.user, // Копируем все свойства пользователя
+        name: name.value,
+        aboutMe: aboutMe.value,
+        avatarUrl: avatarUrl.value,
+      },
+      authStore.token,
+    )
+  }
+  isEditing.value = !isEditing.value
+}
+
+const removeAvatar = () => {
+  avatarUrl.value = ''
+}
+
+const onFileSelectedCallback = (fileUrl) => {
+  avatarUrl.value = fileUrl
+}
 </script>
 
 <template>
@@ -25,27 +64,47 @@ const avatarUrl =
       <div class="flex justify-between gap-9">
         <!-- Левая сторона -->
         <div class="flex flex-col w-[250px]">
-          <Avatar :src="avatarUrl" size="big" class="mb-[8px]" />
-          <div class="flex flex-col space-y-[6px]">
-            <Button variant="edit" text="Редактировать" />
-            <Button variant="edit" text="Сменить пароль" />
+          <Avatar v-if="!isEditing" :src="avatarUrl" size="big" class="mb-[8px]" />
+          <div v-if="isEditing" class="flex flex-col space-y-[6px] mb-[6px] text-center">
+            <FilePickerDrop :onFileSelectedCallback="onFileSelectedCallback" />
+            <Button variant="edit" text="Удалить аватар" @click="removeAvatar" v-if="avatarUrl" />
           </div>
-          <p class="text-gray-500 mt-2">Дата регистрации: 01.04.2003</p>
+          <div class="flex flex-col space-y-[6px]">
+            <Button
+              variant="edit"
+              :text="isEditing ? 'Сохранить' : 'Редактировать'"
+              @click="toggleEditMode"
+            />
+            <Button variant="edit" text="Сменить пароль" />
+            <Button variant="edit" text="Выйти" @click="logout" />
+          </div>
+          <p class="text-gray-500 mt-2">
+            Дата регистрации: {{ userData?.registrationDate || '-' }}
+          </p>
         </div>
         <!-- Правая сторона -->
         <div class="flex-1">
           <div class="name mb-6">
             <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Имя</h3>
             <div class="bg-base-grey rounded-xl px-4 py-3">
-              <p class="text-xl text-gray-400">Король сего мира</p>
+              <input
+                v-if="isEditing"
+                v-model="name"
+                class="w-full text-xl bg-base-grey text-white"
+              />
+              <p v-else class="text-xl text-gray-400">{{ name }}</p>
             </div>
           </div>
           <div class="about-me">
             <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Обо мне</h3>
             <div class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3">
-              <p class="text-xl text-gray-400">
-                Люблю свою страну! <br />
-                За Русь матушку постою грудью своей
+              <textarea
+                v-if="isEditing"
+                v-model="aboutMe"
+                class="w-full text-xl bg-base-grey text-white"
+              />
+              <p v-else class="text-xl text-gray-400">
+                {{ aboutMe || 'Информация отсутствует' }}
               </p>
             </div>
           </div>
