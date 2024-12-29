@@ -39,32 +39,44 @@ const categories = ref([
   {
     id: 1,
     title: 'Лекции',
-    hasSubcategories: true,
-    parentCategoryId: 1,
+    hasSubcategories: 1,
+    parentCategoryId: 0,
   },
   {
     id: 2,
     title: 'Компьютеры',
-    hasSubcategories: false,
+    hasSubcategories: 0,
     parentCategoryId: 0,
   },
   {
     id: 3,
     title: 'Лабораторные работы',
-    hasSubcategories: false,
+    hasSubcategories: 0,
     parentCategoryId: 0,
   },
   {
     id: 4,
     title: 'Практические занятия',
-    hasSubcategories: true,
+    hasSubcategories: 0,
     parentCategoryId: 0,
   },
   {
     id: 5,
     title: 'Стипендии',
-    hasSubcategories: false,
+    hasSubcategories: 0,
     parentCategoryId: 0,
+  },
+  {
+    id: 6,
+    title: 'ТАиФЯ',
+    hasSubcategories: 0,
+    parentCategoryId: 1,
+  },
+  {
+    id: 7,
+    title: 'Базы Данных',
+    hasSubcategories: 0,
+    parentCategoryId: 1,
   },
 ])
 </script>

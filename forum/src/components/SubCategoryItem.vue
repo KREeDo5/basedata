@@ -25,14 +25,11 @@ const toggleRotation = () => {
 </script>
 
 <template>
-  <div :class="{ 'bg-base-grey': isRotated }" class="rounded-[10px]">
+  <div>
     <div
-      class="flex justify-between items-center py-2 pl-3 pr-2 rounded-[20px] hover:bg-base-grey group"
+      class="flex justify-between items-center py-2 pl-3 pr-2 rounded-[20px] hover:bg-base-asphalt group"
     >
-      <div class="flex">
-        <img src="/category.png" alt="icon" class="mr-2 h-7" />
-        <div class="text-base text-base-grey2">{{ title }}</div>
-      </div>
+      <div class="text-base text-base-grey2">{{ title }}</div>
       <svg
         v-if="hasSubcategories"
         @click="toggleRotation"
@@ -51,7 +48,7 @@ const toggleRotation = () => {
         />
       </svg>
     </div>
-    <div v-if="isRotated" class="pl-1 pb-2">
+    <div v-if="isRotated" class="pl-6">
       <SubCategoryItem
         v-for="subcategory in subcategories"
         :key="subcategory.id"
