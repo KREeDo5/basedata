@@ -13,6 +13,50 @@ const toggleAuth = () => {
   //временное решение до реализации получения данных об авторизации пользователя
   isAuthenticated.value = !isAuthenticated.value
 }
+
+const threads = ref([
+  {
+    id: 1,
+    title: 'Не видит видеокарту',
+    isClosed: false,
+    commentsCount: 6,
+    userAvatar: '/path/to/avatar1.png',
+    userName: 'User1',
+    registarionDate: '01.01.2022',
+  },
+  {
+    id: 2,
+    title: 'Оцените сборку',
+    isClosed: true,
+    commentsCount: 231,
+    userAvatar: '/path/to/avatar2.png',
+    userName: 'Gabe Newell',
+    registarionDate: '01.01.2020',
+  },
+])
+
+const categories = ref([
+  {
+    id: 1,
+    title: 'Лекции',
+  },
+  {
+    id: 2,
+    title: 'Компьютеры',
+  },
+  {
+    id: 3,
+    title: 'Лабораторные работы',
+  },
+  {
+    id: 4,
+    title: 'Практические занятия',
+  },
+  {
+    id: 5,
+    title: 'Стипендии',
+  },
+])
 </script>
 
 <template>
@@ -24,10 +68,10 @@ const toggleAuth = () => {
     @toggle-auth="toggleAuth"
   />
   <div class="max-w-[1520px] w-full mx-auto mt-10 py-5 flex">
-    <CategoryBlock />
+    <CategoryBlock :categoryList="categories" />
     <div class="w-full">
       <div class="bg-base-darkgrey rounded-[20px] py-3 px-4 mb-5">по дате создания треда</div>
-      <ThreadsBlock />
+      <ThreadsBlock :threadList="threads" />
     </div>
   </div>
 </template>
