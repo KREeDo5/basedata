@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import { useAuthStore } from '@/stores/AuthStore'
 import { useRouter } from 'vue-router'
+import { emitter } from '@/eventBus'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import Button from '@/components/Button.vue'
@@ -34,21 +35,19 @@ const isEditing = ref(false)
 const toggleEditMode = () => {
   if (isEditing.value) {
     // Сохранение изменений
-    authStore.setUser(
-      {
-        ...authStore.user, // Копируем все свойства пользователя
-        name: name.value,
-        aboutMe: aboutMe.value,
-        avatarUrl: avatarUrl.value,
-      },
-      authStore.token,
-    )
+    authStore.setUser({
+      ...authStore.user, // Копируем все свойства пользователя
+      name: name.value,
+      aboutMe: aboutMe.value,
+      avatarUrl: avatarUrl.value,
+    })
   }
   isEditing.value = !isEditing.value
 }
 
 const removeAvatar = () => {
   avatarUrl.value = ''
+  emitter.emit('remove-avatar')
 }
 
 const onFileSelectedCallback = (fileUrl) => {
@@ -73,16 +72,27 @@ const onFileSelectedCallback = (fileUrl) => {
           <Avatar v-if="!isEditing" :src="avatarUrl" size="big" class="mb-[8px]" />
           <div v-if="isEditing" class="flex flex-col space-y-[6px] mb-[6px] text-center">
             <FilePickerDrop :onFileSelectedCallback="onFileSelectedCallback" />
-            <Button variant="edit" text="Удалить аватар" @click="removeAvatar" v-if="avatarUrl" />
           </div>
           <div class="flex flex-col space-y-[6px]">
-            <Button
-              variant="edit"
-              :text="isEditing ? 'Сохранить' : 'Редактировать'"
-              @click="toggleEditMode"
-            />
+            <div class="flex items-center">
+              <img
+                v-if="isEditing && avatarUrl"
+                src="/delete.png"
+                alt="delete-icon"
+                class="h-[30px] w-[36px] mr-2"
+                @click="removeAvatar"
+                title="Удалить аватар"
+              />
+              <Button
+                variant="edit"
+                :text="isEditing ? 'Сохранить' : 'Редактировать'"
+                @click="toggleEditMode"
+                class="w-full"
+                :title="isEditing ? 'Сохранить изменения' : 'Редактировать профиль'"
+              />
+            </div>
             <Button variant="edit" text="Сменить пароль" />
-            <Button variant="edit" text="Выйти" @click="logout" />
+            <Button variant="edit" text="Выйти" @click="logout" title="Выйти из профиля" />
           </div>
           <p class="text-gray-500 mt-2">
             Дата регистрации: {{ userData?.registrationDate || '-' }}

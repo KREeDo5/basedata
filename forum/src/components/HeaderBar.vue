@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { emitter } from '@/eventBus'
 
@@ -16,6 +16,14 @@ const name = ref(authStore.user?.name || 'Без имени')
 
 const showAuthButtons = computed(() => !authStore.isAuthenticated && !props.isAuthPage)
 const showUserInfo = computed(() => authStore.isAuthenticated && !props.isAuthPage)
+
+watch(
+  () => authStore.user,
+  (newUser) => {
+    userAvatar.value = newUser?.avatarUrl || ''
+    name.value = newUser?.name || 'Без имени'
+  },
+)
 
 emitter.on('user-updated', (userData) => {
   userAvatar.value = userData?.avatarUrl || ''
@@ -41,7 +49,7 @@ emitter.on('user-updated', (userData) => {
           <Button variant="free" text="Создать аккаунт" />
         </RouterLink>
       </div>
-      <div v-if="showUserInfo">
+      <div v-if="showUserInfo" title="Перейти в профиль">
         <RouterLink to="/profile" class="flex items-center space-x-2">
           <Avatar :src="userAvatar" />
           <span class="text-white">{{ name }}</span>

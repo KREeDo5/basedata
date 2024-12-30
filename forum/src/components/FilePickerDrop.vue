@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { emitter } from '@/eventBus'
 
 const props = defineProps({
   onFileSelectedCallback: Function,
@@ -20,6 +21,18 @@ const onFileSelected = (event) => {
     alert('Please select a valid image file.')
   }
 }
+
+const clearImage = () => {
+  imagePreview.value = null
+}
+
+onMounted(() => {
+  emitter.on('remove-avatar', clearImage)
+})
+
+onUnmounted(() => {
+  emitter.off('remove-avatar', clearImage)
+})
 </script>
 
 <template>
