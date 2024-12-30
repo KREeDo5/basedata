@@ -14,8 +14,9 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const avatarUrl = ref(authStore.user.avatarUrl || '')
-const name = ref(authStore.user.name || 'Без имени')
-const aboutMe = ref(authStore.user.aboutMe || 'Расскажите о себе')
+const name = ref(authStore.user.name)
+const aboutMe = ref(authStore.user.aboutMe)
+const login = authStore.user.login
 
 const logout = () => {
   authStore.logout()
@@ -58,7 +59,12 @@ const onFileSelectedCallback = (fileUrl) => {
 <template>
   <HeaderBar />
   <div class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
-    <h2 class="text-3xl font-w400 text-base-gold text-center mb-5">Профиль</h2>
+    <div class="flex mb-5 justify-center text-3xl font-w400">
+      <h2 class="text-base-gold mr-2">Профиль пользователя</h2>
+      <h2 class="text-base-blue">
+        {{ login }}
+      </h2>
+    </div>
     <div class="px-12">
       <!-- Блок [основная информация] -->
       <div class="flex justify-between gap-9">
@@ -85,28 +91,36 @@ const onFileSelectedCallback = (fileUrl) => {
         <!-- Правая сторона -->
         <div class="flex-1">
           <div class="name mb-6">
-            <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Имя</h3>
-            <div class="bg-base-grey rounded-xl px-4 py-3">
+            <h3 class="mb-[10px] text-xl font-w300 text-base-light-grey">Имя</h3>
+            <form class="bg-base-grey rounded-xl">
               <input
                 v-if="isEditing"
                 v-model="name"
-                class="w-full text-xl bg-base-grey text-white"
+                type="text"
+                id="name"
+                placeholder="Введите имя"
+                class="bg-base-grey w-full px-4 py-3 rounded-xl text-xl text-gray-400 focus:outline-none focus:ring-1 focus:ring-base-blue"
               />
-              <p v-else class="text-xl text-gray-400">{{ name }}</p>
-            </div>
+              <p v-else class="px-4 py-3 text-xl text-gray-400">{{ name || 'Без имени' }}</p>
+            </form>
           </div>
           <div class="about-me">
-            <h3 class="text-xl font-w300 text-base-light-grey mb-[10px]">Обо мне</h3>
-            <div class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3">
-              <textarea
-                v-if="isEditing"
-                v-model="aboutMe"
-                class="w-full text-xl bg-base-grey text-white"
-              />
-              <p v-else class="text-xl text-gray-400">
-                {{ aboutMe || 'Информация отсутствует' }}
-              </p>
+            <h3 class="mb-[10px] text-xl font-w300 text-base-light-grey">Обо мне</h3>
+            <div
+              v-if="!isEditing"
+              class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3 text-xl text-gray-400 break-words whitespace-pre-wrap"
+            >
+              <p>{{ aboutMe || 'Расскажите о себе' }}</p>
             </div>
+            <form v-if="isEditing">
+              <textarea
+                v-model="aboutMe"
+                type="text"
+                id="aboutMe"
+                placeholder="Расскажите о себе"
+                class="bg-base-grey w-full min-h-[220px] px-4 py-3 rounded-xl text-xl text-gray-400 break-words whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-base-blue"
+              />
+            </form>
           </div>
         </div>
       </div>

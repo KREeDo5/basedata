@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
+import { emitter } from '@/eventBus'
 
 import Button from '../components/Button.vue'
 import Avatar from './Avatar.vue'
@@ -15,6 +16,11 @@ const name = ref(authStore.user?.name || 'Без имени')
 
 const showAuthButtons = computed(() => !authStore.isAuthenticated && !props.isAuthPage)
 const showUserInfo = computed(() => authStore.isAuthenticated && !props.isAuthPage)
+
+emitter.on('user-updated', (userData) => {
+  userAvatar.value = userData?.avatarUrl || ''
+  name.value = userData?.name || 'Без имени'
+})
 </script>
 
 <template>

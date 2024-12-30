@@ -1,9 +1,17 @@
 <script setup>
-defineProps({
+import { ref } from 'vue'
+
+const props = defineProps({
   url: String,
 })
+
+const imageUrl = ref(props.url || '/placeholder.png')
+
+const handleError = () => {
+  imageUrl.value = '/placeholder.png'
+}
 </script>
 
 <template>
-  <img :src="url || '/placeholder.png'" alt="network-image" />
+  <img :src="imageUrl" alt="network-image" @error="handleError" />
 </template>

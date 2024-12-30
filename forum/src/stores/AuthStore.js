@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { emitter } from '@/eventBus'
 
 export const useAuthStore = defineStore('authStore', () => {
   const user = ref(null) // Профиль пользователя
@@ -8,10 +9,12 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const setUser = (userData) => {
     user.value = userData
+    emitter.emit('user-updated', userData)
   }
 
   const logout = () => {
     user.value = null
+    emitter.emit('user-updated', null)
   }
 
   const register = async (userData) => {
