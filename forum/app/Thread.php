@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,8 +29,15 @@ class Thread extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function getThreads($categoryId)
+    public function getThreads(Request $request)
     {
+        $categoryId = $request->header('categoryId');
+        //$categoriesId = [];
+        //if ($categoryId) {
+        //    $categoriesId = $this->getAllSubcategories($categoryId);
+        //    $categoriesId[] = $categoryId;
+        //}
+
         $threads = Thread::with(['user'])
             ->where('visibility', 'visible')
             ->when($categoryId !== null, function ($query) use ($categoryId) {
@@ -56,8 +64,9 @@ class Thread extends Model
         return response()->json($data, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function getThreadInfo($id)
+    public function getThreadInfo(Request $request)
     {
+        $id = $request->header('id');
         $thread = Thread::with(['user', 'images', 'messages.user', 'messages.images'])
                 ->where('id', $id)
                 ->where('visibility', 'visible')
@@ -65,7 +74,7 @@ class Thread extends Model
 
         if (!$thread)
         {
-            return response()->json(['error' => 'Thread not found'], 404);
+            return response()->json(['success' => false, 'error' => 'Thread not found'], 404);
         }
 
         $data = [

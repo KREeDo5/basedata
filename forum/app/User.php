@@ -70,8 +70,9 @@ class User extends Model
         return response()->json(['success' => true, 'error' => ''], 200);
     }
 
-    public function getUserInfo($id)
+    public function getUserInfo(Request $request)
     {
+        $id = $request->header('id');
         $user = User::where('id', $id)
             ->select('name', 'description', 'image_path', 'registration_date')
             ->first();

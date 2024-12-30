@@ -35,12 +35,12 @@ class MainController extends Controller
         return view('profile');
     }
 
-    public function user($id) {
-        return User::find(1)->getUserInfo($id);
+    public function user(Request $request) {
+        return User::find(1)->getUserInfo($request);
     }
 
-    public function thread($id) {
-        return Thread::find(1)->getThreadInfo($id);
+    public function thread(Request $request) {
+        return Thread::find(1)->getThreadInfo($request);
     }
 
     //public function mainCategories() {
@@ -55,8 +55,8 @@ class MainController extends Controller
         return Thread::find(1)->getThreads(NULL);
     }
 
-    public function categoryThreads($categoryId) {
-        return Thread::find(1)->getThreads($categoryId);
+    public function categoryThreads(Request $request) {
+        return Thread::find(1)->getThreads($request);
     }
 
     public function auth_check(Request $loginData) {
