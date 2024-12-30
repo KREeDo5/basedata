@@ -43,12 +43,12 @@ class MainController extends Controller
         return Thread::find(1)->getThreadInfo($id);
     }
 
-    public function mainCategories() {
-        return Category::find(1)->getCategories(NULL);
-    }
+    //public function mainCategories() {
+    //    return Category::find(1)->getCategories(NULL);
+    //}
 
-    public function categories($parentCategoryId) {
-        return Category::find(1)->getCategories($parentCategoryId);
+    public function categories() {
+        return Category::find(1)->getAllCategories();
     }
 
     public function allThreads() {

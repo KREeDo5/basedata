@@ -17,18 +17,15 @@ Route::get('/', 'MainController@home');
 Route::get('/user/{id}', 'MainController@user');
 Route::get('/thread/{id}', 'MainController@thread');
 
-Route::get('/categories', 'MainController@mainCategories');
-Route::get('/categories/{parentCategoryId}', 'MainController@categories');
+Route::get('/categories', 'MainController@categories');
+//Route::get('/categories/{parentCategoryId}', 'MainController@categories');
 
 Route::get('/threads', 'MainController@allThreads');
 Route::get('/threads/{categoryId}', 'MainController@categoryThreads');
 
-Route::get('/auth', 'MainController@auth');
-Route::post('/auth/check', 'MainController@auth_check');
+Route::post('/auth', 'MainController@auth_check');
 
-Route::get('/registration', 'MainController@registration');
-Route::post('/registration/check', 'MainController@registration_check');
+Route::post('/registration', 'MainController@registration_check');
 
-Route::get('/me', 'MainController@profile');
-Route::post('/change/profile', 'MainController@changeProfile');
-Route::post('/change/profile/image', 'MainController@changeProfileImage');
+Route::post('/profile/change', 'MainController@changeProfile');
+//Route::post('/change/profile/image', 'MainController@changeProfileImage');

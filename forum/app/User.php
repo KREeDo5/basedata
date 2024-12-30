@@ -30,16 +30,16 @@ class User extends Model
                 ->where('password', $loginData->input('password'))
                 ->exists())
             {
-                return response()->json('success', 200);
+                return response()->json(['success' => true, 'error' => ''], 200);
             }
             else
             {
-                return response()->json(['error' => 'wrong password'], 401);
+                return response()->json(['success' => false, 'error' => 'wrong password'], 401);
             }
         }
         else
         {
-            return response()->json(['error' => 'wrong login'], 401);
+            return response()->json(['success' => false, 'error' => 'wrong login'], 401);
         }
     }
 
@@ -60,14 +60,14 @@ class User extends Model
             }
             else
             {
-                return response()->json(['error' => 'this username is already exists'], 409);
+                return response()->json(['success' => false, 'error' => 'this username is already exists'], 409);
             }
         }
         else
         {
-            return response()->json(['error' => 'this login is already exists'], 409);
+            return response()->json(['success' => false, 'error' => 'this login is already exists'], 409);
         }
-        return response()->json('success', 200);
+        return response()->json(['success' => true, 'error' => ''], 200);
     }
 
     public function getUserInfo($id)
@@ -78,7 +78,7 @@ class User extends Model
 
         if (!$user)
         {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['success' => false, 'error' => 'user not found'], 404);
         }
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
@@ -100,13 +100,20 @@ class User extends Model
         return response()->json($data, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function changeProfile($profileData)
+    public function changeProfile(Request $profileData)
     {
-
-    }
-
-    public function changeProfileImage($newImage)
-    {
-
+        $user = User::where('id', $profileData->input('id'))
+            ->first();
+        if (!$user)
+        {
+            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+        }
+        User::where('id', $profileData->input('id'))
+            ->update([
+                'name' => $profileData->input('name'),
+                'description' => $profileData->input('description'),
+                'image_path' => $profileData->input('image_path')
+            ]);
+        return response()->json(['success' => true, 'error' => ''], 200);
     }
 }
