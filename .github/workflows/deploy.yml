@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "20.17.0"
+          node-version: '20.17.0'
 
       - name: Install dependencies
         run: npm install
@@ -28,16 +28,16 @@ jobs:
 
       - name: Check build directory
         run: if [ -d "./forum/dist" ]; then echo "Build directory exists"; else echo "Build directory does not exist"; fi
-        working-directory: ./forum
+        working-directory: .
 
       - name: List files in dist directory
-        run: ls -la ./forum/dist
-        working-directory: ./forum
+        run: ls -la ./dist
+        working-directory: .
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           external_repository: KREeDo5/KREeDo5.github.io
-          publish_dir: ./forum/dist
+          publish_dir: ./dist
           publish_branch: gh-pages-vue
