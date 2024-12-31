@@ -26,10 +26,6 @@ jobs:
         run: npm run build
         working-directory: ./forum
 
-      - name: Output build logs
-        run: cat ./forum/build.log
-        working-directory: ./forum
-
       - name: Check build directory
         run: if [ -d "./forum/dist" ]; then echo "Build directory exists"; else echo "Build directory does not exist"; fi
         working-directory: ./forum
