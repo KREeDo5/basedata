@@ -8,8 +8,12 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchThreads = async () => {
     try {
-      const response = await axios.get('https://79.137.184.176:8443/threads')
-      threads.value = response.data
+      const response = await axios.get('/threads')
+      if (Array.isArray(response.data)) {
+        threads.value = response.data.map((item) => item.thread)
+      } else {
+        console.error('Unexpected response data format for threads:', response.data)
+      }
     } catch (error) {
       console.error('Error fetching threads:', error)
     }
@@ -17,8 +21,12 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('https://79.137.184.176:8443/categories')
-      categories.value = response.data
+      const response = await axios.get('/categories')
+      if (Array.isArray(response.data)) {
+        categories.value = response.data.map((item) => item.category)
+      } else {
+        console.error('Unexpected response data format for categories:', response.data)
+      }
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
@@ -33,6 +41,6 @@ export const useHomeStore = defineStore('homeStore', () => {
     threads,
     categories,
     fetchThreads,
-    fetchCategories
+    fetchCategories,
   }
 })

@@ -5,11 +5,19 @@ import './reset.css'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+import https from 'https'
+
+const axiosInstance = axios.create({
+  baseURL: 'https://79.137.184.176:8443', //http://79.137.184.176:8001
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false, // Игнорирование ошибок SSL
+  }),
+})
 
 const app = createApp(App)
 
-axios.defaults.headers.common['X-XCSRF-TOKEN'] =
-  'eyJpdiI6IjJjUUJySHFZck1kOU53VEdvYXRaY1E9PSIsInZhbHVlIjoiVGIrSFdhQXpkSkhWdmtCQm5YSjV2NFRCeGVyWEZhUVYrU1RrbmZSMk9PM2ptNU9leUhQNUV4NmtlL3IxU05lSEc1SUJQVnpNRzBNRU96ZU1sa1RINWJYaTh4bEFNbXdPWWk1cVBqYjVGVlhIQk5VSVU0Rytzei84OVlwYUF5YnUiLCJtYWMiOiI4NzgyZjkwMDY5ZDVhZTQ3NjQwNjI3ODllNzQxMTdmNGMwODI4MDg0ODlhNTRjZDY1NGQ4MGVhZmIyMGI4YmU4In0'
+// Добавление экземпляра Axios в глобальные свойства Vue
+app.config.globalProperties.$axios = axiosInstance
 
 app.use(router)
 app.use(createPinia())
