@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -26,18 +26,13 @@ jobs:
         run: npm run build
         working-directory: ./forum
 
-      - name: Check build directory
-        run: if [ -d "./forum/dist" ]; then echo "Build directory exists"; else echo "Build directory does not exist"; fi
-        working-directory: .
-
-      - name: List files in dist directory
-        run: ls -la ./dist
-        working-directory: .
+      - name: Debug build output
+        run: ls -la ./forum/dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           external_repository: KREeDo5/KREeDo5.github.io
-          publish_dir: ./dist
+          publish_dir: ./forum/dist
           publish_branch: gh-pages-vue
