@@ -8,7 +8,7 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchThreads = async () => {
     try {
-      const response = await axios.get('http://79.137.184.176:8001/threads')
+      const response = await axios.get('https://79.137.184.176:8443/threads')
       threads.value = response.data
     } catch (error) {
       console.error('Error fetching threads:', error)
@@ -17,7 +17,7 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://79.137.184.176:8001/categories')
+      const response = await axios.get('https://79.137.184.176:8443/categories')
       categories.value = response.data
     } catch (error) {
       console.error('Error fetching categories:', error)
