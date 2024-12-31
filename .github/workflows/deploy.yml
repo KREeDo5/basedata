@@ -26,6 +26,10 @@ jobs:
         run: npm run build
         working-directory: ./forum
 
+      - name: Check build directory
+        run: if [ -d "./forum/dist" ]; then echo "Build directory exists"; else echo "Build directory does not exist"; fi
+        working-directory: ./forum
+
       - name: List files in dist directory
         run: ls -la ./forum/dist
         working-directory: ./forum
