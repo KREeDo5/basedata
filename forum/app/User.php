@@ -117,4 +117,17 @@ class User extends Model
             ]);
         return response()->json(['success' => true, 'error' => ''], 200);
     }
+
+    public function changePassword(Request $data)
+    {
+        $user = User::where('id', $data->input('id'))
+            ->first();
+        if (!$user)
+        {
+            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+        }
+        User::where('id', $data->input('id'))
+            ->update(['password' => $data->input('password')]);
+        return response()->json(['success' => true, 'error' => ''], 200);
+    }
 }

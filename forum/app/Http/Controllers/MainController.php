@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\UserHasSubscribe;
 use App\User;
 use App\Category;
-use App\UserHasSubscribe;
 use App\Message;
 use App\Thread;
 use App\ThreadImage;
@@ -71,7 +71,40 @@ class MainController extends Controller
         return User::find(1)->changeProfile($profileData);
     }
 
-    public function changeProfileImage(Request $newImage) {
-        return User::find(1)->changeProfileImage($newImage);
+    //public function changeProfileImage(Request $newImage) {
+    //    return User::find(1)->changeProfileImage($newImage);
+    //}
+
+    public function changePassword(Request $data) {
+        return User::find(1)->changePassword($data);
+    }
+
+    public function subscribe(Request $data) {
+        $user1 = User::where('id', $data->input('subscriber'))
+            ->first();
+        $user2 = User::where('id', $data->input('subscription'))
+            ->first();
+        if (!$user1 or !$user2)
+        {
+            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+        }
+        UserHasSubscribe::insert([
+            'id_user' => $data->input('subscriber'),
+            'subscription' => $data->input('subscription')
+        ]);
+        return response()->json(['success' => true, 'error' => ''], 200);
+
+
+        return UserHasSubscribe::find(1)->subscribe($data);
+    }
+
+    public function unsubscribe(Request $data) {
+        UserHasSubscribe::where('id_user', $data->input('subscriber'))
+            ->where('subscription', $data->input('subscription'))
+            ->delete();
+        return response()->json(['success' => true, 'error' => ''], 200);
+
+        
+        return UserHasSubscribe::find(1)->unsubscribe($data);
     }
 }
