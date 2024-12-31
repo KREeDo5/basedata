@@ -1,23 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 import HeaderBar from '../components/HeaderBar.vue'
 import CategoryBlock from '../components/CategoryBlock.vue'
 import ThreadsBlock from '../components/ThreadsBlock.vue'
 
-import { useThreadStore } from '@/stores/ThreadStore'
-import { useCategoryStore } from '@/stores/CategoryStore'
+import { useHomeStore } from '@/stores/HomeStore'
 
-const threadListStore = useThreadStore()
-const categoryListStore = useCategoryStore()
+const homeStore = useHomeStore()
 
-const threads = ref(threadListStore.threads)
-const categories = ref(categoryListStore.categories)
+const threads = ref(homeStore.threads)
+const categories = ref(homeStore.categories)
 
 const sortOptions = [
   { value: 'date', text: 'По дате создания треда' },
   { value: 'count', text: 'По количеству сообщений' },
 ]
+
+onMounted(() => {
+  homeStore.fetchThreads()
+  homeStore.fetchCategories()
+})
 </script>
 
 <template>
