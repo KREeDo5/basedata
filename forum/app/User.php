@@ -23,33 +23,26 @@ class User extends Model
 
     public function authorization(Request $loginData)
     {
-        if (User::where('login', $loginData->input('login'))
-            ->exists())
-        {
-            if (User::where('login', $loginData->input('login'))
-                ->where('password', $loginData->input('password'))
-                ->exists())
-            {
+        $user = User::where('login', $loginData->input('login'))->first();
+
+        if ($user) {
+            if ($user->password === $loginData->input('password')) {
                 $response = [
                     'meta' => ['success' => true, 'error' => ''],
-                    'data' => (object) []
+                    'data' => ['id' => $user->id],
                 ];
                 return response()->json($response, 200);
-            }
-            else
-            {
+            } else {
                 $response = [
                     'meta' => ['success' => false, 'error' => 'wrong password'],
-                    'data' => (object) []
+                    'data' => (object) [],
                 ];
                 return response()->json($response, 401);
             }
-        }
-        else
-        {
+        } else {
             $response = [
                 'meta' => ['success' => false, 'error' => 'wrong login'],
-                'data' => (object) []
+                'data' => (object) [],
             ];
             return response()->json($response, 401);
         }
