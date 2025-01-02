@@ -9,9 +9,6 @@ import { useHomeStore } from '@/stores/HomeStore'
 
 const homeStore = useHomeStore()
 
-const threads = ref(homeStore.threads)
-const categories = ref(homeStore.categories)
-
 const sortOptions = [
   { value: 'date', text: 'По дате создания треда' },
   { value: 'count', text: 'По количеству сообщений' },
@@ -26,7 +23,7 @@ onMounted(() => {
 <template>
   <HeaderBar />
   <div class="max-w-[1520px] w-full mx-auto mt-10 py-5 flex">
-    <CategoryBlock :categoryList="categories" />
+    <CategoryBlock :categoryList="homeStore.categories" />
     <div class="w-full">
       <div class="flex bg-base-darkgrey rounded-[20px] py-3 px-4 mb-5">
         <form class="mr-3">
@@ -50,7 +47,7 @@ onMounted(() => {
           />
         </form>
       </div>
-      <ThreadsBlock :threadList="threads" />
+      <ThreadsBlock :threadList="homeStore.threads" />
     </div>
   </div>
 </template>

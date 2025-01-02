@@ -8,7 +8,7 @@ const props = defineProps({
   commentsCount: Number,
   userAvatar: String,
   userName: String,
-  registrationDate: String,
+  created_at: String,
 })
 </script>
 
@@ -21,14 +21,14 @@ const props = defineProps({
       </div>
       <div class="flex items-center">
         <img src="/comments.png" alt="icon" class="mr-2 h-5" />
-        <div class="text-base-grey2">{{ commentsCount }}</div>
+        <div class="text-base-grey2">{{ commentsCount || 0 }}</div>
       </div>
     </div>
     <div class="flex items-center author-block w-[225px]">
       <Avatar class="mr-3" :src="userAvatar" size="medium" />
       <div>
         <div class="text-base font-w600 text-base-blue">{{ userName || 'без имени' }}</div>
-        <div class="text-white">{{ registrationDate || '01.01.2000' }}</div>
+        <div class="text-white">{{ created_at || '01.01.2000' }}</div>
       </div>
     </div>
   </div>

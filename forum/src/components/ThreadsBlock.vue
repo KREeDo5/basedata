@@ -22,9 +22,9 @@ const props = defineProps({
           :title="thread.title"
           :isClosed="thread.isClosed"
           :commentsCount="thread.commentsCount"
-          :userAvatar="thread.userAvatar"
-          :userName="thread.userName"
-          :registrationDate="thread.registarionDate"
+          :userAvatar="thread.user?.imagePath"
+          :userName="thread.user?.name"
+          :created_at="thread.created_at"
         />
       </div>
     </div>

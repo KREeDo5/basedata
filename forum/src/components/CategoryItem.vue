@@ -57,8 +57,8 @@ const toggleRotation = () => {
         :key="subcategory.id"
         :categoryId="subcategory.id"
         :title="subcategory.title"
-        :hasSubcategories="subcategory.hasSubcategories"
-        :parentCategoryId="subcategory.parentCategoryId"
+        :hasSubcategories="Boolean(subcategory.has_subcategories)"
+        :parentCategoryId="subcategory.id_parent_category"
         :subcategories="subcategory.subcategories"
         :onToggle="onToggle"
       />

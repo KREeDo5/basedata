@@ -5,10 +5,7 @@ import Button from './Button.vue'
 import CategoryItem from './CategoryItem.vue'
 
 const props = defineProps({
-  categoryList: {
-    type: Array,
-    required: true,
-  },
+  categoryList: Array,
 })
 
 const expandedCategories = ref([])
@@ -22,7 +19,11 @@ const toggleCategory = (categoryId) => {
 }
 
 const getSubcategories = (categoryId) => {
-  return props.categoryList.filter(category => category.parentCategoryId === categoryId)
+  return props.categoryList.filter(category => category.id_parent_category === categoryId)
+}
+
+const shouldShowCategory = (category) => {
+  return category.id_parent_category === 0 || category.id_parent_category === undefined || category.id_parent_category === null
 }
 </script>
 
@@ -34,12 +35,12 @@ const getSubcategories = (categoryId) => {
         v-for="category in categoryList"
         :key="category.id"
         :title="category.title"
-        :hasSubcategories="category.hasSubcategories"
-        :parentCategoryId="category.parentCategoryId"
+        :hasSubcategories="Boolean(category.has_subcategories)"
+        :parentCategoryId="category.id_parent_category"
         :categoryId="category.id"
         :subcategories="getSubcategories(category.id)"
         :onToggle="toggleCategory"
-        v-show="category.parentCategoryId === 0 || category.parentCategoryId === undefined"
+        v-show="shouldShowCategory(category)"
       />
     </div>
   </div>
