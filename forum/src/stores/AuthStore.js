@@ -35,7 +35,6 @@ export const useAuthStore = defineStore('authStore', () => {
   const login = async (form) => {
     try {
       const response = await axios.post('https://forum.kreedo.tech:8443/auth', form)
-      console.log(response)
       const meta = response.data.meta
       if (meta.success) {
         setUser(form)
