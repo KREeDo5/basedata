@@ -19,7 +19,7 @@ const props = defineProps({
   },
 })
 
-const isOwner = computed(() => !props.userId || props.userId === authStore.user?.id)
+const isOwner = computed(() => !props.userId || props.userId === authStore.token)
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -30,7 +30,6 @@ const { userProfile, subscriptions, subscribers } = toRefs(profileStore)
 const avatarUrl = ref('')
 const name = ref('')
 const aboutMe = ref('')
-const login = ref('')
 const registrationDate = ref('')
 
 const isEditing = ref(false)
@@ -59,18 +58,17 @@ const onFileSelectedCallback = (fileUrl) => {
 }
 
 const fetchProfile = async () => {
-  const id = props.userId || authStore.user?.id
+  const id = props.userId || authStore.token
   if (id) {
     await profileStore.fetchUserProfile(id)
     if (userProfile.value) {
       avatarUrl.value = userProfile.value.image_path || ''
       name.value = userProfile.value.name
       aboutMe.value = userProfile.value.description
-      login.value = userProfile.value.login
       registrationDate.value = userProfile.value.registration_date
     }
   } else {
-    console.error('User ID is not available')
+    router.push('/auth')
   }
 }
 
@@ -87,10 +85,24 @@ const logout = () => {
   router.push('/auth')
 }
 
-const subscribe = () => {
-  //TODO: подписка на пользователя
-  router.push('/auth')
+const subscribe = async () => {
+  try {
+    await profileStore.subscribe(props.userId)
+    console.log('Subscribed successfully')
+  } catch (error) {
+    console.error('Error during subscription:', error)
+  }
 }
+
+const unsubscribe = async () => {
+  try {
+    await profileStore.unsubscribe(props.userId)
+    console.log('Unsubscribed successfully')
+  } catch (error) {
+    console.error('Error during unsubscription:', error)
+  }
+}
+
 </script>
 
 <template>
@@ -101,9 +113,9 @@ const subscribe = () => {
     </div>
     <div v-else class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
       <div class="flex mb-5 justify-center text-3xl font-w400">
-        <h2 class="text-base-gold mr-2">{{ isOwner ? 'Ваш профиль,' : 'Профиль пользователя' }}</h2>
-        <h2 class="text-base-blue">
-          {{ isOwner ? authStore.user?.login : name }}
+        <h2 class="text-base-gold mr-2">{{ isOwner ? 'Ваш профиль' : 'Профиль пользователя' }}</h2>
+        <h2 v-if="isOwner" class="text-base-blue">
+          {{ name }}
         </h2>
       </div>
       <div class="px-12">
@@ -143,6 +155,12 @@ const subscribe = () => {
                 title="Выйти из профиля"
               />
               <Button v-if="!isOwner" text="Подписаться" @click="subscribe" title="Подписаться" />
+              <Button
+              v-if="!isOwner"
+              text="Отписаться"
+              @click="unsubscribe"
+              title="Отписаться"
+            />
             </div>
             <p class="text-gray-500 mt-2">Дата регистрации: {{ registrationDate || '-' }}</p>
           </div>

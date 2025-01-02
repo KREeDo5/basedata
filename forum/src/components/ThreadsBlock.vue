@@ -25,6 +25,7 @@ const props = defineProps({
           :userAvatar="thread.user?.imagePath"
           :userName="thread.user?.name"
           :created_at="thread.created_at"
+          :userId="5"
         />
       </div>
     </div>

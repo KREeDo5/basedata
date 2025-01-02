@@ -18,6 +18,7 @@ const form = ref({
   login: '',
   name: '',
   password: '',
+  id: 8,
 })
 
 const isModalVisible = ref(false)
@@ -58,6 +59,8 @@ const handleSubmit = async () => {
         password: form.value.password,
       })
     }
+
+    await authStore.loadUserFromToken()
 
     if (authStore.isAuthenticated) {
       router.push('/') // Перенаправление после успешного входа

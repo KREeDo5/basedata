@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
 import Avatar from './Avatar.vue'
 
 const props = defineProps({
@@ -9,7 +10,15 @@ const props = defineProps({
   userAvatar: String,
   userName: String,
   created_at: String,
+  userId: Number,
 })
+
+const router = useRouter()
+
+const goToProfile = () => {
+  console.log(props.userId)
+  router.push({ path: '/profile', query: { userId: props.userId } })
+}
 </script>
 
 <template>
@@ -24,7 +33,11 @@ const props = defineProps({
         <div class="text-base-grey2">{{ commentsCount || 0 }}</div>
       </div>
     </div>
-    <div class="flex items-center author-block w-[225px]">
+    <div
+      class="flex items-center author-block w-[225px]"
+      @click="goToProfile"
+      style="cursor: pointer"
+    >
       <Avatar class="mr-3" :src="userAvatar" size="medium" />
       <div>
         <div class="text-base font-w600 text-base-blue">{{ userName || 'без имени' }}</div>

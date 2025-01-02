@@ -1,10 +1,18 @@
 <script setup>
 import Avatar from './Avatar.vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   title: String,
   items: Array,
 })
+
+const router = useRouter()
+
+const goToProfile = () => {
+  console.log(props.userId)
+  router.push({ path: '/profile', query: { userId: props.userId } })
+}
 </script>
 
 <template>
@@ -15,9 +23,9 @@ const props = defineProps({
         <span class="text-base-light-grey">Отсутствуют</span>
       </div>
       <div v-else v-for="(item, index) in items" :key="index">
-        <div class="flex items-center">
+        <div class="flex items-center" @click="goToProfile" style="cursor: pointer">
           <Avatar size="small" class="mr-2" :src="item.image_path" />
-          <span class="text-base-blue truncate">{{ item.name || "Без имени" }}</span>
+          <span class="text-base-blue truncate">{{ item.name || 'Без имени' }}</span>
         </div>
       </div>
     </div>
