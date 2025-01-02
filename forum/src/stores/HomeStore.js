@@ -8,9 +8,10 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchThreads = async () => {
     try {
-      const response = await axios.get('/threads')
-      if (Array.isArray(response.data)) {
-        threads.value = response.data.map((item) => item.thread)
+      const response = await axios.get('https://forum.kreedo.tech:8443/threads')
+      console.log(response)
+      if (response.data.meta.success && Array.isArray(response.data.data.threads)) {
+        threads.value = response.data.data.threads
       } else {
         console.error('Unexpected response data format for threads:', response.data)
       }
@@ -21,9 +22,10 @@ export const useHomeStore = defineStore('homeStore', () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/categories')
-      if (Array.isArray(response.data)) {
-        categories.value = response.data.map((item) => item.category)
+      const response = await axios.get('https://forum.kreedo.tech:8443/categories')
+      console.log(response)
+      if (response.data.meta.success && Array.isArray(response.data.data.categories)) {
+        categories.value = response.data.data.categories
       } else {
         console.error('Unexpected response data format for categories:', response.data)
       }
