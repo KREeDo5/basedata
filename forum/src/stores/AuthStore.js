@@ -82,6 +82,20 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
+  const editProfile = async (form) => {
+    try {
+      const response = await axios.post('https://forum.kreedo.tech:8443/change/profile', form)
+      const meta = response.data.meta
+      if (meta.success) {
+        loadUserFromToken()
+      } else {
+        throw new Error(meta.error || 'Login failed')
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
   // Слушаем изменения localStorage
   const syncToken = () => {
     const storedToken = localStorage.getItem('auth_token')
@@ -108,5 +122,6 @@ export const useAuthStore = defineStore('authStore', () => {
     subscribers,
     loadUserFromToken,
     token,
+    editProfile,
   }
 })

@@ -1,6 +1,7 @@
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { format } from 'date-fns'
 import Avatar from './Avatar.vue'
 
 const props = defineProps({
@@ -16,9 +17,12 @@ const props = defineProps({
 const router = useRouter()
 
 const goToProfile = () => {
-  console.log(props.userId)
   router.push({ path: '/profile', query: { userId: props.userId } })
 }
+
+const formattedDate = computed(() => {
+  return format(new Date(props.created_at), 'dd.MM.yy HH:mm')
+})
 </script>
 
 <template>
@@ -41,7 +45,7 @@ const goToProfile = () => {
       <Avatar class="mr-3" :src="userAvatar" size="medium" />
       <div>
         <div class="text-base font-w600 text-base-blue">{{ userName || 'без имени' }}</div>
-        <div class="text-white">{{ created_at || '01.01.2000' }}</div>
+        <div class="text-white">{{ formattedDate }}</div>
       </div>
     </div>
   </div>

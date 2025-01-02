@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from '@/stores/AuthStore'
 import { ref } from 'vue'
 import axios from 'axios'
 
 export const useProfileStore = defineStore('profileStore', () => {
+  const authStore = useAuthStore()
   const userProfile = ref(null)
   const subscriptions = ref([])
   const subscribers = ref([])
@@ -18,6 +20,9 @@ export const useProfileStore = defineStore('profileStore', () => {
       const meta = response.data.meta
       const data = response.data.data
       if (meta.success && data.userData) {
+        if (userId === ownerId) {
+          authStore.setUser(data.userData)
+        }
         userProfile.value = data.userData.user
         subscriptions.value = data.userData.subscriptions
         subscribers.value = data.userData.subscribers

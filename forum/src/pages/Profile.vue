@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/AuthStore'
 import { useProfileStore } from '@/stores/ProfileStore'
 import { useRouter } from 'vue-router'
 import { emitter } from '@/eventBus'
+import { format } from 'date-fns'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import Button from '@/components/Button.vue'
@@ -34,16 +35,15 @@ const registrationDate = ref('')
 
 const isEditing = ref(false)
 
-const toggleEditMode = () => {
+const toggleEditMode = async () => {
   if (isEditing.value) {
-    //TODO: возможно сохранять пользователя надо будет через ProfileStore
-    // Сохранение изменений
-    authStore.setUser({
-      ...authStore.user, // Копируем все свойства пользователя
+    await authStore.editProfile({
+      id: authStore.token,
       name: name.value,
-      aboutMe: aboutMe.value,
-      avatarUrl: avatarUrl.value,
+      description: aboutMe.value,
+      image_path: avatarUrl.value,
     })
+    await fetchProfile()
   }
   isEditing.value = !isEditing.value
 }
@@ -88,7 +88,6 @@ const logout = () => {
 const subscribe = async () => {
   try {
     await profileStore.subscribe(props.userId)
-    console.log('Subscribed successfully')
   } catch (error) {
     console.error('Error during subscription:', error)
   }
@@ -97,12 +96,14 @@ const subscribe = async () => {
 const unsubscribe = async () => {
   try {
     await profileStore.unsubscribe(props.userId)
-    console.log('Unsubscribed successfully')
   } catch (error) {
     console.error('Error during unsubscription:', error)
   }
 }
 
+const formattedRegistrationDate = computed(() => {
+  return registrationDate.value ? format(new Date(registrationDate.value), 'dd.MM.yyyy') : ''
+})
 </script>
 
 <template>
@@ -162,7 +163,7 @@ const unsubscribe = async () => {
               title="Отписаться"
             />
             </div>
-            <p class="text-gray-500 mt-2">Дата регистрации: {{ registrationDate || '-' }}</p>
+            <p class="text-gray-500 mt-2">Дата регистрации: {{ formattedRegistrationDate || '-' }}</p>
           </div>
           <!-- Правая сторона -->
           <div class="flex-1">

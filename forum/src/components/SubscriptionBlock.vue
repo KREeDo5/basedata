@@ -9,9 +9,8 @@ const props = defineProps({
 
 const router = useRouter()
 
-const goToProfile = () => {
-  console.log(props.userId)
-  router.push({ path: '/profile', query: { userId: props.userId } })
+const goToProfile = (userId) => {
+  router.push({ path: '/profile', query: { userId: userId } })
 }
 </script>
 
@@ -23,7 +22,7 @@ const goToProfile = () => {
         <span class="text-base-light-grey">Отсутствуют</span>
       </div>
       <div v-else v-for="(item, index) in items" :key="index">
-        <div class="flex items-center" @click="goToProfile" style="cursor: pointer">
+        <div class="flex items-center" @click="goToProfile(5)" style="cursor: pointer">
           <Avatar size="small" class="mr-2" :src="item.image_path" />
           <span class="text-base-blue truncate">{{ item.name || 'Без имени' }}</span>
         </div>
