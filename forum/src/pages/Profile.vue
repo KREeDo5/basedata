@@ -12,6 +12,7 @@ import SubscriptionBlock from '@/components/SubscriptionBlock.vue'
 import Avatar from '@/components/Avatar.vue'
 import FilePickerDrop from '@/components/FilePickerDrop.vue'
 import Loader from '@/components/Loader.vue'
+import ModalCard from '@/components/ModalCard.vue'
 
 const props = defineProps({
   userId: {
@@ -34,6 +35,9 @@ const aboutMe = ref('')
 const registrationDate = ref('')
 
 const isEditing = ref(false)
+const isPasswordModalOpen = ref(false)
+const newPassword = ref('')
+const passwordError = ref('')
 
 const toggleEditMode = async () => {
   if (isEditing.value) {
@@ -104,6 +108,24 @@ const unsubscribe = async () => {
 const formattedRegistrationDate = computed(() => {
   return registrationDate.value ? format(new Date(registrationDate.value), 'dd.MM.yyyy') : ''
 })
+
+const editPassword = () => {
+  isPasswordModalOpen.value = true
+}
+
+const saveNewPassword = async (password) => {
+  try {
+    await authStore.editPassword({ id: authStore.token, password: password, })
+    isPasswordModalOpen.value = false
+    newPassword.value = ''
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const cancelPasswordChange = () => {
+  isPasswordModalOpen.value = false
+}
 </script>
 
 <template>
@@ -147,7 +169,7 @@ const formattedRegistrationDate = computed(() => {
                   :title="isEditing ? 'Сохранить изменения' : 'Редактировать профиль'"
                 />
               </div>
-              <Button v-if="isOwner" variant="edit" text="Сменить пароль" />
+              <Button v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword"/>
               <Button
                 v-if="isOwner"
                 variant="edit"
@@ -213,6 +235,9 @@ const formattedRegistrationDate = computed(() => {
       </div>
     </div>
   </div>
+
+  <!-- Модальное окно для смены пароля -->
+  <ModalCard :isVisible="isPasswordModalOpen" @save="saveNewPassword" @cancel="cancelPasswordChange" />
 </template>
 
 <style scoped></style>

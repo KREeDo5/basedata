@@ -97,6 +97,18 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
+  const editPassword = async (form) => {
+    try {
+      const response = await axios.post('https://forum.kreedo.tech:8443/change/password', form)
+      const meta = response.data.meta
+      if (!meta.success) {
+        throw new Error(meta.error || 'Change password failed')
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
   // Слушаем изменения localStorage
   const syncToken = () => {
     const storedToken = localStorage.getItem('auth_token')
@@ -124,5 +136,6 @@ export const useAuthStore = defineStore('authStore', () => {
     loadUserFromToken,
     token,
     editProfile,
+    editPassword,
   }
 })
