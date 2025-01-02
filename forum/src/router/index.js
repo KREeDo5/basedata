@@ -11,7 +11,7 @@ const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/about', name: 'About', component: About },
   { path: '/auth', name: 'Auth', component: Auth },
-  { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true } },
+  { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true }, props: route => ({ userId: route.query.userId }) },
 ]
 
 const router = createRouter({

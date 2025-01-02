@@ -50,7 +50,7 @@ emitter.on('user-updated', (userData) => {
         </RouterLink>
       </div>
       <div v-if="showUserInfo" title="Перейти в профиль">
-        <RouterLink to="/profile" class="flex items-center space-x-2">
+        <RouterLink :to="{ path: '/profile', query: { userId: '5' } }" class="flex items-center space-x-2">
           <Avatar :src="userAvatar" />
           <span class="text-white">{{ name }}</span>
         </RouterLink>
