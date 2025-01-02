@@ -7,10 +7,7 @@ const props = defineProps({
   title: String,
   hasSubcategories: Boolean,
   parentCategoryId: Number,
-  subcategories: {
-    type: Array,
-    default: () => [],
-  },
+  categoryList: Array,
   onToggle: Function,
 })
 
@@ -21,6 +18,13 @@ const toggleRotation = () => {
   if (props.onToggle) {
     props.onToggle(props.categoryId)
   }
+}
+
+const getSubcategories = (categoryId) => {
+  const subcategories = props.categoryList.filter(
+    (category) => category.id_parent_category === categoryId,
+  )
+  return subcategories
 }
 </script>
 
@@ -48,15 +52,15 @@ const toggleRotation = () => {
         />
       </svg>
     </div>
-    <div v-if="isRotated" class="pl-6">
+    <div v-if="isRotated" class="pl-2">
       <SubCategoryItem
-        v-for="subcategory in subcategories"
+        v-for="subcategory in getSubcategories(categoryId)"
         :key="subcategory.id"
         :categoryId="subcategory.id"
         :title="subcategory.title"
-        :hasSubcategories="subcategory.has_subcategories"
+        :hasSubcategories="Boolean(subcategory.has_subcategories)"
         :parentCategoryId="subcategory.id_parent_category"
-        :subcategories="subcategory.subcategories"
+        :categoryList="categoryList"
         :onToggle="onToggle"
       />
     </div>

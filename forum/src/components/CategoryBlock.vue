@@ -18,10 +18,6 @@ const toggleCategory = (categoryId) => {
   }
 }
 
-const getSubcategories = (categoryId) => {
-  return props.categoryList.filter(category => category.id_parent_category === categoryId)
-}
-
 const shouldShowCategory = (category) => {
   return category.id_parent_category === 0 || category.id_parent_category === undefined || category.id_parent_category === null
 }
@@ -38,7 +34,7 @@ const shouldShowCategory = (category) => {
         :hasSubcategories="Boolean(category.has_subcategories)"
         :parentCategoryId="category.id_parent_category"
         :categoryId="category.id"
-        :subcategories="getSubcategories(category.id)"
+        :categoryList="categoryList"
         :onToggle="toggleCategory"
         v-show="shouldShowCategory(category)"
       />
