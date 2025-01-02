@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,11 @@ class Category extends Model
             ->addSelect(DB::raw('(SELECT EXISTS(SELECT 1 FROM category AS sub WHERE sub.id_parent_category = category.id)) as has_subcategories'))
             ->get();
 
-        return response()->json($categories, 200, [], JSON_UNESCAPED_UNICODE);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => ['categories' => $categories]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     public function getCategories($parentCategoryId)
@@ -26,5 +31,28 @@ class Category extends Model
             ->get();
 
         return response()->json($categories, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function createCategory(Request $data)
+    {
+        if (Category::where('id_parent_category', $data->input('parentCategoryId'))
+            ->where('title', $data->input('title'))
+            ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'this category is already exist'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
+        }
+        Category::insert([
+            'title' => $data->input('title'),
+            'id_parent_category' => $data->input('parentCategoryId')
+        ]);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
     }
 }

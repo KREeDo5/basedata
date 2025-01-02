@@ -29,8 +29,7 @@ class Thread extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function getThreads(Request $request)
-    {
+    public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
         //$categoriesId = [];
         //if ($categoryId) {
@@ -48,24 +47,25 @@ class Thread extends Model
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
         $data = $threads->map(function ($thread) {
             return [
-                'thread' => [ // мб убрать 'thread'?
-                    'id' => $thread->id,
-                    'title' => $thread->title,
-                    'text' => $thread->text,
-                    'created_at' => $thread->created_at,
-                    'user' => [
-                        'name' => $thread->user->name,
-                        'image_path' => $thread->user->image_path,
-                    ]
+                'id' => $thread->id,
+                'title' => $thread->title,
+                'text' => $thread->text,
+                'created_at' => $thread->created_at,
+                'user' => [
+                    'name' => $thread->user->name,
+                    'image_path' => $thread->user->image_path,
                 ]
             ];
         });
 
-        return response()->json($data, 200, [], JSON_UNESCAPED_UNICODE);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => ['threads' => $data]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function getThreadInfo(Request $request)
-    {
+    public function getThreadInfo(Request $request) {
         $id = $request->header('id');
         $thread = Thread::with(['user', 'images', 'messages.user', 'messages.images'])
                 ->where('id', $id)
@@ -74,38 +74,83 @@ class Thread extends Model
 
         if (!$thread)
         {
-            return response()->json(['success' => false, 'error' => 'Thread not found'], 404);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'thread not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
         }
 
         $data = [
-            'thread' => [
-                'title' => $thread->title,
-                'text' => $thread->text,
-                'created_at' => $thread->created_at,
-                'user' => [
-                    'name' => $thread->user->name,
-                    'image_path' => $thread->user->image_path,
-                ],
-                'images' => $thread->images->map(function ($image) {
-                    return $image->path;
-                })->toArray(),
-                'messages' => $thread->messages->map(function ($message) {
-                    return [
-                        'id' => $message->id,
-                        'text' => $message->text,
-                        'created_at' => $message->created_at,
-                        'user' => [
-                            'name' => $message->user->name,
-                            'image_path' => $message->user->image_path,
-                        ],
-                        'images' => $message->images->map(function ($image) {
-                            return $image->path; // Можно добавить asset
-                        })->toArray(),
-                    ];
-                })->toArray(),
+            'title' => $thread->title,
+            'text' => $thread->text,
+            'created_at' => $thread->created_at,
+            'user' => [
+                'name' => $thread->user->name,
+                'image_path' => $thread->user->image_path,
             ],
+            'images' => $thread->images->map(function ($image) {
+                return $image->path;
+            })->toArray(),
+            'messages' => $thread->messages->map(function ($message) {
+                return [
+                    'id' => $message->id,
+                    'text' => $message->text,
+                    'created_at' => $message->created_at,
+                    'user' => [
+                        'name' => $message->user->name,
+                        'image_path' => $message->user->image_path,
+                    ],
+                    'images' => $message->images->map(function ($image) {
+                        return $image->path; // Можно добавить asset
+                    })->toArray(),
+                ];
+            })->toArray(),
         ];
 
-        return response()->json($data, 200, [], JSON_UNESCAPED_UNICODE);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => ['threadData' => $data]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function createThread(Request $data) {
+        if (Thread::where('id_category', $data->input('categoryId'))
+            ->where('title', $data->input('title'))
+            ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'similar thread is already exist'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
+        }
+        $thread = new Thread();
+        $thread->id_category = $data->input('categoryId');
+        $thread->id_user = $data->input('userId');
+        $thread->title = $data->input('title');
+        $thread->text = $data->input('text');
+        $thread->save();
+
+        $threadId = $thread->id;
+        $threadImages = $data->input('threadImages');
+
+        if (is_array($threadImages) && !empty($threadImages))
+        {
+            foreach ($threadImages as $threadImage)
+            {
+                ThreadImage::insert([
+                    'id_thread' => $threadId,
+                    'path' => $threadImage
+                ]);
+            };
+        }
+    
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 }

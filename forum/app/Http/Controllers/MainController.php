@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\UserHasSubscribe;
 use App\User;
 use App\Category;
-use App\UserHasSubscribe;
 use App\Message;
 use App\Thread;
 use App\ThreadImage;
 use App\Role;
-
-/*
-написать сериалайзы в моделях
-здесь чисто обращатся к ним и "парсить"
-возвращать json
-*/
 
 class MainController extends Controller
 {
@@ -43,10 +37,6 @@ class MainController extends Controller
         return Thread::find(1)->getThreadInfo($request);
     }
 
-    //public function mainCategories() {
-    //    return Category::find(1)->getCategories(NULL);
-    //}
-
     public function categories() {
         return Category::find(1)->getAllCategories();
     }
@@ -71,7 +61,58 @@ class MainController extends Controller
         return User::find(1)->changeProfile($profileData);
     }
 
-    public function changeProfileImage(Request $newImage) {
-        return User::find(1)->changeProfileImage($newImage);
+    public function changePassword(Request $data) {
+        return User::find(1)->changePassword($data);
+    }
+
+    public function subscribe(Request $data) {
+        $user1 = User::where('id', $data->input('subscriber'))
+            ->first();
+        $user2 = User::where('id', $data->input('subscription'))
+            ->first();
+        if (!$user1 or !$user2)
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
+        }
+        UserHasSubscribe::insert([
+            'id_user' => $data->input('subscriber'),
+            'subscription' => $data->input('subscription')
+        ]);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
+
+        return UserHasSubscribe::find(1)->subscribe($data);
+    }
+
+    public function unsubscribe(Request $data) {
+        UserHasSubscribe::where('id_user', $data->input('subscriber'))
+            ->where('subscription', $data->input('subscription'))
+            ->delete();
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
+
+        return UserHasSubscribe::find(1)->unsubscribe($data);
+    }
+
+    public function createCategory(Request $data) {
+        return Category::find(1)->createCategory($data);
+    }
+
+    public function createThread(Request $data) {
+        return Thread::find(1)->createThread($data);
+    }
+
+    public function createMessage(Request $data) {
+        return Message::find(1)->createMessage($data);
     }
 }
