@@ -30,16 +30,28 @@ class User extends Model
                 ->where('password', $loginData->input('password'))
                 ->exists())
             {
-                return response()->json(['success' => true, 'error' => ''], 200);
+                $response = [
+                    'meta' => ['success' => true, 'error' => ''],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 200);
             }
             else
             {
-                return response()->json(['success' => false, 'error' => 'wrong password'], 401);
+                $response = [
+                    'meta' => ['success' => false, 'error' => 'wrong password'],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 401);
             }
         }
         else
         {
-            return response()->json(['success' => false, 'error' => 'wrong login'], 401);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'wrong login'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 401);
         }
     }
 
@@ -60,14 +72,26 @@ class User extends Model
             }
             else
             {
-                return response()->json(['success' => false, 'error' => 'this username is already exists'], 409);
+                $response = [
+                    'meta' => ['success' => false, 'error' => 'this username is already exists'],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 409);
             }
         }
         else
         {
-            return response()->json(['success' => false, 'error' => 'this login is already exists'], 409);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'this login is already exists'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
         }
-        return response()->json(['success' => true, 'error' => ''], 200);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
     }
 
     public function getUserInfo(Request $request)
@@ -79,7 +103,11 @@ class User extends Model
 
         if (!$user)
         {
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
         }
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
@@ -97,8 +125,11 @@ class User extends Model
             'subscriptions' => $subscriptions,
             'subscribers' => $subscribers,
         ];
-        
-        return response()->json($data, 200, [], JSON_UNESCAPED_UNICODE);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => ['userData' => $data]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     public function changeProfile(Request $profileData)
@@ -107,7 +138,11 @@ class User extends Model
             ->first();
         if (!$user)
         {
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
         }
         User::where('id', $profileData->input('id'))
             ->update([
@@ -115,7 +150,11 @@ class User extends Model
                 'description' => $profileData->input('description'),
                 'image_path' => $profileData->input('image_path')
             ]);
-        return response()->json(['success' => true, 'error' => ''], 200);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
     }
 
     public function changePassword(Request $data)
@@ -124,10 +163,18 @@ class User extends Model
             ->first();
         if (!$user)
         {
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
         }
         User::where('id', $data->input('id'))
             ->update(['password' => $data->input('password')]);
-        return response()->json(['success' => true, 'error' => ''], 200);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
     }
 }

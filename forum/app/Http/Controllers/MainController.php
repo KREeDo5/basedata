@@ -92,7 +92,11 @@ class MainController extends Controller
             'id_user' => $data->input('subscriber'),
             'subscription' => $data->input('subscription')
         ]);
-        return response()->json(['success' => true, 'error' => ''], 200);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
+        return response()->json($response, 200);
 
 
         return UserHasSubscribe::find(1)->subscribe($data);
@@ -102,7 +106,10 @@ class MainController extends Controller
         UserHasSubscribe::where('id_user', $data->input('subscriber'))
             ->where('subscription', $data->input('subscription'))
             ->delete();
-        return response()->json(['success' => true, 'error' => ''], 200);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
+        ];
 
         
         return UserHasSubscribe::find(1)->unsubscribe($data);

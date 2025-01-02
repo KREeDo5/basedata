@@ -16,7 +16,11 @@ class Category extends Model
             ->addSelect(DB::raw('(SELECT EXISTS(SELECT 1 FROM category AS sub WHERE sub.id_parent_category = category.id)) as has_subcategories'))
             ->get();
 
-        return response()->json($categories, 200, [], JSON_UNESCAPED_UNICODE);
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => ['categories' => $categories]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     public function getCategories($parentCategoryId)
