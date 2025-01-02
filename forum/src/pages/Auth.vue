@@ -1,12 +1,11 @@
 <script setup>
-import axios from 'axios'
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'
 
-import HeaderBar from '../components/HeaderBar.vue'
-import Button from '../components/Button.vue'
-import Modal from '../components/Modal.vue'
+import HeaderBar from '@/components/HeaderBar.vue'
+import Button from '@/components/Button.vue'
+import Modal from '@/components/Modal.vue'
 
 const route = useRoute()
 const router = useRouter()
