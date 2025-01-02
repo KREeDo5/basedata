@@ -60,9 +60,18 @@ const handleSubmit = async () => {
       })
     }
 
-    router.push('/') // Перенаправление после успешного входа
+    if (authStore.isAuthenticated) {
+      router.push('/') // Перенаправление после успешного входа
+    } else {
+      modalMessage.value =
+        'Ошибка авторизации. Пожалуйста, проверьте свои данные и попробуйте снова.'
+      isModalVisible.value = true
+      startCountdown()
+    }
   } catch (error) {
-    alert('Ошибка: ' + error.message)
+    modalMessage.value = 'Ошибка: ' + error.message
+    isModalVisible.value = true
+    startCountdown()
   }
 }
 
