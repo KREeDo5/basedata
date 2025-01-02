@@ -11,12 +11,6 @@ use App\Thread;
 use App\ThreadImage;
 use App\Role;
 
-/*
-написать сериалайзы в моделях
-здесь чисто обращатся к ним и "парсить"
-возвращать json
-*/
-
 class MainController extends Controller
 {
     public function home() {
@@ -43,10 +37,6 @@ class MainController extends Controller
         return Thread::find(1)->getThreadInfo($request);
     }
 
-    //public function mainCategories() {
-    //    return Category::find(1)->getCategories(NULL);
-    //}
-
     public function categories() {
         return Category::find(1)->getAllCategories();
     }
@@ -71,10 +61,6 @@ class MainController extends Controller
         return User::find(1)->changeProfile($profileData);
     }
 
-    //public function changeProfileImage(Request $newImage) {
-    //    return User::find(1)->changeProfileImage($newImage);
-    //}
-
     public function changePassword(Request $data) {
         return User::find(1)->changePassword($data);
     }
@@ -86,7 +72,11 @@ class MainController extends Controller
             ->first();
         if (!$user1 or !$user2)
         {
-            return response()->json(['success' => false, 'error' => 'user not found'], 404);
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
         }
         UserHasSubscribe::insert([
             'id_user' => $data->input('subscriber'),
@@ -97,7 +87,6 @@ class MainController extends Controller
             'data' => (object) []
         ];
         return response()->json($response, 200);
-
 
         return UserHasSubscribe::find(1)->subscribe($data);
     }
@@ -110,8 +99,20 @@ class MainController extends Controller
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
+        return response()->json($response, 200);
 
-        
         return UserHasSubscribe::find(1)->unsubscribe($data);
+    }
+
+    public function createCategory(Request $data) {
+        return Category::find(1)->createCategory($data);
+    }
+
+    public function createThread(Request $data) {
+        return Thread::find(1)->createThread($data);
+    }
+
+    public function createMessage(Request $data) {
+        return Message::find(1)->createMessage($data);
     }
 }

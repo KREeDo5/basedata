@@ -29,8 +29,7 @@ class Thread extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function getThreads(Request $request)
-    {
+    public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
         //$categoriesId = [];
         //if ($categoryId) {
@@ -66,8 +65,7 @@ class Thread extends Model
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function getThreadInfo(Request $request)
-    {
+    public function getThreadInfo(Request $request) {
         $id = $request->header('id');
         $thread = Thread::with(['user', 'images', 'messages.user', 'messages.images'])
                 ->where('id', $id)
@@ -113,6 +111,45 @@ class Thread extends Model
         $response = [
             'meta' => ['success' => true, 'error' => ''],
             'data' => ['threadData' => $data]
+        ];
+        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function createThread(Request $data) {
+        if (Thread::where('id_category', $data->input('categoryId'))
+            ->where('title', $data->input('title'))
+            ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'similar thread is already exist'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
+        }
+        $thread = new Thread();
+        $thread->id_category = $data->input('categoryId');
+        $thread->id_user = $data->input('userId');
+        $thread->title = $data->input('title');
+        $thread->text = $data->input('text');
+        $thread->save();
+
+        $threadId = $thread->id;
+        $threadImages = $data->input('threadImages');
+
+        if (is_array($threadImages) && !empty($threadImages))
+        {
+            foreach ($threadImages as $threadImage)
+            {
+                ThreadImage::insert([
+                    'id_thread' => $threadId,
+                    'path' => $threadImage
+                ]);
+            };
+        }
+    
+        $response = [
+            'meta' => ['success' => true, 'error' => ''],
+            'data' => (object) []
         ];
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }

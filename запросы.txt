@@ -244,6 +244,7 @@ USE forum;
 INSERT INTO user_has_subscribe 
 VALUES (<id пользователя>, <id пользователя>);
 
+изменение роли пользователя!!!!!!!!!!!
 
 [delete]
 удаление треда
