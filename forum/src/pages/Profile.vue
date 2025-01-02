@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-
+import { ref, onMounted, toRefs, computed } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
+import { useProfileStore } from '@/stores/ProfileStore'
 import { useRouter } from 'vue-router'
 import { emitter } from '@/eventBus'
 
@@ -11,24 +11,25 @@ import SubscriptionBlock from '@/components/SubscriptionBlock.vue'
 import Avatar from '@/components/Avatar.vue'
 import FilePickerDrop from '../components/FilePickerDrop.vue'
 
+const props = defineProps({
+  userId: {
+    type: String,
+    default: null,
+  },
+})
+
+const isOwner = computed(() => !props.userId || props.userId === authStore.user?.id)
+
 const router = useRouter()
 const authStore = useAuthStore()
+const profileStore = useProfileStore()
 
-const avatarUrl = ref(authStore.user.avatarUrl || '')
-const name = ref(authStore.user.name)
-const aboutMe = ref(authStore.user.aboutMe)
-const login = authStore.user.login
+const { userProfile, subscriptions, subscribers } = toRefs(profileStore)
 
-const logout = () => {
-  authStore.logout()
-  router.push('/auth')
-}
-
-import { subscribers as subscribersData } from '../../fake-api/subscribers-api'
-import { subscriptions as subscriptionsData } from '../../fake-api/subscriptions-api'
-
-const subscriberList = ref(subscribersData)
-const subscriptionList = ref(subscriptionsData)
+const avatarUrl = ref('')
+const name = ref('')
+const aboutMe = ref('')
+const login = ref('')
 
 const isEditing = ref(false)
 
@@ -53,15 +54,44 @@ const removeAvatar = () => {
 const onFileSelectedCallback = (fileUrl) => {
   avatarUrl.value = fileUrl
 }
+
+const fetchProfile = async () => {
+  const id = props.userId || authStore.user?.id
+  if (id) {
+    await profileStore.fetchUserProfile(id)
+    if (userProfile.value) {
+      avatarUrl.value = userProfile.value.image_path || ''
+      name.value = userProfile.value.name
+      aboutMe.value = userProfile.value.description
+      login.value = userProfile.value.login
+    }
+  } else {
+    console.error('User ID is not available')
+  }
+}
+
+onMounted(() => {
+  fetchProfile()
+})
+
+const logout = () => {
+  authStore.logout()
+  router.push('/auth')
+}
+
+const subscribe = () => {
+  //TODO: подписка на пользователя
+  router.push('/auth')
+}
 </script>
 
 <template>
   <HeaderBar />
   <div class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
     <div class="flex mb-5 justify-center text-3xl font-w400">
-      <h2 class="text-base-gold mr-2">Профиль пользователя</h2>
+      <h2 class="text-base-gold mr-2">{{ isOwner ? 'Ваш профиль,' : 'Профиль пользователя' }}</h2>
       <h2 class="text-base-blue">
-        {{ login }}
+        {{ isOwner ? authStore.user?.login : name }}
       </h2>
     </div>
     <div class="px-12">
@@ -84,23 +114,36 @@ const onFileSelectedCallback = (fileUrl) => {
                 title="Удалить аватар"
               />
               <Button
-                variant="edit"
+                v-if="isOwner"
+                :variant= "isEditing ? 'rounded' : 'edit'"
                 :text="isEditing ? 'Сохранить' : 'Редактировать'"
                 @click="toggleEditMode"
                 class="w-full"
                 :title="isEditing ? 'Сохранить изменения' : 'Редактировать профиль'"
               />
             </div>
-            <Button variant="edit" text="Сменить пароль" />
-            <Button variant="edit" text="Выйти" @click="logout" title="Выйти из профиля" />
+            <Button v-if="isOwner" variant="edit" text="Сменить пароль" />
+            <Button
+              v-if="isOwner"
+              variant="edit"
+              text="Выйти"
+              @click="logout"
+              title="Выйти из профиля"
+            />
+            <Button
+              v-if="!isOwner"
+              text="Подписаться"
+              @click="subscribe"
+              title="Подписаться"
+            />
           </div>
           <p class="text-gray-500 mt-2">
-            Дата регистрации: {{ userData?.registrationDate || '-' }}
+            Дата регистрации: {{ userProfile?.value.registration_date || '-' }}
           </p>
         </div>
         <!-- Правая сторона -->
         <div class="flex-1">
-          <div class="name mb-6">
+          <div v-if="isOwner" class="name mb-6">
             <h3 class="mb-[10px] text-xl font-w300 text-base-light-grey">Имя</h3>
             <form class="bg-base-grey rounded-xl">
               <input
@@ -120,7 +163,7 @@ const onFileSelectedCallback = (fileUrl) => {
               v-if="!isEditing"
               class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3 text-xl text-gray-400 break-words whitespace-pre-wrap"
             >
-              <p>{{ aboutMe || 'Расскажите о себе' }}</p>
+              <p>{{ aboutMe || isOwner ? 'Расскажите о себе' : 'Нет информации' }}</p>
             </div>
             <form v-if="isEditing">
               <textarea
@@ -136,8 +179,12 @@ const onFileSelectedCallback = (fileUrl) => {
       </div>
       <!-- Блок [подписки/подписчики] -->
       <div class="flex justify-between mt-6 gap-[30px]">
-        <SubscriptionBlock title="Мои подписки" :items="subscriptionList" class="w-full" />
-        <SubscriptionBlock title="Подписчики" :items="subscriberList" class="w-full" />
+        <SubscriptionBlock
+          :title="isOwner ? 'Мои подписки' : 'Подписки'"
+          :items="subscriptions"
+          class="w-full"
+        />
+        <SubscriptionBlock title="Подписчики" :items="subscribers" class="w-full" />
       </div>
     </div>
   </div>
