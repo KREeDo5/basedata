@@ -46,8 +46,9 @@ export const useAuthStore = defineStore('authStore', () => {
     try {
       const response = await axios.post('https://forum.kreedo.tech:8443/auth', form)
       const meta = response.data.meta
+      const data = response.data.data
       if (meta.success) {
-        const newToken = '9' // TODO: обработка токена
+        const newToken = data.id
         localStorage.setItem('auth_token', newToken)
         token.value = newToken // Обновляем реактивное значение
       } else {
