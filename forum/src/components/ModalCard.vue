@@ -2,6 +2,7 @@
 import { ref, defineProps, defineEmits, watch } from 'vue'
 import Button from '@/components/Button.vue'
 import Loader from '@/components/Loader.vue'
+import { useAuthStore } from '@/stores/AuthStore'
 
 const props = defineProps({
   isVisible: {
@@ -12,19 +13,16 @@ const props = defineProps({
 
 const emits = defineEmits(['save', 'cancel'])
 
+const authStore = useAuthStore()
+
 const password = ref('')
 const showPassword = ref(false)
 const passwordError = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
 
-const validatePassword = (password) => {
-  const regex = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/
-  return regex.test(password)
-}
-
 const save = async () => {
-  if (validatePassword(password.value)) {
+  if (authStore.validatePassword(password.value)) {
     isLoading.value = true
     try {
       await emits('save', password.value)
@@ -37,8 +35,7 @@ const save = async () => {
       isLoading.value = false
     }
   } else {
-    passwordError.value =
-      'Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры'
+    passwordError.value = 'Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры'
   }
 }
 

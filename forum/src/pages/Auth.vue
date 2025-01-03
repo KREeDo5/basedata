@@ -18,10 +18,10 @@ const form = ref({
   login: '',
   name: '',
   password: '',
-  id: 8,
 })
 
 const isModalVisible = ref(false)
+const showPassword = ref(false)
 const modalMessage = ref('')
 const countdown = ref(5)
 let countdownInterval = null
@@ -96,6 +96,10 @@ const closeModal = () => {
 watch(isModalVisible, (newVal) => {
   if (!newVal && countdownInterval) clearInterval(countdownInterval)
 })
+
+const toggleShowPassword = () => {
+  showPassword.value = !showPassword.value
+}
 </script>
 
 <template>
@@ -134,13 +138,20 @@ watch(isModalVisible, (newVal) => {
               class="w-full p-2 rounded-xl bg-base-grey text-gray-300 focus:outline-none focus:ring-1 focus:ring-base-blue text-center"
             />
           </div>
-          <div class="mb-[60px]">
+          <div class="relative flex mb-[60px]">
             <input
               v-model="form.password"
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               id="password"
               placeholder="Пароль"
-              class="w-full p-2 rounded-xl bg-base-grey text-gray-300 focus:outline-none focus:ring-1 focus:ring-base-blue text-center"
+              class="w-full py-2 px-10 rounded-xl bg-base-grey text-gray-300 focus:outline-none focus:ring-1 focus:ring-base-blue text-center"
+            />
+            <img
+              v-if="form.password"
+              @click="toggleShowPassword"
+              :src="showPassword ? '/hide-password.png' : '/show-password.png'"
+              alt="toggle password visibility"
+              class="absolute right-2 my-2 text-gray-300 h-6 w-6 cursor-pointer"
             />
           </div>
           <Button
