@@ -68,6 +68,12 @@ export const useProfileStore = defineStore('profileStore', () => {
     }
   }
 
+  const clearStore = () => {
+    userProfile.value = null
+    subscriptions.value = []
+    subscribers.value = []
+  }
+
   return {
     userProfile,
     subscriptions,
@@ -75,5 +81,6 @@ export const useProfileStore = defineStore('profileStore', () => {
     fetchUserProfile,
     subscribe,
     unsubscribe,
+    clearStore,
   }
 })

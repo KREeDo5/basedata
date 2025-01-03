@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, toRefs, computed } from 'vue'
+import { ref, onMounted, toRefs, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { useProfileStore } from '@/stores/ProfileStore'
 import { useRouter } from 'vue-router'
@@ -37,7 +37,10 @@ const registrationDate = ref('')
 const isEditing = ref(false)
 const isPasswordModalOpen = ref(false)
 const newPassword = ref('')
-const passwordError = ref('')
+
+const isSubscribed = computed(() => {
+  return props.userId && authStore.subscriptions.some((sub) => sub.id === props.userId)
+})
 
 const toggleEditMode = async () => {
   if (isEditing.value) {
@@ -62,6 +65,7 @@ const onFileSelectedCallback = (fileUrl) => {
 }
 
 const fetchProfile = async () => {
+  profileStore.clearStore()
   const id = props.userId || authStore.token
   if (id) {
     await profileStore.fetchUserProfile(id)
@@ -91,7 +95,8 @@ const logout = () => {
 
 const subscribe = async () => {
   try {
-    await profileStore.subscribe(props.userId)
+    await profileStore.subscribe(props.userId, avatarUrl, name)
+    await authStore.loadUserFromToken()
   } catch (error) {
     console.error('Error during subscription:', error)
   }
@@ -99,7 +104,8 @@ const subscribe = async () => {
 
 const unsubscribe = async () => {
   try {
-    await profileStore.unsubscribe(props.userId)
+    await profileStore.unsubscribe(props.userId, avatarUrl, name)
+    await authStore.loadUserFromToken()
   } catch (error) {
     console.error('Error during unsubscription:', error)
   }
@@ -115,7 +121,7 @@ const editPassword = () => {
 
 const saveNewPassword = async (password) => {
   try {
-    await authStore.editPassword({ id: authStore.token, password: password, })
+    await authStore.editPassword({ id: authStore.token, password: password })
     isPasswordModalOpen.value = false
     newPassword.value = ''
   } catch (error) {
@@ -126,6 +132,15 @@ const saveNewPassword = async (password) => {
 const cancelPasswordChange = () => {
   isPasswordModalOpen.value = false
 }
+
+watch(
+  () => props.userId, // Отслеживаем изменение userId
+  async () => {
+    isLoading.value = true
+    await fetchProfile()
+    isLoading.value = false
+  }
+)
 </script>
 
 <template>
@@ -169,7 +184,7 @@ const cancelPasswordChange = () => {
                   :title="isEditing ? 'Сохранить изменения' : 'Редактировать профиль'"
                 />
               </div>
-              <Button v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword"/>
+              <Button v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword" />
               <Button
                 v-if="isOwner"
                 variant="edit"
@@ -177,15 +192,22 @@ const cancelPasswordChange = () => {
                 @click="logout"
                 title="Выйти из профиля"
               />
-              <Button v-if="!isOwner" text="Подписаться" @click="subscribe" title="Подписаться" />
               <Button
-              v-if="!isOwner"
-              text="Отписаться"
-              @click="unsubscribe"
-              title="Отписаться"
-            />
+                v-if="!isOwner && isSubscribed"
+                text="Отписаться"
+                @click="unsubscribe"
+                title="Отписаться"
+              />
+              <Button
+                v-if="!isOwner && !isSubscribed"
+                text="Подписаться"
+                @click="subscribe"
+                title="Подписаться"
+              />
             </div>
-            <p class="text-gray-500 mt-2">Дата регистрации: {{ formattedRegistrationDate || '-' }}</p>
+            <p class="text-gray-500 mt-2">
+              Дата регистрации: {{ formattedRegistrationDate || '-' }}
+            </p>
           </div>
           <!-- Правая сторона -->
           <div class="flex-1">
@@ -237,7 +259,11 @@ const cancelPasswordChange = () => {
   </div>
 
   <!-- Модальное окно для смены пароля -->
-  <ModalCard :isVisible="isPasswordModalOpen" @save="saveNewPassword" @cancel="cancelPasswordChange" />
+  <ModalCard
+    :isVisible="isPasswordModalOpen"
+    @save="saveNewPassword"
+    @cancel="cancelPasswordChange"
+  />
 </template>
 
 <style scoped></style>
