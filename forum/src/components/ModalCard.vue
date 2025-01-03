@@ -46,6 +46,7 @@ const cancel = () => {
   password.value = ''
   passwordError.value = ''
   successMessage.value = ''
+  isLoading.value = false
   emits('cancel')
 }
 
@@ -53,14 +54,17 @@ const toggleShowPassword = () => {
   showPassword.value = !showPassword.value
 }
 
-watch(() => props.isVisible, (newVal) => {
-  if (!newVal) {
-    password.value = ''
-    passwordError.value = ''
-    successMessage.value = ''
-    isLoading.value = false
-  }
-})
+watch(
+  () => props.isVisible,
+  (newVal) => {
+    if (!newVal) {
+      password.value = ''
+      passwordError.value = ''
+      successMessage.value = ''
+      isLoading.value = false
+    }
+  },
+)
 </script>
 
 <template>
