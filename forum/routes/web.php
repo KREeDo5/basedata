@@ -11,7 +11,7 @@ Route::get('/threads', 'MainController@categoryThreads'); // header(?categoryId?
 Route::post('/auth', 'MainController@auth_check'); // body(login, password)
 Route::post('/registration', 'MainController@registration_check'); // body(name, login, password)
 Route::post('/change/profile', 'MainController@changeProfile'); // body(id, name, description, image_path)
-Route::post('/change/password', 'MainController@changePassword'); // body(id, password)
+Route::post('/change/password', 'MainController@changePassword'); // body(id, oldPassword, newPassword)
 
 Route::post('/subscribe', 'MainController@subscribe'); // body(subscriber(кто), subscription(на кого))
 Route::delete('/unsubscribe', 'MainController@unsubscribe'); // body(subscriber(кто), subscription(от кого))
