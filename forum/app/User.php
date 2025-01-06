@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\File;
 
 class User extends Model
 {
@@ -150,11 +151,16 @@ class User extends Model
             return response()->json($response, 404);
         }
 
+        $image_path = null;
+        if ($profileData->hasFile('image') && $profileData->file('image')->isValid())
+        {
+            $image_path = $profileData->file('image')->store('avatars');
+        }
         User::where('id', $profileData->input('id'))
             ->update([
                 'name' => $profileData->input('name'),
                 'description' => $profileData->input('description'),
-                'image_path' => $profileData->input('image_path')
+                'image_path' => $image_path
             ]);
 
         $response = [

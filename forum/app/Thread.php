@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Thread extends Model
 {
@@ -115,9 +116,9 @@ class Thread extends Model
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function createThread(Request $data) {
-        if (Thread::where('id_category', $data->input('categoryId'))
-            ->where('title', $data->input('title'))
+    public function createThread(Request $threadData) {
+        if (Thread::where('id_category', $threadData->input('categoryId'))
+            ->where('title', $threadData->input('title'))
             ->exists())
         {
             $response = [
@@ -126,24 +127,46 @@ class Thread extends Model
             ];
             return response()->json($response, 409);
         }
+        if (!Category::where('id', $threadData->input('categoryId'))
+            ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'this category does not exist'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 405);
+        }
+
         $thread = new Thread();
-        $thread->id_category = $data->input('categoryId');
-        $thread->id_user = $data->input('userId');
-        $thread->title = $data->input('title');
-        $thread->text = $data->input('text');
+        $thread->id_category = $threadData->input('categoryId');
+        $thread->id_user = $threadData->input('userId');
+        $thread->title = $threadData->input('title');
+        $thread->text = $threadData->input('text');
         $thread->save();
 
         $threadId = $thread->id;
-        $threadImages = $data->input('threadImages');
 
-        if (is_array($threadImages) && !empty($threadImages))
+        if ($threadData->hasFile('threadImages'))
         {
+            $threadImages = $threadData->file('threadImages');
+            if (!is_array($threadImages))
+            {
+                $response = [
+                    'meta' => ['success' => false, 'error' => 'invalid file format(not array)'],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 400);
+            }
             foreach ($threadImages as $threadImage)
             {
-                ThreadImage::insert([
-                    'id_thread' => $threadId,
-                    'path' => $threadImage
-                ]);
+                if ($threadImage->isValid())
+                {
+                    $threadImagePath = $threadImage->store('threadImages');
+                    ThreadImage::insert([
+                        'id_thread' => $threadId,
+                        'path' => $threadImagePath
+                    ]);
+                }
             };
         }
     
