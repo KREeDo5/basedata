@@ -22,7 +22,11 @@ const props = defineProps({
           :title="thread.title"
           :isClosed="thread.isClosed"
           :commentsCount="thread.commentsCount"
-          :userAvatar="thread.user?.imagePath"
+          :userAvatar="
+            thread.user?.image_path
+              ? `https://forum.kreedo.tech:8443/${thread.user?.image_path}`
+              : null
+          "
           :userName="thread.user?.name"
           :created_at="thread.created_at"
           :userId="5"
