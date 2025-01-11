@@ -2,16 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores/AuthStore'
 
-import Home from '../pages/Home.vue'
-import About from '../pages/About.vue'
-import Auth from '../pages/Auth.vue'
-import Profile from '../pages/Profile.vue'
+import Home from '@/pages/Home.vue'
+import About from '@/pages/About.vue'
+import Auth from '@/pages/Auth.vue'
+import Profile from '@/pages/Profile.vue'
+import Thread from '@/pages/Thread.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/about', name: 'About', component: About },
   { path: '/auth', name: 'Auth', component: Auth },
   { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true }, props: route => ({ userId: route.query.userId }) },
+  { path: '/thread', name: 'Thread', component: Thread },
 ]
 
 const router = createRouter({

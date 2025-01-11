@@ -16,8 +16,13 @@ const props = defineProps({
 
 const router = useRouter()
 
-const goToProfile = () => {
+const goToProfile = (event) => {
+  event.stopPropagation() // Предотвращаем событие клика на ThreadItem
   router.push({ path: '/profile', query: { userId: props.userId } })
+}
+
+const goToThread = () => {
+  router.push({ path: '/thread' })
 }
 
 const formattedDate = computed(() => {
@@ -26,11 +31,16 @@ const formattedDate = computed(() => {
 </script>
 
 <template>
-  <div class="flex justify-between items-center p-4 rounded-[12px] hover:bg-base-grey">
+  <div
+    class="flex justify-between items-center p-4 rounded-[12px] hover:bg-base-grey"
+    @click="goToThread"
+  >
     <div class="about-thread-block">
       <div class="flex mb-[10px]">
         <div class="text-xl font-w600 text-white">{{ title }}</div>
-        <div v-if="isClosed"><img src="/closed.png" alt="icon" class="ml-2 h-6" /></div>
+        <div v-if="isClosed">
+          <img src="/closed.png" alt="icon" class="ml-2 h-6" />
+        </div>
       </div>
       <div class="flex items-center">
         <img src="/comments.png" alt="icon" class="mr-2 h-5" />
@@ -44,7 +54,9 @@ const formattedDate = computed(() => {
     >
       <Avatar class="mr-3" :src="userAvatar" size="medium" />
       <div>
-        <div class="text-base font-w600 text-base-blue">{{ userName || 'без имени' }}</div>
+        <div class="text-base font-w600 text-base-blue">
+          {{ userName || 'без имени' }}
+        </div>
         <div class="text-white">{{ formattedDate }}</div>
       </div>
     </div>
