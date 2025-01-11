@@ -12,6 +12,7 @@ Route::post('/auth', 'MainController@auth_check'); // body(login, password)
 Route::post('/registration', 'MainController@registration_check'); // body(name, login, password)
 Route::post('/change/profile', 'MainController@changeProfile'); // body(id, name, description, image)
 Route::post('/change/password', 'MainController@changePassword'); // body(id, oldPassword, newPassword)
+Route::delete('/delete/profilePicture', 'MainController@deleteProfilePicture'); // body(id)
 
 Route::post('/subscribe', 'MainController@subscribe'); // body(subscriber(кто), subscription(на кого))
 Route::delete('/unsubscribe', 'MainController@unsubscribe'); // body(subscriber(кто), subscription(от кого))

@@ -32,16 +32,18 @@ class Thread extends Model
 
     public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
-        //$categoriesId = [];
-        //if ($categoryId) {
-        //    $categoriesId = $this->getAllSubcategories($categoryId);
-        //    $categoriesId[] = $categoryId;
-        //}
 
+        $categoriesId = [];
+        if ($categoryId)
+        {
+            $categoriesId = $this->getAllSubcategories($categoryId);
+            $categoriesId[] = $categoryId;
+        }
+        
         $threads = Thread::with(['user'])
             ->where('visibility', 'visible')
-            ->when($categoryId !== null, function ($query) use ($categoryId) {
-                $query->where('id_category', $categoryId);
+            ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
+              $query->whereIn('id_category', $categoriesId);
             })
             ->get();
 
@@ -65,6 +67,17 @@ class Thread extends Model
             'data' => ['threads' => $data]
         ];
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    private function getAllSubcategories($categoryId)
+    {
+        $subcategories = Category::where('id_parent_category', $categoryId)->get();
+        $ids = [];
+        foreach ($subcategories as $subcategory) {
+            $ids[] = $subcategory->id;
+            $ids = array_merge($ids, $this->getAllSubcategories($subcategory->id));
+        }
+        return $ids;
     }
 
     public function getThreadInfo(Request $request) {

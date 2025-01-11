@@ -61,6 +61,10 @@ class MainController extends Controller
         return User::find(1)->changeProfile($profileData);
     }
 
+    public function deleteProfilePicture(Request $data) {
+        return User::find(1)->deleteProfilePicture($data);
+    }
+
     public function changePassword(Request $data) {
         return User::find(1)->changePassword($data);
     }
