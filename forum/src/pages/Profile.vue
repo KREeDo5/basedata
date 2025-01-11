@@ -42,6 +42,10 @@ const isSubscribed = computed(() => {
   return props.userId && authStore.subscriptions.some((sub) => sub.id === props.userId)
 })
 
+const isNameValid = computed(() => {
+  return name.value.trim() !== ''
+})
+
 const toggleEditMode = async () => {
   if (isEditing.value) {
     await authStore.editProfile({
@@ -182,6 +186,7 @@ watch(
                   @click="toggleEditMode"
                   class="w-full"
                   :title="isEditing ? 'Сохранить изменения' : 'Редактировать профиль'"
+                  :disabled="isEditing && !isNameValid"
                 />
               </div>
               <Button v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword" />

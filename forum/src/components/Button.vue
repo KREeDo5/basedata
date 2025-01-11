@@ -18,21 +18,26 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     buttonStyle() {
       const baseStyle = 'flex justify-center items-center rounded-xl'
+      const disabledStyle = this.disabled ? 'cursor-not-allowed opacity-50' : ''
       switch (this.variant) {
         case 'rounded':
-          return `${baseStyle} bg-base-grey hover:bg-base-asphalt text-base-blue font-w400 text-base outline outline-1 outline-base-blue`
+          return `${baseStyle} ${disabledStyle} bg-base-grey hover:bg-base-asphalt text-base-blue font-w400 text-base outline outline-1 outline-base-blue`
         case 'free':
-          return `${baseStyle} text-base-light-grey font-w400 text-basehover:outline hover:outline-1 hover:outline-base-light-grey`
+          return `${baseStyle} ${disabledStyle} text-base-light-grey font-w400 text-basehover:outline hover:outline-1 hover:outline-base-light-grey`
         case 'admin':
-          return `${baseStyle} bg-base-red text-white font-w500 text-base hover:bg-base-light-red`
+          return `${baseStyle} ${disabledStyle} bg-base-red text-white font-w500 text-base hover:bg-base-light-red`
         case 'edit':
-          return `${baseStyle} bg-base-grey text-white font-w500 text-base hover:bg-base-asphalt`
+          return `${baseStyle} ${disabledStyle} bg-base-grey text-white font-w500 text-base hover:bg-base-asphalt`
         default:
-          return `${baseStyle} bg-base-blue text-white font-w500 text-base hover:bg-base-light-blue`
+          return `${baseStyle} ${disabledStyle} bg-base-blue text-white font-w500 text-base hover:bg-base-light-blue`
       }
     },
   },
