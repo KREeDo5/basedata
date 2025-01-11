@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\File;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Model
 {
@@ -102,7 +103,6 @@ class User extends Model
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
-
         return response()->json($response, 200);
     }
 
@@ -121,13 +121,6 @@ class User extends Model
             ];
             return response()->json($response, 404);
         }
-
-        //$user->image = null;
-        //if ($user->image_path && Storage::exists($user->image_path))
-        //{
-        //    $filePath = storage_path('app/' . $user->image_path);
-        //    $user->image = base64_encode(file_get_contents($filePath));
-        //}
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
         ->select('user.id', 'user.name', 'user.image_path')
@@ -149,7 +142,6 @@ class User extends Model
             'meta' => ['success' => true, 'error' => ''],
             'data' => ['userData' => $data]
         ];
-
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
@@ -167,14 +159,44 @@ class User extends Model
             return response()->json($response, 404);
         }
 
-        $image_path = null;
+        $name = $user->name;
+        $image_path = $user->image_path;
+
+        $newName = $profileData->input('name');
+        if ($newName !== '' && $newName !== null)
+        {
+            if (User::where('name', $profileData->input('name'))
+                ->where('id', '!=', $user->id)
+                ->doesntExist())
+            {
+                $name = $profileData->input('name');
+            }
+            else
+            {
+                $response = [
+                    'meta' => ['success' => false, 'error' => 'this username is already exists'],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 409);
+            }
+        }
+        else
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'username can not be empty'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 400);
+        }
+
         if ($profileData->hasFile('image') && $profileData->file('image')->isValid())
         {
             $image_path = $profileData->file('image')->store('avatars');
         }
+
         User::where('id', $profileData->input('id'))
             ->update([
-                'name' => $profileData->input('name'),
+                'name' => $name,
                 'description' => $profileData->input('description'),
                 'image_path' => $image_path
             ]);
@@ -183,7 +205,6 @@ class User extends Model
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
-
         return response()->json($response, 200);
     }
 
@@ -217,7 +238,42 @@ class User extends Model
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
-
         return response()->json($response, 200);
+    }
+
+    public function deleteProfilePicture(Request $data)
+    {
+        $user = User::where('id', $data->input('id'))
+            ->first();
+
+        if (!$user)
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'user not found'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 404);
+        }
+
+        if ($user->image_path)
+        {
+            if (Storage::exists($user->image_path))
+            {
+                Storage::delete($user->image_path);
+            }
+            $user->image_path = null;
+            $user->save();
+            $response = [
+                'meta' => ['success' => true, 'error' => ''],
+                'data' => (object) []
+            ];
+            return response()->json($response, 200);
+        }
+
+        $response = [
+            'meta' => ['success' => false, 'error' => 'no profile picture to delete'],
+            'data' => (object) []
+        ];
+        return response()->json($response, 400);
     }
 }
