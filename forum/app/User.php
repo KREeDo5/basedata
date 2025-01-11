@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\File;
 
 class User extends Model
 {
@@ -80,10 +81,12 @@ class User extends Model
             ];
             return response()->json($response, 409);
         }
+
         $response = [
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
+
         return response()->json($response, 200);
     }
 
@@ -118,10 +121,12 @@ class User extends Model
             'subscriptions' => $subscriptions,
             'subscribers' => $subscribers,
         ];
+
         $response = [
             'meta' => ['success' => true, 'error' => ''],
             'data' => ['userData' => $data]
         ];
+
         return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
@@ -129,6 +134,7 @@ class User extends Model
     {
         $user = User::where('id', $profileData->input('id'))
             ->first();
+
         if (!$user)
         {
             $response = [
@@ -137,16 +143,24 @@ class User extends Model
             ];
             return response()->json($response, 404);
         }
+
+        $image_path = null;
+        if ($profileData->hasFile('image') && $profileData->file('image')->isValid())
+        {
+            $image_path = $profileData->file('image')->store('avatars');
+        }
         User::where('id', $profileData->input('id'))
             ->update([
                 'name' => $profileData->input('name'),
                 'description' => $profileData->input('description'),
-                'image_path' => $profileData->input('image_path')
+                'image_path' => $image_path
             ]);
+
         $response = [
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
+
         return response()->json($response, 200);
     }
 
@@ -154,6 +168,7 @@ class User extends Model
     {
         $user = User::where('id', $data->input('id'))
             ->first();
+
         if (!$user)
         {
             $response = [
@@ -162,12 +177,24 @@ class User extends Model
             ];
             return response()->json($response, 404);
         }
+
+        if ($user->password !== $data->input('oldPassword'))
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'wrong old password'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 401);
+        }
+
         User::where('id', $data->input('id'))
-            ->update(['password' => $data->input('password')]);
+            ->update(['password' => $data->input('newPassword')]);
+
         $response = [
             'meta' => ['success' => true, 'error' => ''],
             'data' => (object) []
         ];
+
         return response()->json($response, 200);
     }
 }

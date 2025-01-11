@@ -78,6 +78,24 @@ class MainController extends Controller
             ];
             return response()->json($response, 404);
         }
+        if ($data->input('subscriber') == $data->input('subscription'))
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'you can not subscribe yourself'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
+        }
+        if (UserHasSubscribe::where('id_user', $data->input('subscriber'))
+                ->where('subscription', $data->input('subscription'))
+                ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'you are already subscribed'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 409);
+        }
         UserHasSubscribe::insert([
             'id_user' => $data->input('subscriber'),
             'subscription' => $data->input('subscription')

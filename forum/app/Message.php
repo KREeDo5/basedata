@@ -29,10 +29,10 @@ class Message extends Model
         return $this->hasMany(MessageImage::class, 'id_message');
     }
 
-    public function createMessage(Request $data) {
-        if (Message::where('id_thread', $data->input('threadId'))
-            ->where('id_user', $data->input('userId'))
-            ->where('text', $data->input('text'))
+    public function createMessage(Request $messageData) {
+        if (Message::where('id_thread', $messageData->input('threadId'))
+            ->where('id_user', $messageData->input('userId'))
+            ->where('text', $messageData->input('text'))
             ->exists())
         {
             $response = [
@@ -41,23 +41,45 @@ class Message extends Model
             ];
             return response()->json($response, 409);
         }
+        if (!Thread::where('id', $messageData->input('threadId'))
+            ->exists())
+        {
+            $response = [
+                'meta' => ['success' => false, 'error' => 'this thread does not exist'],
+                'data' => (object) []
+            ];
+            return response()->json($response, 405);
+        }
+
         $message = new Message();
-        $message->text = $data->input('text');
-        $message->id_user = $data->input('userId');
-        $message->id_thread = $data->input('threadId');
+        $message->text = $messageData->input('text');
+        $message->id_user = $messageData->input('userId');
+        $message->id_thread = $messageData->input('threadId');
         $message->save();
         
         $messageId = $message->id;
-        $messageImages = $data->input('messageImages');
 
-        if (is_array($messageImages) && !empty($messageImages))
+        if ($messageData->hasFile('messageImages'))
         {
+            $messageImages = $messageData->file('messageImages');
+            if (!is_array($messageImages))
+            {
+                $response = [
+                    'meta' => ['success' => false, 'error' => 'invalid file format(not array)'],
+                    'data' => (object) []
+                ];
+                return response()->json($response, 400);
+            }
             foreach ($messageImages as $messageImage)
             {
-                MessageImage::insert([
-                    'id_message' => $messageId,
-                    'path' => $messageImage
-                ]);
+                if ($messageImage->isValid())
+                {
+                    $messageImagePath = $messageImage->store('messageImages');
+                    MessageImage::insert([
+                        'id_message' => $messageId,
+                        'path' => $messageImagePath
+                    ]);
+                }
             };
         }
     
