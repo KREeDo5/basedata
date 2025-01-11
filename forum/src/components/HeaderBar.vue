@@ -14,6 +14,8 @@ const authStore = useAuthStore()
 const userAvatar = ref(authStore.user?.image || '')
 const name = ref(authStore.user?.name || 'Без имени')
 
+const isUserLoaded = computed(() => !!authStore.user)
+
 const showAuthButtons = computed(() => !authStore.isAuthenticated && !props.isAuthPage)
 const showUserInfo = computed(() => authStore.isAuthenticated && !props.isAuthPage)
 
@@ -49,7 +51,7 @@ emitter.on('user-updated', (userData) => {
           <Button variant="free" text="Создать аккаунт" />
         </RouterLink>
       </div>
-      <div v-if="showUserInfo" title="Перейти в профиль">
+      <div v-if="showUserInfo && isUserLoaded" title="Перейти в профиль">
         <RouterLink to="/profile" class="flex items-center space-x-2">
           <Avatar :src="userAvatar" />
           <span class="text-white">{{ name }}</span>
