@@ -109,12 +109,12 @@ class User extends Model
             return response()->json($response, 404);
         }
 
-        $user->image = null;
-        if ($user->image_path && Storage::exists($user->image_path))
-        {
-            $filePath = storage_path('app/' . $user->image_path);
-            $user->image = base64_encode(file_get_contents($filePath));
-        }
+        //$user->image = null;
+        //if ($user->image_path && Storage::exists($user->image_path))
+        //{
+        //    $filePath = storage_path('app/' . $user->image_path);
+        //    $user->image = base64_encode(file_get_contents($filePath));
+        //}
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
         ->select('user.name', 'user.image_path')
