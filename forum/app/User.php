@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\File;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class User extends Model
 {
@@ -104,6 +107,13 @@ class User extends Model
                 'data' => (object) []
             ];
             return response()->json($response, 404);
+        }
+
+        $user->image = null;
+        if ($user->image_path && Storage::exists($user->image_path))
+        {
+            $filePath = storage_path('app/' . $user->image_path);
+            $user->image = base64_encode(file_get_contents($filePath));
         }
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
