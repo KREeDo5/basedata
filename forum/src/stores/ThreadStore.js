@@ -21,7 +21,7 @@ export const useThreadStore = defineStore('threadStore', () => {
       if (meta.success && data.threadData) {
         title.value = data.threadData.title
         text.value = data.threadData.text
-        createdAt.value = data.threadData.createdAt
+        createdAt.value = data.threadData.created_at
         threadAuthor.value = data.threadData.user
         threadMessages.value = data.threadData.messages
       } else {
