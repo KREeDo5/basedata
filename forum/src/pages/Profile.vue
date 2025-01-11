@@ -29,7 +29,7 @@ const profileStore = useProfileStore()
 
 const { userProfile, subscriptions, subscribers } = toRefs(profileStore)
 
-const avatarUrl = ref('')
+const image = ref('')
 const name = ref('')
 const aboutMe = ref('')
 const registrationDate = ref('')
@@ -48,7 +48,7 @@ const toggleEditMode = async () => {
       id: authStore.token,
       name: name.value,
       description: aboutMe.value,
-      image_path: avatarUrl.value,
+      image: image.value,
     })
     await fetchProfile()
   }
@@ -56,12 +56,12 @@ const toggleEditMode = async () => {
 }
 
 const removeAvatar = () => {
-  avatarUrl.value = ''
+  image.value = ''
   emitter.emit('remove-avatar')
 }
 
 const onFileSelectedCallback = (fileUrl) => {
-  avatarUrl.value = fileUrl
+  image.value = fileUrl
 }
 
 const fetchProfile = async () => {
@@ -70,7 +70,7 @@ const fetchProfile = async () => {
   if (id) {
     await profileStore.fetchUserProfile(id)
     if (userProfile.value) {
-      avatarUrl.value = userProfile.value.image_path || ''
+      image.value = userProfile.value.image || ''
       name.value = userProfile.value.name
       aboutMe.value = userProfile.value.description
       registrationDate.value = userProfile.value.registration_date
@@ -95,7 +95,7 @@ const logout = () => {
 
 const subscribe = async () => {
   try {
-    await profileStore.subscribe(props.userId, avatarUrl, name)
+    await profileStore.subscribe(props.userId, image, name)
     await authStore.loadUserFromToken()
   } catch (error) {
     console.error('Error during subscription:', error)
@@ -104,7 +104,7 @@ const subscribe = async () => {
 
 const unsubscribe = async () => {
   try {
-    await profileStore.unsubscribe(props.userId, avatarUrl, name)
+    await profileStore.unsubscribe(props.userId, image, name)
     await authStore.loadUserFromToken()
   } catch (error) {
     console.error('Error during unsubscription:', error)
@@ -139,7 +139,7 @@ watch(
     isLoading.value = true
     await fetchProfile()
     isLoading.value = false
-  }
+  },
 )
 </script>
 
@@ -161,14 +161,14 @@ watch(
         <div class="flex justify-between gap-9">
           <!-- Левая сторона -->
           <div class="flex flex-col w-[250px]">
-            <Avatar v-if="!isEditing" :src="avatarUrl" size="big" class="mb-[8px]" />
+            <Avatar v-if="!isEditing" :src="image" size="big" class="mb-[8px]" />
             <div v-if="isEditing" class="flex flex-col space-y-[6px] mb-[6px] text-center">
               <FilePickerDrop :onFileSelectedCallback="onFileSelectedCallback" />
             </div>
             <div class="flex flex-col space-y-[6px]">
               <div class="flex items-center">
                 <img
-                  v-if="isEditing && avatarUrl"
+                  v-if="isEditing && image"
                   src="/delete.png"
                   alt="delete-icon"
                   class="h-[30px] w-[36px] mr-2"

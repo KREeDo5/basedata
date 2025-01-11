@@ -13,6 +13,9 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const setUser = (userData) => {
     user.value = userData.user
+    user.value.image = userData.user.image_path
+      ? `https://forum.kreedo.tech:8443/${userData.user.image_path}`
+      : ''
     user.value.id = localStorage.getItem('auth_token') // TODO: заменить на id пользователя
     subscriptions.value = userData.subscriptions
     subscribers.value = userData.subscribers
@@ -90,7 +93,18 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const editProfile = async (form) => {
     try {
-      const response = await axios.post('https://forum.kreedo.tech:8443/change/profile', form)
+      const formData = new FormData()
+      for (const key in form) {
+        formData.append(key, form[key])
+      }
+
+      const response = await axios.post('https://forum.kreedo.tech:8443/change/profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      console.log('FORMA PROFILYA:', form)
       const meta = response.data.meta
       if (meta.success) {
         loadUserFromToken()

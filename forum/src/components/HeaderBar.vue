@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const authStore = useAuthStore()
-const userAvatar = ref(authStore.user?.image_path || '')
+const userAvatar = ref(authStore.user?.image || '')
 const name = ref(authStore.user?.name || 'Без имени')
 
 const showAuthButtons = computed(() => !authStore.isAuthenticated && !props.isAuthPage)

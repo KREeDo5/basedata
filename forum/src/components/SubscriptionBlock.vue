@@ -23,7 +23,7 @@ const goToProfile = (userId) => {
       </div>
       <div v-else v-for="(item, index) in items" :key="index">
         <div class="flex items-center" @click="goToProfile(5)" style="cursor: pointer">
-          <Avatar size="small" class="mr-2" :src="item.image_path" />
+          <Avatar size="small" class="mr-2" :src="item.image" />
           <span class="text-base-blue truncate">{{ item.name || 'Без имени' }}</span>
         </div>
       </div>
