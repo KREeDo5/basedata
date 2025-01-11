@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\File;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class User extends Model
 {
@@ -34,9 +31,12 @@ class User extends Model
                 ->where('password', $loginData->input('password'))
                 ->exists())
             {
+                $user = User::where('login', $loginData->input('login'))
+                        ->where('password', $loginData->input('password'))
+                        ->first();
                 $response = [
                     'meta' => ['success' => true, 'error' => ''],
-                    'data' => (object) []
+                    'data' => ['userId' => $user->id]
                 ];
                 return response()->json($response, 200);
             }
@@ -67,12 +67,18 @@ class User extends Model
             if (User::where('name', $registrationData->input('name'))
                 ->doesntExist())
             {
-                User::insert([
-                    'name' => $registrationData->input('name'),
-                    'login' => $registrationData->input('login'),
-                    'password' => $registrationData->input('password'),
-                    'id_role' => Role::where('title', 'пользователь')->value('id'),
-                ]);
+                $user = new User();
+                $user->name = $registrationData->input('name');
+                $user->login = $registrationData->input('login');
+                $user->password = $registrationData->input('password');
+                $user->id_role = Role::where('title', 'пользователь')->value('id');
+                $user->save();
+
+                $response = [
+                    'meta' => ['success' => true, 'error' => ''],
+                    'data' => ['userId' => $user->id]
+                ];
+                return response()->json($response, 200);
             }
             else
             {
@@ -124,12 +130,12 @@ class User extends Model
         //}
 
         $subscriptions = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.subscription')
-        ->select('user.name', 'user.image_path')
+        ->select('user.id', 'user.name', 'user.image_path')
         ->where('user_has_subscribe.id_user', $id)
         ->get();
 
         $subscribers = User::join('user_has_subscribe', 'user.id', '=', 'user_has_subscribe.id_user')
-        ->select('user.name', 'user.image_path')
+        ->select('user.id', 'user.name', 'user.image_path')
         ->where('user_has_subscribe.subscription', $id)
         ->get();
 

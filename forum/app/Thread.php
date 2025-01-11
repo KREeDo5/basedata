@@ -53,6 +53,7 @@ class Thread extends Model
                 'text' => $thread->text,
                 'created_at' => $thread->created_at,
                 'user' => [
+                    'id' => $thread->user->id,
                     'name' => $thread->user->name,
                     'image_path' => $thread->user->image_path,
                 ]
@@ -87,6 +88,7 @@ class Thread extends Model
             'text' => $thread->text,
             'created_at' => $thread->created_at,
             'user' => [
+                'id' => $thread->user->id,
                 'name' => $thread->user->name,
                 'image_path' => $thread->user->image_path,
             ],
@@ -99,6 +101,7 @@ class Thread extends Model
                     'text' => $message->text,
                     'created_at' => $message->created_at,
                     'user' => [
+                        'id' => $message->user->id,
                         'name' => $message->user->name,
                         'image_path' => $message->user->image_path,
                     ],
