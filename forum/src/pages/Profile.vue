@@ -29,7 +29,7 @@ const profileStore = useProfileStore()
 
 const { userProfile, subscriptions, subscribers } = toRefs(profileStore)
 
-const image = ref('')
+const image = ref(null)
 const name = ref('')
 const aboutMe = ref('')
 const registrationDate = ref('')
@@ -48,20 +48,25 @@ const isNameValid = computed(() => {
 
 const toggleEditMode = async () => {
   if (isEditing.value) {
-    await authStore.editProfile({
+    const updatedProfile = {
       id: authStore.token,
       name: name.value,
       description: aboutMe.value,
-      image: image.value,
-    })
+    }
+    if (image.value) {
+      updatedProfile.image = image.value
+    }
+    await authStore.editProfile(updatedProfile)
     await fetchProfile()
   }
   isEditing.value = !isEditing.value
 }
 
-const removeAvatar = () => {
-  image.value = ''
+const removeAvatar = async () => {
+  image.value = null
   emitter.emit('remove-avatar')
+  await authStore.removeAvatar()
+  await fetchProfile()
 }
 
 const onFileSelectedCallback = (file) => {
@@ -172,7 +177,7 @@ watch(
             <div class="flex flex-col space-y-[6px]">
               <div class="flex items-center">
                 <img
-                  v-if="isEditing && image"
+                  v-if="image"
                   src="/delete.png"
                   alt="delete-icon"
                   class="h-[30px] w-[36px] mr-2"

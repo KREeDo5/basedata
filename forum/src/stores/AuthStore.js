@@ -105,7 +105,6 @@ export const useAuthStore = defineStore('authStore', () => {
         },
       })
 
-      console.log('FORMA PROFILYA:', form)
       const meta = response.data.meta
       if (meta.success) {
         loadUserFromToken()
@@ -114,6 +113,23 @@ export const useAuthStore = defineStore('authStore', () => {
       }
     } catch (error) {
       throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
+  const removeAvatar = async () => {
+    const storedToken = localStorage.getItem('auth_token')
+    try {
+      const response = await axios.delete('https://forum.kreedo.tech:8443/delete/profilePicture', {
+        body: {
+          id: storedToken,
+        },
+      })
+      const meta = response.data.meta
+      if (meta.success) {
+        console.log('Avatar is deleted')
+      }
+    } catch (error) {
+      console.error('Error remove avatar:', error)
     }
   }
 
@@ -168,5 +184,6 @@ export const useAuthStore = defineStore('authStore', () => {
     editProfile,
     editPassword,
     validatePassword,
+    removeAvatar,
   }
 })
