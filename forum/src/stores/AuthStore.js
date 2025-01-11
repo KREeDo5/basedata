@@ -120,12 +120,13 @@ export const useAuthStore = defineStore('authStore', () => {
     const storedToken = localStorage.getItem('auth_token')
     try {
       const response = await axios.delete('https://forum.kreedo.tech:8443/delete/profilePicture', {
-        body: {
+        data: {
           id: storedToken,
         },
       })
       const meta = response.data.meta
       if (meta.success) {
+        user.value.image = null
         console.log('Avatar is deleted')
       }
     } catch (error) {
