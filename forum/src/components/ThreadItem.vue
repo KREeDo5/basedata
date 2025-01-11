@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import Avatar from './Avatar.vue'
 
 const props = defineProps({
+  id: Number,
   title: String,
   isClosed: Boolean,
   commentsCount: Number,
@@ -22,7 +23,7 @@ const goToProfile = (event) => {
 }
 
 const goToThread = () => {
-  router.push({ path: '/thread' })
+  router.push({ path: '/thread', query: { threadId: props.id } })
 }
 
 const formattedDate = computed(() => {

@@ -13,7 +13,7 @@ const routes = [
   { path: '/about', name: 'About', component: About },
   { path: '/auth', name: 'Auth', component: Auth },
   { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true }, props: route => ({ userId: route.query.userId }) },
-  { path: '/thread', name: 'Thread', component: Thread },
+  { path: '/thread', name: 'Thread', component: Thread, props: route => ({ threadId: route.query.threadId }) },
 ]
 
 const router = createRouter({

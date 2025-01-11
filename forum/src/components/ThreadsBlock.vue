@@ -19,6 +19,7 @@ const props = defineProps({
         <ThreadItem
           v-for="thread in threadList"
           :key="thread.id"
+          :id="thread.id"
           :title="thread.title"
           :isClosed="thread.isClosed"
           :commentsCount="thread.commentsCount"
