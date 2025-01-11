@@ -57,8 +57,10 @@ export const useProfileStore = defineStore('profileStore', () => {
   const unsubscribe = async (subscriptionId) => {
     try {
       const response = await axios.delete('https://forum.kreedo.tech:8443/unsubscribe', {
-        subscriber: ownerId,
-        subscription: subscriptionId,
+        data: {
+          subscriber: ownerId,
+          subscription: subscriptionId,
+        },
       })
       const meta = response.data.meta
       if (meta.success) {

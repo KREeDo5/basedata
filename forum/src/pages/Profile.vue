@@ -39,7 +39,10 @@ const isPasswordModalOpen = ref(false)
 const newPassword = ref('')
 
 const isSubscribed = computed(() => {
-  return props.userId && authStore.subscriptions.some((sub) => sub.id === props.userId)
+  const result = authStore.subscriptions.some((sub) => {
+    return sub.id === Number(props.userId)
+  })
+  return result
 })
 
 const isNameValid = computed(() => {
@@ -106,6 +109,7 @@ const subscribe = async () => {
   try {
     await profileStore.subscribe(props.userId, image, name)
     await authStore.loadUserFromToken()
+    await fetchProfile()
   } catch (error) {
     console.error('Error during subscription:', error)
   }
@@ -115,6 +119,7 @@ const unsubscribe = async () => {
   try {
     await profileStore.unsubscribe(props.userId, image, name)
     await authStore.loadUserFromToken()
+    await fetchProfile()
   } catch (error) {
     console.error('Error during unsubscription:', error)
   }
@@ -205,6 +210,7 @@ watch(
               <Button
                 v-if="!isOwner && isSubscribed"
                 text="Отписаться"
+                variant="rounded"
                 @click="unsubscribe"
                 title="Отписаться"
               />
