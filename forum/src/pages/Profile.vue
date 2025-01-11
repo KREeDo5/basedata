@@ -152,7 +152,7 @@ watch(
     <div v-else class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
       <div class="flex mb-5 justify-center text-3xl font-w400">
         <h2 class="text-base-gold mr-2">{{ isOwner ? 'Ваш профиль' : 'Профиль пользователя' }}</h2>
-        <h2 v-if="isOwner" class="text-base-blue">
+        <h2 v-if="!isOwner" class="text-base-blue">
           {{ name }}
         </h2>
       </div>
