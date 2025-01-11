@@ -14,9 +14,9 @@ const onFileSelected = (event) => {
     const reader = new FileReader()
     reader.onload = () => {
       imagePreview.value = reader.result
-      props.onFileSelectedCallback(reader.result) // Вызов функции обратного вызова
     }
     reader.readAsDataURL(file)
+    props.onFileSelectedCallback(file) // Вызов функции обратного вызова с объектом File
   } else {
     alert('Please select a valid image file.')
   }

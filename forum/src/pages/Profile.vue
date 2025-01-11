@@ -60,8 +60,8 @@ const removeAvatar = () => {
   emitter.emit('remove-avatar')
 }
 
-const onFileSelectedCallback = (fileUrl) => {
-  image.value = fileUrl
+const onFileSelectedCallback = (file) => {
+  image.value = file
 }
 
 const fetchProfile = async () => {
@@ -70,7 +70,7 @@ const fetchProfile = async () => {
   if (id) {
     await profileStore.fetchUserProfile(id)
     if (userProfile.value) {
-      image.value = userProfile.value.image || ''
+      image.value = userProfile.value.image || null
       name.value = userProfile.value.name
       aboutMe.value = userProfile.value.description
       registrationDate.value = userProfile.value.registration_date
