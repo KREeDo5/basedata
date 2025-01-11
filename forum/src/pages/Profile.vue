@@ -177,7 +177,7 @@ watch(
             <div class="flex flex-col space-y-[6px]">
               <div class="flex items-center">
                 <img
-                  v-if="image"
+                  v-if="isOwner && image"
                   src="/delete.png"
                   alt="delete-icon"
                   class="h-[30px] w-[36px] mr-2"
