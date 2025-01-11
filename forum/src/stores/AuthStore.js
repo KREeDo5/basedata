@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('authStore', () => {
     user.value.id = localStorage.getItem('auth_token') // TODO: заменить на id пользователя
     subscriptions.value = userData.subscriptions
     subscribers.value = userData.subscribers
-    emitter.emit('user-updated', userData)
+    emitter.emit('user-updated', user.value)
   }
 
   const logout = () => {
@@ -29,7 +29,9 @@ export const useAuthStore = defineStore('authStore', () => {
   const register = async (form) => {
     try {
       if (!validatePassword(form.password)) {
-        throw new Error('Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры')
+        throw new Error(
+          'Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры',
+        )
       }
       const response = await axios.post('https://forum.kreedo.tech:8443/registration', form)
       const meta = response.data.meta
@@ -103,7 +105,9 @@ export const useAuthStore = defineStore('authStore', () => {
   const editPassword = async (form) => {
     try {
       if (!validatePassword(form.password)) {
-        throw new Error('Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры')
+        throw new Error(
+          'Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры',
+        )
       }
       const response = await axios.post('https://forum.kreedo.tech:8443/change/password', form)
       const meta = response.data.meta

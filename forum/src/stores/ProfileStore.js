@@ -8,7 +8,7 @@ export const useProfileStore = defineStore('profileStore', () => {
   const userProfile = ref(null)
   const subscriptions = ref([])
   const subscribers = ref([])
-  const ownerId = localStorage.getItem('auth_token') //TODO: заменить на id пользователя
+  const ownerId = localStorage.getItem('auth_token')
 
   const fetchUserProfile = async (userId) => {
     try {
