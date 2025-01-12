@@ -26,7 +26,6 @@ export const useThreadStore = defineStore('threadStore', () => {
         threadAuthor.value = data.threadInfo.user
         threadMessages.value = data.threadInfo.messages
         isClosed.value = data.threadInfo.isClosed
-        console.log(data.threadInfo.isClosed)
       } else {
         console.error('Unexpected response data format for thread details:', response.data)
       }
@@ -95,5 +94,6 @@ export const useThreadStore = defineStore('threadStore', () => {
     threadAuthor,
     threadMessages,
     createdAt,
+    isClosed,
   }
 })
