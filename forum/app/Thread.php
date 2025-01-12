@@ -78,6 +78,7 @@ class Thread extends Model
                     'title' => $thread->title,
                     'text' => $thread->text,
                     'created_at' => $thread->created_at,
+                    'isClosed' => $thread->status == 'open' ? false : true,
                     'user' => [
                         'id' => $thread->user->id,
                         'name' => $thread->user->name,
