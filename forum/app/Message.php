@@ -71,12 +71,9 @@ class Message extends Model
                 $messageImages = $messageData->file('messageImages');
                 if (!is_array($messageImages))
                 {
-                    $response = [
-                        'meta' => ['success' => false, 'error' => 'invalid file format(not array)'],
-                        'data' => (object) []
-                    ];
-                    return response()->json($response, 400);
+                    return $this->getResponse(400, 'invalid file format(not array)');
                 }
+                
                 foreach ($messageImages as $messageImage)
                 {
                     if ($messageImage->isValid())
@@ -95,10 +92,6 @@ class Message extends Model
             return $this->getResponse(500, 'creating message error');
         }
     
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => (object) []
-        ];
-        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+        return $this->getResponse(200);
     }
 }

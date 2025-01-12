@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\File;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\Functions;
 
 class User extends Model
 {
+    use Functions;
     protected $table = 'user';
     public $timestamps = false;
     const CREATED_AT = 'registration_date';
@@ -95,11 +97,7 @@ class User extends Model
             return response()->json($response, 409);
         }
 
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => (object) []
-        ];
-        return response()->json($response, 200);
+        return $this->getResponse(200);
     }
 
     public function getUserInfo(Request $request)
@@ -197,11 +195,7 @@ class User extends Model
                 'image_path' => $image_path
             ]);
 
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => (object) []
-        ];
-        return response()->json($response, 200);
+        return $this->getResponse(200);
     }
 
     public function changePassword(Request $data)
@@ -230,11 +224,7 @@ class User extends Model
         User::where('id', $data->input('id'))
             ->update(['password' => $data->input('newPassword')]);
 
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => (object) []
-        ];
-        return response()->json($response, 200);
+        return $this->getResponse(200);
     }
 
     public function deleteProfilePicture(Request $data)
@@ -259,11 +249,7 @@ class User extends Model
             }
             $user->image_path = null;
             $user->save();
-            $response = [
-                'meta' => ['success' => true, 'error' => ''],
-                'data' => (object) []
-            ];
-            return response()->json($response, 200);
+            return $this->getResponse(200);
         }
 
         $response = [
