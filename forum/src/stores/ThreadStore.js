@@ -39,7 +39,9 @@ export const useThreadStore = defineStore('threadStore', () => {
         formData.append(key, form[key])
       }
 
-      console.log("Sending message", formData)
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`)
+      })
 
       const response = await axios.post('https://forum.kreedo.tech:8443/create/message', formData, {
         headers: {
