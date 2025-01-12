@@ -39,6 +39,8 @@ export const useThreadStore = defineStore('threadStore', () => {
         formData.append(key, form[key])
       }
 
+      console.log("Sending message", formData)
+
       const response = await axios.post('https://forum.kreedo.tech:8443/create/message', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -47,7 +49,7 @@ export const useThreadStore = defineStore('threadStore', () => {
 
       const meta = response.data.meta
       if (meta.success) {
-        console.log("Message sent")
+        console.log('Message sent')
       } else {
         throw new Error(meta.error || 'Send message failed')
       }

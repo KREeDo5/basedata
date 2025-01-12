@@ -11,6 +11,7 @@ const emit = defineEmits(['messageSent'])
 const authStore = useAuthStore()
 const newMessage = ref('')
 const messageImages = ref([])
+const imageInputRef = ref(null)
 
 const adjustTextareaHeight = (event) => {
   const textarea = event.target
@@ -26,6 +27,9 @@ onMounted(() => {
 })
 
 const sendMessage = async () => {
+  if (!isMessageValid.value) {
+    return
+  }
   const message = {
     threadId: props.threadId,
     userId: authStore.token,
@@ -41,17 +45,34 @@ const sendMessage = async () => {
 const isMessageValid = computed(() => {
   return newMessage.value.trim() !== ''
 })
+
+const addImage = (event) => {
+  const files = event.target.files
+  for (let i = 0; i < files.length; i++) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      messageImages.value.push(e.target.result)
+    }
+    reader.readAsDataURL(files[i])
+  }
+}
 </script>
 
 <template>
   <div class="">
     <hr class="border-t border-base-grey pb-5" />
+    <div v-if="messageImages.length" class="px-5 flex w-full flex-wrap">
+      <div v-for="(image, index) in messageImages" :key="index" class="mr-2 mb-2">
+        <img :src="image" alt="Uploaded Image" class="max-w-[100px] max-h-[100px] rounded-lg cursor-pointer" @click="imageInputRef.click()" />
+      </div>
+    </div>
     <div class="px-5 flex w-full">
+      <input type="file" id="imageInput" ref="imageInputRef" class="hidden" @change="addImage" multiple>
       <img
         src="/add-image.png"
         alt="add-icon"
         class="h-[26px] w-[26px] mr-4 mt-1 cursor-pointer hover:opacity-70"
-        @click="addImage"
+        @click="imageInputRef.click()"
         title="Добавить изображение"
       />
       <form class="bg-base-grey rounded-xl w-full">
@@ -66,11 +87,11 @@ const isMessageValid = computed(() => {
       </form>
       <img
         src="/send.png"
-        alt="add-icon"
+        alt="send-icon"
         class="${disabledStyle} h-[26px] w-[26px] ml-4 mt-1 hover:opacity-70"
         :class="isMessageValid ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'"
         @click="sendMessage"
-        title="Добавить изображение"
+        title="Отправить сообщение"
       />
     </div>
   </div>
