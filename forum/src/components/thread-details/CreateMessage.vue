@@ -51,14 +51,13 @@ const addImage = (event) => {
   for (let i = 0; i < files.length; i++) {
     messageImages.value.push(files[i])
   }
-  // const files = event.target.files
-  // for (let i = 0; i < files.length; i++) {
-  //   const reader = new FileReader()
-  //   reader.onload = (e) => {
-  //     messageImages.value.push(e.target.result)
-  //   }
-  //   reader.readAsDataURL(files[i])
-  // }
+  event.target.value = ''
+}
+
+const getObjectURL = (file) => URL.createObjectURL(file);
+
+const removeImage = (index) => {
+  messageImages.value.splice(index, 1)
 }
 </script>
 
@@ -66,13 +65,19 @@ const addImage = (event) => {
   <div class="">
     <hr class="border-t border-base-grey pb-5" />
     <div v-if="messageImages.length" class="px-5 flex w-full flex-wrap">
-      <div v-for="(image, index) in messageImages" :key="index" class="mr-2 mb-2">
+      <div v-for="(image, index) in messageImages" :key="index" class="mr-2 mb-2 relative">
         <img
-          :src="image"
+          :src="getObjectURL(image)"
           alt="Uploaded Image"
           class="max-w-[100px] max-h-[100px] rounded-lg cursor-pointer"
-          @click="imageInputRef.click()"
         />
+        <button
+          @click="removeImage(index)"
+          class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+          title="Удалить"
+        >
+          ×
+        </button>
       </div>
     </div>
     <div class="px-5 flex w-full">

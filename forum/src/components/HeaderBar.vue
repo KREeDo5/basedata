@@ -24,7 +24,6 @@ watch(
   (newUser) => {
     userAvatar.value = newUser?.image || null
     name.value = newUser?.name || 'Без имени'
-    console.log('User image',  userAvatar.value)
   },
 )
 

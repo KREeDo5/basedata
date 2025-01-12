@@ -36,12 +36,14 @@ export const useThreadStore = defineStore('threadStore', () => {
     try {
       const formData = new FormData()
       for (const key in form) {
-        formData.append(key, form[key])
+        if (Array.isArray(form[key])) {
+          form[key].forEach((file, index) => {
+            formData.append(`${key}[${index}]`, file)
+          })
+        } else {
+          formData.append(key, form[key])
+        }
       }
-
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`)
-      })
 
       const response = await axios.post('https://forum.kreedo.tech:8443/create/message', formData, {
         headers: {
