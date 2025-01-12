@@ -18,12 +18,12 @@ export const useThreadStore = defineStore('threadStore', () => {
       })
       const meta = response.data.meta
       const data = response.data.data
-      if (meta.success && data.threadData) {
-        title.value = data.threadData.title
-        text.value = data.threadData.text
-        createdAt.value = data.threadData.created_at
-        threadAuthor.value = data.threadData.user
-        threadMessages.value = data.threadData.messages
+      if (meta.success && data.threadInfo) {
+        title.value = data.threadInfo.title
+        text.value = data.threadInfo.text
+        createdAt.value = data.threadInfo.created_at
+        threadAuthor.value = data.threadInfo.user
+        threadMessages.value = data.threadInfo.messages
       } else {
         console.error('Unexpected response data format for thread details:', response.data)
       }
