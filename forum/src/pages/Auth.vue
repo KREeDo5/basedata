@@ -23,7 +23,7 @@ const form = ref({
 const isModalVisible = ref(false)
 const showPassword = ref(false)
 const modalMessage = ref('')
-const countdown = ref(5)
+const countdown = ref(0)
 let countdownInterval = null
 
 const toggleMode = () => {
@@ -78,7 +78,7 @@ const handleSubmit = async () => {
 }
 
 const startCountdown = () => {
-  countdown.value = 3
+  countdown.value = 1 //TODO: Change to 3
   if (countdownInterval) clearInterval(countdownInterval)
   countdownInterval = setInterval(() => {
     countdown.value -= 1
