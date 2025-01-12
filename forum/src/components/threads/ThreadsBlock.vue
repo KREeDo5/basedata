@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps } from 'vue'
 
-import ThreadItem from '../components/ThreadItem.vue'
+import ThreadItem from './ThreadItem.vue'
 
 const props = defineProps({
   threadList: {
@@ -9,6 +9,7 @@ const props = defineProps({
     required: true,
   },
 })
+
 </script>
 
 <template>
@@ -23,14 +24,8 @@ const props = defineProps({
           :title="thread.title"
           :isClosed="thread.isClosed"
           :commentsCount="thread.commentsCount"
-          :userAvatar="
-            thread.user?.image_path
-              ? `https://forum.kreedo.tech:8443/${thread.user?.image_path}`
-              : null
-          "
-          :userName="thread.user?.name"
+          :user="thread.user"
           :created_at="thread.created_at"
-          :userId="thread.user?.id"
         />
       </div>
     </div>

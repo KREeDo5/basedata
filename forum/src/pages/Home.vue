@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import CategoryBlock from '@/components/CategoryBlock.vue'
-import ThreadsBlock from '@/components/ThreadsBlock.vue'
-import Loader from '@/components/Loader.vue'
+import CategoryBlock from '@/components/categories/CategoryBlock.vue'
+import ThreadsBlock from '@/components/threads/ThreadsBlock.vue'
+import Loader from '@/components/core/Loader.vue'
 
 import { useHomeStore } from '@/stores/HomeStore'
 

@@ -1,5 +1,5 @@
 <script setup>
-import Avatar from './Avatar.vue'
+import Avatar from '../core/Avatar.vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({

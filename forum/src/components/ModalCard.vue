@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue'
-import Button from '@/components/Button.vue'
-import Loader from '@/components/Loader.vue'
+import Button from '@/components/core/Button.vue'
+import Loader from '@/components/core/Loader.vue'
 import { useAuthStore } from '@/stores/AuthStore'
 
 const props = defineProps({

@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { emitter } from '@/eventBus'
 
-import Button from '../components/Button.vue'
-import Avatar from './Avatar.vue'
+import Button from './core/Button.vue'
+import Avatar from './core/Avatar.vue'
 
 const props = defineProps({
   isAuthPage: Boolean,

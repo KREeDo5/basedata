@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import Button from '@/components/Button.vue'
+import Button from '@/components/core/Button.vue'
 import Modal from '@/components/Modal.vue'
 
 const route = useRoute()

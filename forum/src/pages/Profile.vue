@@ -7,11 +7,11 @@ import { emitter } from '@/eventBus'
 import { format } from 'date-fns'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import Button from '@/components/Button.vue'
-import SubscriptionBlock from '@/components/SubscriptionBlock.vue'
-import Avatar from '@/components/Avatar.vue'
-import FilePickerDrop from '@/components/FilePickerDrop.vue'
-import Loader from '@/components/Loader.vue'
+import Button from '@/components/core/Button.vue'
+import SubscriptionBlock from '@/components/profile/SubscriptionBlock.vue'
+import Avatar from '@/components/core/Avatar.vue'
+import FilePickerDrop from '@/components/core/FilePickerDrop.vue'
+import Loader from '@/components/core/Loader.vue'
 import ModalCard from '@/components/ModalCard.vue'
 
 const props = defineProps({

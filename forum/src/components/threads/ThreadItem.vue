@@ -1,34 +1,22 @@
 <script setup>
-import { defineProps, computed } from 'vue'
+import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
-import { format } from 'date-fns'
-import Avatar from './Avatar.vue'
+import UserInfo from '@/components/UserInfo.vue';
 
 const props = defineProps({
   id: Number,
   title: String,
   isClosed: Boolean,
   commentsCount: Number,
-  userAvatar: String,
-  userName: String,
+  user: Object,
   created_at: String,
-  userId: Number,
 })
 
 const router = useRouter()
 
-const goToProfile = (event) => {
-  event.stopPropagation() // Предотвращаем событие клика на ThreadItem
-  router.push({ path: '/profile', query: { userId: props.userId } })
-}
-
 const goToThread = () => {
   router.push({ path: '/thread', query: { threadId: props.id } })
 }
-
-const formattedDate = computed(() => {
-  return format(new Date(props.created_at), 'dd.MM.yy HH:mm')
-})
 </script>
 
 <template>
@@ -48,19 +36,7 @@ const formattedDate = computed(() => {
         <div class="text-base-grey2">{{ commentsCount || 0 }}</div>
       </div>
     </div>
-    <div
-      class="flex items-center author-block w-[225px]"
-      @click="goToProfile"
-      style="cursor: pointer"
-    >
-      <Avatar class="mr-3" :src="userAvatar" size="medium" />
-      <div>
-        <div class="text-base font-w600 text-base-blue">
-          {{ userName || 'без имени' }}
-        </div>
-        <div class="text-white">{{ formattedDate }}</div>
-      </div>
-    </div>
+    <UserInfo :user="user" :createdAt="created_at"/>
   </div>
 </template>
 

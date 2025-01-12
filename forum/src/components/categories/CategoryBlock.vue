@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, ref } from 'vue'
 
-import Button from './Button.vue'
+import Button from '../core/Button.vue'
 import CategoryItem from './CategoryItem.vue'
 
 const props = defineProps({
