@@ -5,9 +5,11 @@ namespace App;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Traits\Functions;
 
 class Category extends Model
 {
+    use Functions;
     protected $table = 'category';
     public $timestamps = false;
 
