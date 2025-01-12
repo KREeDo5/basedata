@@ -34,6 +34,7 @@ class Thread extends Model
 
     public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
+
         $sortField = $request->header('sortField', 'created_at');
         $sortDirection = $request->header('sortDirection', 'desc');
 
@@ -50,7 +51,24 @@ class Thread extends Model
               $query->whereIn('id_category', $categoriesId);
             });
 
-        $sortedThreads = $threads->orderBy($sortField, $sortDirection)->get();
+        if ($sortField == 'messagesCount')
+        {
+            $threads->withCount('messages')
+                ->orderBy('messages_count', $sortDirection);
+        }
+        elseif ($sortField == 'lastMessage')
+        {
+            $theads->leftJoin('messages', 'thread.id', '=', 'messages.thread_id')
+                ->groupBy('thread.id')
+                ->orderBy(DB::raw('MAX(messages.created_at)'), $sortDirection);
+        }
+        else
+        {
+            $threads->orderBy($sortField, $sortDirection);
+        }
+
+
+        $sortedThreads = $threads->get();
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
         $data = [
