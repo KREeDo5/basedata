@@ -51,6 +51,14 @@ const addImage = (event) => {
   for (let i = 0; i < files.length; i++) {
     messageImages.value.push(files[i])
   }
+  // const files = event.target.files
+  // for (let i = 0; i < files.length; i++) {
+  //   const reader = new FileReader()
+  //   reader.onload = (e) => {
+  //     messageImages.value.push(e.target.result)
+  //   }
+  //   reader.readAsDataURL(files[i])
+  // }
 }
 </script>
 
@@ -59,11 +67,23 @@ const addImage = (event) => {
     <hr class="border-t border-base-grey pb-5" />
     <div v-if="messageImages.length" class="px-5 flex w-full flex-wrap">
       <div v-for="(image, index) in messageImages" :key="index" class="mr-2 mb-2">
-        <img :src="URL.createObjectURL(image)" alt="Uploaded Image" class="max-w-[100px] max-h-[100px] rounded-lg cursor-pointer" @click="imageInputRef.click()" />
+        <img
+          :src="image"
+          alt="Uploaded Image"
+          class="max-w-[100px] max-h-[100px] rounded-lg cursor-pointer"
+          @click="imageInputRef.click()"
+        />
       </div>
     </div>
     <div class="px-5 flex w-full">
-      <input type="file" id="imageInput" ref="imageInputRef" class="hidden" @change="addImage" multiple>
+      <input
+        type="file"
+        id="imageInput"
+        ref="imageInputRef"
+        class="hidden"
+        @change="addImage"
+        multiple
+      />
       <img
         src="/add-image.png"
         alt="add-icon"
