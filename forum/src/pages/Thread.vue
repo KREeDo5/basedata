@@ -8,12 +8,11 @@ import Loader from '@/components/core/Loader.vue'
 import ThreadImages from '@/components/thread-details/ThreadImages.vue'
 import ThreadMessages from '@/components/thread-details/ThreadMessages.vue'
 import CreateMessage from '@/components/thread-details/CreateMessage.vue'
-import UserInfo from '@/components/UserInfo.vue';
+import UserInfo from '@/components/UserInfo.vue'
 
 const props = defineProps({
   threadId: {
     type: String,
-    default: 0,
   },
 })
 
@@ -40,6 +39,11 @@ const fetchThread = async () => {
     router.push('/home')
   }
 }
+
+const sendMessage = async (messageForm) => {
+  await threadStore.sendMessage(messageForm)
+  await fetchThread()
+}
 </script>
 
 <template>
@@ -47,11 +51,14 @@ const fetchThread = async () => {
   <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
     <Loader class="mt-20" />
   </div>
-  <div v-else class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
+  <div
+    v-else
+    class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5"
+  >
     <div class="flex p-[22px]">
       <div class="flex text-white text-2xl font-w600 w-[1040px]">{{ threadStore.title }}</div>
       <div>
-        <UserInfo :user="threadStore.threadAuthor" :createdAt="threadStore.createdAt"/>
+        <UserInfo :user="threadStore.threadAuthor" :createdAt="threadStore.createdAt" />
         <Button class="w-full mt-3" text="закрыть тему" variant="edit" />
       </div>
     </div>
@@ -59,10 +66,10 @@ const fetchThread = async () => {
     <div class="text-white text-base p-5 font-w400">
       {{ threadStore.text || 'Тема без описания' }}
     </div>
-    <ThreadImages :images="threadStore.images"/>
-    <ThreadMessages :messages="threadStore.threadMessages"/>
+    <ThreadImages :images="threadStore.images" />
+    <ThreadMessages :messages="threadStore.threadMessages" />
     <div class="mt-auto">
-      <CreateMessage/>
+      <CreateMessage :threadId="threadId" @messageSent="sendMessage" />
     </div>
   </div>
 </template>

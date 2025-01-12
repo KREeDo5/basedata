@@ -32,6 +32,30 @@ export const useThreadStore = defineStore('threadStore', () => {
     }
   }
 
+  const sendMessage = async (form) => {
+    try {
+      const formData = new FormData()
+      for (const key in form) {
+        formData.append(key, form[key])
+      }
+
+      const response = await axios.post('https://forum.kreedo.tech:8443/create/message', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      const meta = response.data.meta
+      if (meta.success) {
+        console.log("Message sent")
+      } else {
+        throw new Error(meta.error || 'Send message failed')
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
   const clearStore = () => {
     title.value = null
     text.value = ''
@@ -43,6 +67,7 @@ export const useThreadStore = defineStore('threadStore', () => {
   return {
     fetchThreadDetails,
     clearStore,
+    sendMessage,
     title,
     text,
     threadAuthor,

@@ -25,6 +25,7 @@ const formattedDate = computed(() => {
 
 <template>
   <div
+    v-if="user"
     class="flex items-center author-block w-[225px]"
     @click="goToProfile"
     style="cursor: pointer"
@@ -41,6 +42,7 @@ const formattedDate = computed(() => {
       <div class="text-white">{{ formattedDate }}</div>
     </div>
   </div>
+  <div v-else class="text-white">Обновляем...</div>
 </template>
 
 <style></style>
