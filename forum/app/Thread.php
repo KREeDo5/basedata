@@ -41,14 +41,16 @@ class Thread extends Model
         $categoriesId = [];
         if ($categoryId)
         {
-            $categoriesId = getAllSubcategories($categoryId);
+            $categoriesId = $this->getAllSubcategories($categoryId);
             $categoriesId[] = $categoryId;
         }
         
-        $threads = Thread::with(['user'])
-            ->where('visibility', 'visible')
+        $threads = Thread::query()
+            ->select('thread.*')
+            ->with(['user'])
+            ->where('thread.visibility', 'visible')
             ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
-              $query->whereIn('id_category', $categoriesId);
+                return $query->whereIn('id_category', $categoriesId);
             });
 
         if ($sortField == 'messagesCount')
@@ -58,9 +60,9 @@ class Thread extends Model
         }
         elseif ($sortField == 'lastMessage')
         {
-            $theads->leftJoin('messages', 'thread.id', '=', 'messages.thread_id')
+            $threads->leftJoin('message', 'thread.id', '=', 'message.id_thread')
                 ->groupBy('thread.id')
-                ->orderBy(DB::raw('MAX(messages.created_at)'), $sortDirection);
+                ->orderBy(DB::raw('MAX(message.created_at)'), $sortDirection);
         }
         else
         {
