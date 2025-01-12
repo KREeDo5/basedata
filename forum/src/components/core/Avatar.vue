@@ -4,7 +4,10 @@ import { computed } from 'vue'
 import SafeNetworkImage from './SafeNetworkImage.vue'
 
 const props = defineProps({
-  src: String,
+  url: {
+    type: String,
+    default: '',
+  },
   size: {
     type: String,
     default: 'medium',
@@ -24,12 +27,8 @@ const avatarClass = computed(() => {
       return ''
   }
 })
-
-const avatarSrc = computed(() => {
-  return props.src || '/user.png'
-})
 </script>
 
 <template>
-  <SafeNetworkImage :url="avatarSrc" :class="avatarClass" />
+  <SafeNetworkImage :url="url" :class="avatarClass" :isUser="true" />
 </template>

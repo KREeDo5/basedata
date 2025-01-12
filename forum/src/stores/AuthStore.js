@@ -14,8 +14,6 @@ export const useAuthStore = defineStore('authStore', () => {
   const setUser = (userData) => {
     user.value = userData.user
     user.value.image = userData.user.image_path
-      ? `https://forum.kreedo.tech:8443/${userData.user.image_path}`
-      : ''
     user.value.id = localStorage.getItem('auth_token') // TODO: заменить на id пользователя
     subscriptions.value = userData.subscriptions
     subscribers.value = userData.subscribers

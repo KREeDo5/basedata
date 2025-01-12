@@ -26,7 +26,7 @@ const goToProfile = (userId) => {
           <Avatar
             size="small"
             class="mr-2"
-            :src="`https://forum.kreedo.tech:8443/${item.image_path}`"
+            :url="item.image_path"
           />
           <span class="text-base-blue truncate">{{ item.name || 'Без имени' }}</span>
         </div>

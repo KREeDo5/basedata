@@ -25,8 +25,6 @@ export const useProfileStore = defineStore('profileStore', () => {
         }
         userProfile.value = data.userData.user
         userProfile.value.image = userProfile.value.image_path
-          ? `https://forum.kreedo.tech:8443/${userProfile.value.image_path}`
-          : ''
         subscriptions.value = data.userData.subscriptions
         subscribers.value = data.userData.subscribers
       } else {

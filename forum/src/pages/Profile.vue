@@ -174,7 +174,7 @@ watch(
         <div class="flex justify-between gap-9">
           <!-- Левая сторона -->
           <div class="flex flex-col w-[250px]">
-            <Avatar v-if="!isEditing" :key="image" :src="image" size="big" class="mb-[8px]" />
+            <Avatar v-if="!isEditing" :key="image" :url="image" size="big" class="mb-[8px]" />
             <div v-if="isEditing" class="flex flex-col space-y-[6px] mb-[6px] text-center">
               <FilePickerDrop :onFileSelectedCallback="onFileSelectedCallback" />
             </div>

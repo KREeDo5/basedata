@@ -22,13 +22,14 @@ const showUserInfo = computed(() => authStore.isAuthenticated && !props.isAuthPa
 watch(
   () => authStore.user,
   (newUser) => {
-    userAvatar.value = newUser?.avatarUrl || ''
+    userAvatar.value = newUser?.image || null
     name.value = newUser?.name || 'Без имени'
+    console.log('User image',  userAvatar.value)
   },
 )
 
 emitter.on('user-updated', (userData) => {
-  userAvatar.value = userData?.avatarUrl || ''
+  userAvatar.value = userData?.image || null
   name.value = userData?.name || 'Без имени'
 })
 </script>
@@ -53,7 +54,7 @@ emitter.on('user-updated', (userData) => {
       </div>
       <div v-if="showUserInfo && isUserLoaded" title="Перейти в профиль">
         <RouterLink to="/profile" class="flex items-center space-x-2">
-          <Avatar :src="userAvatar" />
+          <Avatar :url="userAvatar" />
           <span class="text-white">{{ name }}</span>
         </RouterLink>
       </div>

@@ -32,7 +32,7 @@ const formattedDate = computed(() => {
   >
     <Avatar
       class="mr-3"
-      :src="user.image_path ? `https://forum.kreedo.tech:8443/${user.image_path}` : null"
+      :url="user.image_path"
       size="medium"
     />
     <div>

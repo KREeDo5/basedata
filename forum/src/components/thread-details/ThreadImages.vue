@@ -12,7 +12,7 @@ const props = defineProps({
     <SafeNetworkImage
       v-for="image in images"
       :key="image.id"
-      :src="image ? `https://forum.kreedo.tech:8443/${image}` : null"
+      :url="image"
     />
   </div>
 </template>

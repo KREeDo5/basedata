@@ -1,15 +1,50 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 const props = defineProps({
-  url: String,
+  url: {
+    type: String,
+    default: '',
+  },
+  isUser: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const imageUrl = ref(props.url || '/placeholder.png')
+const imageUrl = ref('')
 
 const handleError = () => {
-  imageUrl.value = '/placeholder.png'
+  imageUrl.value = props.isUser ? '/user.png' : '/placeholder.png'
 }
+
+const loadImage = async(path) => {
+  try {
+    const response = await fetch(path)
+    if (!response.ok) {
+      throw new Error('Image not found')
+    }
+    imageUrl.value = path
+  } catch (error) {
+    handleError()
+  }
+}
+
+const getImageUrl = (url) => {
+  if (props.isUser) {
+    return url ? `https://forum.kreedo.tech:8443/${url}` : '/user.png'
+  } else {
+    return url ? `https://forum.kreedo.tech:8443/${url}` : '/placeholder.png'
+  }
+}
+
+watch(() => props.url, (newUrl) => {
+  loadImage(getImageUrl(newUrl))
+})
+
+onMounted(() => {
+  loadImage(getImageUrl(props.url))
+})
 </script>
 
 <template>
