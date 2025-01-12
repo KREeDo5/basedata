@@ -69,6 +69,10 @@ class MainController extends Controller
         return User::find(1)->changePassword($data);
     }
 
+    public function closeThread(Request $data) {
+        return Thread::find(1)->closeThread($data);
+    }
+
     public function subscribe(Request $data) {
         $user1 = User::where('id', $data->input('subscriber'))
             ->first();

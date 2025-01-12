@@ -20,3 +20,5 @@ Route::delete('/unsubscribe', 'MainController@unsubscribe'); // body(subscriber(
 Route::post('create/category', 'MainController@createCategory'); // body(title, parentCategoryId) // если надо создать главную категорию, parentCategoryId = null
 Route::post('create/thread', 'MainController@createThread'); // body(categoryId, userId, title, text, threadImages[])
 Route::post('create/message', 'MainController@createMessage'); // body(threadId, userId, text, messageImages[])
+
+Route::post('/closeThread', 'MainController@closeThread'); // body(userId, threadId)

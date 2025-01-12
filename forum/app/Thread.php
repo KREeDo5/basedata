@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use App\Traits\Functions;
 
 class Thread extends Model
 {
+    use Functions;
     protected $table = 'thread';
     public $timestamps = false;
     const CREATED_AT = 'created_at';
@@ -36,7 +38,7 @@ class Thread extends Model
         $categoriesId = [];
         if ($categoryId)
         {
-            $categoriesId = $this->getAllSubcategories($categoryId);
+            $categoriesId = getAllSubcategories($categoryId);
             $categoriesId[] = $categoryId;
         }
         
@@ -48,25 +50,24 @@ class Thread extends Model
             ->get();
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
-        $data = $threads->map(function ($thread) {
-            return [
-                'id' => $thread->id,
-                'title' => $thread->title,
-                'text' => $thread->text,
-                'created_at' => $thread->created_at,
-                'user' => [
-                    'id' => $thread->user->id,
-                    'name' => $thread->user->name,
-                    'image_path' => $thread->user->image_path,
-                ]
-            ];
-        });
+        $data = [
+            'threads' => $threads->map(function ($thread) {
+                return [
+                    'id' => $thread->id,
+                    'title' => $thread->title,
+                    'text' => $thread->text,
+                    'created_at' => $thread->created_at,
+                    'user' => [
+                        'id' => $thread->user->id,
+                        'name' => $thread->user->name,
+                        'image_path' => $thread->user->image_path,
+                    ]
+                ];
 
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => ['threads' => $data]
+            })
         ];
-        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+
+        return $this->getResponse(200, '', $data);
     }
 
     private function getAllSubcategories($categoryId)
@@ -87,49 +88,43 @@ class Thread extends Model
                 ->where('visibility', 'visible')
                 ->first();
 
-        if (!$thread)
-        {
-            $response = [
-                'meta' => ['success' => false, 'error' => 'thread not found'],
-                'data' => (object) []
-            ];
-            return response()->json($response, 404);
+        if (!$thread) {
+            return $this->getResponse(404, 'thread not found');
         }
 
         $data = [
-            'title' => $thread->title,
-            'text' => $thread->text,
-            'created_at' => $thread->created_at,
-            'user' => [
-                'id' => $thread->user->id,
-                'name' => $thread->user->name,
-                'image_path' => $thread->user->image_path,
-            ],
-            'images' => $thread->images->map(function ($image) {
-                return $image->path;
-            })->toArray(),
-            'messages' => $thread->messages->map(function ($message) {
-                return [
-                    'id' => $message->id,
-                    'text' => $message->text,
-                    'created_at' => $message->created_at,
-                    'user' => [
-                        'id' => $message->user->id,
-                        'name' => $message->user->name,
-                        'image_path' => $message->user->image_path,
-                    ],
-                    'images' => $message->images->map(function ($image) {
-                        return $image->path; // Можно добавить asset
-                    })->toArray(),
-                ];
-            })->toArray(),
+            'threadInfo' => [
+                'title' => $thread->title,
+                'text' => $thread->text,
+                'created_at' => $thread->created_at,
+                'isClosed' => $thread->status == 'open' ? false : true,
+                'user' => [
+                    'id' => $thread->user->id,
+                    'name' => $thread->user->name,
+                    'image_path' => $thread->user->image_path,
+                ],
+                'images' => $thread->images->map(function ($image) {
+                    return $image->path;
+                })->toArray(),
+                'messages' => $thread->messages->map(function ($message) {
+                    return [
+                        'id' => $message->id,
+                        'text' => $message->text,
+                        'created_at' => $message->created_at,
+                        'user' => [
+                            'id' => $message->user->id,
+                            'name' => $message->user->name,
+                            'image_path' => $message->user->image_path,
+                        ],
+                        'images' => $message->images->map(function ($image) {
+                            return $image->path; // Можно добавить asset
+                        })->toArray(),
+                    ];
+                })->toArray(),
+            ]
         ];
 
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => ['threadData' => $data]
-        ];
-        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+        return $this->getResponse(200, '', $data);
     }
 
     public function createThread(Request $threadData) {
@@ -137,20 +132,13 @@ class Thread extends Model
             ->where('title', $threadData->input('title'))
             ->exists())
         {
-            $response = [
-                'meta' => ['success' => false, 'error' => 'similar thread is already exist'],
-                'data' => (object) []
-            ];
-            return response()->json($response, 409);
+            return $this->getResponse(409, 'similar thread is already exist');
         }
+
         if (!Category::where('id', $threadData->input('categoryId'))
             ->exists())
         {
-            $response = [
-                'meta' => ['success' => false, 'error' => 'this category does not exist'],
-                'data' => (object) []
-            ];
-            return response()->json($response, 405);
+            return $this->getResponse(405, 'this category does not exist');
         }
 
         $thread = new Thread();
@@ -167,12 +155,9 @@ class Thread extends Model
             $threadImages = $threadData->file('threadImages');
             if (!is_array($threadImages))
             {
-                $response = [
-                    'meta' => ['success' => false, 'error' => 'invalid file format(not array)'],
-                    'data' => (object) []
-                ];
-                return response()->json($response, 400);
+                return $this->getResponse(400, 'invalid file format(not array)');
             }
+
             foreach ($threadImages as $threadImage)
             {
                 if ($threadImage->isValid())
@@ -186,10 +171,26 @@ class Thread extends Model
             };
         }
     
-        $response = [
-            'meta' => ['success' => true, 'error' => ''],
-            'data' => (object) []
-        ];
-        return response()->json($response, 200, [], JSON_UNESCAPED_UNICODE);
+        return $this->getResponse(200);
+    }
+
+    public function closeThread(Request $data) {
+        $thread = Thread::where('id', $data->input('threadId'))
+                ->first();
+
+        if (!$thread)
+        {
+            return $this->getResponse(404, 'thread not found');
+        }
+
+        if ($thread->id_user == $data->input('userId'))
+        {
+            $thread->status = 'closed';
+            $thread->save();
+
+            return $this->getResponse(200); 
+        }
+
+        return $this->getResponse(403, 'you can not close this thread');
     }
 }
