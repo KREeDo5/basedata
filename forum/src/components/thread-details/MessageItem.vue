@@ -24,7 +24,7 @@ const props = defineProps({
         :key="index"
         :url="image"
         alt="message image"
-        class="h-32 w-32 object-cover rounded-lg"
+        class="max-h-[300px] object-cover rounded-lg"
       />
     </div>
 </template>

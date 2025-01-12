@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useThreadStore } from '@/stores/ThreadStore'
+import { useAuthStore } from '@/stores/AuthStore'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import Button from '@/components/core/Button.vue'
@@ -17,6 +18,10 @@ const props = defineProps({
 })
 
 const threadStore = useThreadStore()
+const authStore = useAuthStore()
+
+const isOwner = computed(() => threadStore.threadAuthor.id === authStore.token)
+const isUserAuthorized = computed(() => !!authStore.user)
 
 const isLoading = ref(true)
 
@@ -44,6 +49,11 @@ const sendMessage = async (messageForm) => {
   await threadStore.sendMessage(messageForm)
   await fetchThread()
 }
+
+const closeThread = async () => {
+  await threadStore.closeThread({userId: authStore.token, threadId: props.threadId})
+  await fetchThread()
+}
 </script>
 
 <template>
@@ -56,10 +66,13 @@ const sendMessage = async (messageForm) => {
     class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5"
   >
     <div class="flex p-[22px]">
+      <div v-if="threadStore.isClosed">
+        <img src="/closed.png" alt="icon" class="ml-2 h-6" />
+      </div>
       <div class="flex text-white text-2xl font-w600 w-[1040px]">{{ threadStore.title }}</div>
       <div>
         <UserInfo :user="threadStore.threadAuthor" :createdAt="threadStore.createdAt" />
-        <Button class="w-full mt-3" text="закрыть тему" variant="edit" />
+        <Button v-if="isOwner" class="w-full mt-3" text="закрыть тему" variant="edit" @click="closeThread" />
       </div>
     </div>
     <hr class="border-t border-base-grey" />
@@ -69,7 +82,11 @@ const sendMessage = async (messageForm) => {
     <ThreadImages :images="threadStore.images" />
     <ThreadMessages :messages="threadStore.threadMessages" />
     <div class="mt-auto">
-      <CreateMessage :threadId="threadId" @messageSent="sendMessage" />
+      <CreateMessage v-if="isUserAuthorized" :threadId="threadId" @messageSent="sendMessage" />
+      <div v-else>
+        <hr class="border-t border-base-grey pb-5" />
+        <div class="text-base text-base-red text-center w-full">Для ответа необходимо авторизоваться</div>
+      </div>
     </div>
   </div>
 </template>

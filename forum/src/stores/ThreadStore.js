@@ -8,6 +8,7 @@ export const useThreadStore = defineStore('threadStore', () => {
   const threadAuthor = ref(null)
   const threadMessages = ref([])
   const createdAt = ref(null)
+  const isClosed = ref(false)
 
   const fetchThreadDetails = async (threadId) => {
     try {
@@ -24,6 +25,8 @@ export const useThreadStore = defineStore('threadStore', () => {
         createdAt.value = data.threadInfo.created_at
         threadAuthor.value = data.threadInfo.user
         threadMessages.value = data.threadInfo.messages
+        isClosed.value = data.threadInfo.isClosed
+        console.log(data.threadInfo.isClosed)
       } else {
         console.error('Unexpected response data format for thread details:', response.data)
       }
@@ -70,10 +73,23 @@ export const useThreadStore = defineStore('threadStore', () => {
     createdAt.value = null
   }
 
+  const closeThread = async (form) => {
+    try {
+      const response = await axios.post('https://forum.kreedo.tech:8443/closeThread', form)
+      const meta = response.data.meta
+      if (!meta.success) {
+        throw new Error(meta.error || 'Close thread failed')
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
   return {
     fetchThreadDetails,
     clearStore,
     sendMessage,
+    closeThread,
     title,
     text,
     threadAuthor,
