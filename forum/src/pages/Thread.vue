@@ -7,6 +7,7 @@ import Button from '@/components/core/Button.vue'
 import Loader from '@/components/core/Loader.vue'
 import ThreadImages from '@/components/thread-details/ThreadImages.vue'
 import ThreadMessages from '@/components/thread-details/ThreadMessages.vue'
+import CreateMessage from '@/components/thread-details/CreateMessage.vue'
 import UserInfo from '@/components/UserInfo.vue';
 
 const props = defineProps({
@@ -46,7 +47,7 @@ const fetchThread = async () => {
   <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
     <Loader class="mt-20" />
   </div>
-  <div v-else class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
+  <div v-else class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
     <div class="flex p-[22px]">
       <div class="flex text-white text-2xl font-w600 w-[1040px]">{{ threadStore.title }}</div>
       <div>
@@ -60,6 +61,9 @@ const fetchThread = async () => {
     </div>
     <ThreadImages :images="threadStore.images"/>
     <ThreadMessages :messages="threadStore.threadMessages"/>
+    <div class="mt-auto">
+      <CreateMessage/>
+    </div>
   </div>
 </template>
 

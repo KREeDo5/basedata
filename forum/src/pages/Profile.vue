@@ -185,7 +185,7 @@ watch(
                   v-if="isOwner && image"
                   src="/delete.png"
                   alt="delete-icon"
-                  class="h-[30px] w-[36px] mr-2"
+                  class="h-[30px] w-[36px] mr-2 cursor-pointer hover:opacity-70"
                   @click="removeAvatar"
                   title="Удалить аватар"
                 />
