@@ -136,7 +136,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const editPassword = async (form) => {
     try {
-      if (!validatePassword(form.password)) {
+      if (!validatePassword(form.password || form.newPassword)) {
         throw new Error(
           'Пароль должен быть не меньше 6 символов, содержать буквы на латинице и цифры',
         )

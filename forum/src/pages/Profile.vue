@@ -12,7 +12,7 @@ import SubscriptionBlock from '@/components/profile/SubscriptionBlock.vue'
 import Avatar from '@/components/core/Avatar.vue'
 import FilePickerDrop from '@/components/core/FilePickerDrop.vue'
 import Loader from '@/components/core/Loader.vue'
-import ModalCard from '@/components/ModalCard.vue'
+import ChangePassword from '@/components/thread-details/ChangePassword.vue'
 
 const props = defineProps({
   userId: {
@@ -36,7 +36,6 @@ const registrationDate = ref('')
 
 const isEditing = ref(false)
 const isPasswordModalOpen = ref(false)
-const newPassword = ref('')
 
 const isSubscribed = computed(() => {
   const result = authStore.subscriptions.some((sub) => {
@@ -133,15 +132,15 @@ const editPassword = () => {
   isPasswordModalOpen.value = true
 }
 
-const saveNewPassword = async (password) => {
+const saveNewPassword = async (oldPassword, newPassword) => {
   try {
-    await authStore.editPassword({ id: authStore.token, password: password })
-    isPasswordModalOpen.value = false
-    newPassword.value = ''
+    await authStore.editPassword({ id: authStore.token, oldPassword, newPassword });
+    isPasswordModalOpen.value = false;
+    emitter.emit('passwordSuccess', error.message || 'Ошибка при смене пароля');
   } catch (error) {
-    console.log(error)
+    emitter.emit('passwordError', error.message || 'Ошибка при смене пароля');
   }
-}
+};
 
 const cancelPasswordChange = () => {
   isPasswordModalOpen.value = false
@@ -275,7 +274,7 @@ watch(
   </div>
 
   <!-- Модальное окно для смены пароля -->
-  <ModalCard
+  <ChangePassword
     :isVisible="isPasswordModalOpen"
     @save="saveNewPassword"
     @cancel="cancelPasswordChange"
