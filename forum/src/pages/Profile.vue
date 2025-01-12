@@ -48,6 +48,10 @@ const isNameValid = computed(() => {
   return name.value.trim() !== ''
 })
 
+const aboutMeText = computed(() => {
+  return aboutMe.value || 'Нет информации';
+});
+
 const toggleEditMode = async () => {
   if (isEditing.value) {
     const updatedProfile = {
@@ -246,7 +250,7 @@ watch(
                 v-if="!isEditing"
                 class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3 text-xl text-gray-400 break-words whitespace-pre-wrap"
               >
-                <p>{{ aboutMe || 'Нет информации' }}</p>
+                <p>{{ aboutMeText || 'Нет информации' }}</p>
               </div>
               <form v-if="isEditing">
                 <textarea
