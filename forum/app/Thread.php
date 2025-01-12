@@ -34,6 +34,8 @@ class Thread extends Model
 
     public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
+        $sortField = $request->header('sortField', 'created_at');
+        $sortDirection = $request->header('sortDirection', 'desc');
 
         $categoriesId = [];
         if ($categoryId)
@@ -46,12 +48,13 @@ class Thread extends Model
             ->where('visibility', 'visible')
             ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
               $query->whereIn('id_category', $categoriesId);
-            })
-            ->get();
+            });
+
+        $sortedThreads = $threads->orderBy($sortField, $sortDirection)->get();
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
         $data = [
-            'threads' => $threads->map(function ($thread) {
+            'threads' => $sortedThreads->map(function ($thread) {
                 return [
                     'id' => $thread->id,
                     'title' => $thread->title,
@@ -127,48 +130,57 @@ class Thread extends Model
         return $this->getResponse(200, '', $data);
     }
 
-    public function createThread(Request $threadData) {
-        if (Thread::where('id_category', $threadData->input('categoryId'))
-            ->where('title', $threadData->input('title'))
-            ->exists())
-        {
-            return $this->getResponse(409, 'similar thread is already exist');
-        }
+    public function createThread(Request $threadData)
+    {
+        DB::beginTransaction();
 
-        if (!Category::where('id', $threadData->input('categoryId'))
-            ->exists())
-        {
-            return $this->getResponse(405, 'this category does not exist');
-        }
-
-        $thread = new Thread();
-        $thread->id_category = $threadData->input('categoryId');
-        $thread->id_user = $threadData->input('userId');
-        $thread->title = $threadData->input('title');
-        $thread->text = $threadData->input('text');
-        $thread->save();
-
-        $threadId = $thread->id;
-
-        if ($threadData->hasFile('threadImages'))
-        {
-            $threadImages = $threadData->file('threadImages');
-            if (!is_array($threadImages))
+        try {
+            if (Thread::where('id_category', $threadData->input('categoryId'))
+                ->where('title', $threadData->input('title'))
+                ->exists())
             {
-                return $this->getResponse(400, 'invalid file format(not array)');
+                return $this->getResponse(409, 'similar thread is already exist');
             }
 
-            foreach ($threadImages as $threadImage)
+            if (!Category::where('id', $threadData->input('categoryId'))
+                ->exists())
             {
-                if ($threadImage->isValid())
+                return $this->getResponse(405, 'this category does not exist');
+            }
+
+            $thread = new Thread();
+            $thread->id_category = $threadData->input('categoryId');
+            $thread->id_user = $threadData->input('userId');
+            $thread->title = $threadData->input('title');
+            $thread->text = $threadData->input('text');
+            $thread->save();
+
+            $threadId = $thread->id;
+
+            if ($threadData->hasFile('threadImages'))
+            {
+                $threadImages = $threadData->file('threadImages');
+                if (!is_array($threadImages))
                 {
-                    $threadImagePath = $threadImage->store('threadImages');
-                    ThreadImage::insert([
-                        'id_thread' => $threadId,
-                        'path' => $threadImagePath
-                    ]);
+                    return $this->getResponse(400, 'invalid file format(not array)');
                 }
-            };
+
+                foreach ($threadImages as $threadImage)
+                {
+                    if ($threadImage->isValid())
+                    {
+                        $threadImagePath = $threadImage->store('threadImages');
+                        ThreadImage::insert([
+                            'id_thread' => $threadId,
+                            'path' => $threadImagePath
+                        ]);
+                    }
+                };
+            }
+            DB::commit();
+        } catch (\Exception $error) {
+            DB::rollBack();
+            return $this->getResponse(500, 'creating thread error');
         }
     
         return $this->getResponse(200);
