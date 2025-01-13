@@ -26,6 +26,12 @@ const closeCreateThreadModal = () => {
   showModal.value = false
 }
 
+const updateThreadList = async (categoryId) => {
+  isLoading.value = true
+  await homeStore.fetchThreads(categoryId)
+  isLoading.value = false
+}
+
 onMounted(async () => {
   isLoading.value = true
   await Promise.all([homeStore.fetchThreads(), homeStore.fetchCategories()])
@@ -43,6 +49,7 @@ onMounted(async () => {
       <CategoryBlock
         :categoryList="homeStore.categories"
         @openCreateThreadModal="openCreateThreadModal"
+        @updateThreadList="updateThreadList"
       />
       <div class="w-full">
         <div class="flex bg-base-darkgrey rounded-[20px] py-3 px-4 mb-5">

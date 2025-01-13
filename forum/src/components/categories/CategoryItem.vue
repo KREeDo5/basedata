@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, defineEmits, ref } from 'vue'
 import SubCategoryItem from './SubCategoryItem.vue'
 
 const props = defineProps({
@@ -12,8 +12,10 @@ const props = defineProps({
 })
 
 const isRotated = ref(false)
+const emits = defineEmits(['updateThreadList'])
 
-const toggleRotation = () => {
+const toggleRotation = (event) => {
+  event.stopPropagation()
   isRotated.value = !isRotated.value
   if (props.onToggle) {
     props.onToggle(props.categoryId)
@@ -26,12 +28,17 @@ const getSubcategories = (categoryId) => {
   )
   return subcategories
 }
+
+const fetchThreads = (id) => {
+  emits('updateThreadList', id)
+}
 </script>
 
 <template>
   <div :class="{ 'bg-base-grey': isRotated }" class="rounded-[10px]">
     <div
       class="flex justify-between items-center py-2 pl-3 pr-2 rounded-[20px] hover:bg-base-grey group"
+      @click="fetchThreads(categoryId)"
     >
       <div class="flex">
         <img src="/category.png" alt="icon" class="mr-2 h-7" />
@@ -65,6 +72,7 @@ const getSubcategories = (categoryId) => {
         :parentCategoryId="subcategory.id_parent_category"
         :categoryList="categoryList"
         :onToggle="onToggle"
+        @updateSubThreadList="fetchThreads"
       />
     </div>
   </div>

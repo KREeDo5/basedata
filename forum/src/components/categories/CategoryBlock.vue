@@ -11,7 +11,7 @@ const props = defineProps({
   categoryList: Array,
 })
 
-const emits = defineEmits(['openCreateThreadModal'])
+const emits = defineEmits(['openCreateThreadModal', 'updateThreadList'])
 
 const expandedCategories = ref([])
 
@@ -36,6 +36,10 @@ const shouldShowCategory = (category) => {
 const createModalOpen = () => {
   emits('openCreateThreadModal')
 }
+
+const updateThreadList = (categoryId) => {
+  emits('updateThreadList', categoryId)
+}
 </script>
 
 <template>
@@ -52,6 +56,7 @@ const createModalOpen = () => {
         :categoryList="categoryList"
         :onToggle="toggleCategory"
         v-show="shouldShowCategory(category)"
+        @updateThreadList="updateThreadList"
       />
     </div>
   </div>
