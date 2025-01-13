@@ -79,6 +79,7 @@ const handleKeyDown = (event) => {
     if (event.shiftKey) {
       event.preventDefault()
       newMessage.value += '\n'
+      adjustTextareaHeight(event)
     } else {
       event.preventDefault()
       sendMessage()
