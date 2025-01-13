@@ -35,7 +35,6 @@ const createThread = async () => {
 
 const isValidForm = computed(() => {
   const result = title.value.trim() !== '' && selectedCategory.value && text.value.trim() !== ''
-  console.log(result)
   return result
 })
 
