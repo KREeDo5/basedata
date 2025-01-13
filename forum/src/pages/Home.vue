@@ -5,16 +5,26 @@ import HeaderBar from '@/components/HeaderBar.vue'
 import CategoryBlock from '@/components/categories/CategoryBlock.vue'
 import ThreadsBlock from '@/components/threads/ThreadsBlock.vue'
 import Loader from '@/components/core/Loader.vue'
+import CreateThread from '@/components/CreateThread.vue'
 
 import { useHomeStore } from '@/stores/HomeStore'
 
 const homeStore = useHomeStore()
 const isLoading = ref(true)
+const showModal = ref(false)
 
 const sortOptions = [
   { value: 'date', text: 'По дате создания треда' },
   { value: 'count', text: 'По количеству сообщений' },
 ]
+
+const openCreateThreadModal = () => {
+  showModal.value = true
+}
+
+const closeCreateThreadModal = () => {
+  showModal.value = false
+}
 
 onMounted(async () => {
   isLoading.value = true
@@ -30,7 +40,10 @@ onMounted(async () => {
       <Loader class="mt-20" />
     </div>
     <div v-else class="max-w-[1520px] w-full mx-auto mt-10 py-5 flex">
-      <CategoryBlock :categoryList="homeStore.categories" />
+      <CategoryBlock
+        :categoryList="homeStore.categories"
+        @openCreateThreadModal="openCreateThreadModal"
+      />
       <div class="w-full">
         <div class="flex bg-base-darkgrey rounded-[20px] py-3 px-4 mb-5">
           <form class="mr-3">
@@ -57,6 +70,7 @@ onMounted(async () => {
         <ThreadsBlock :threadList="homeStore.threads" />
       </div>
     </div>
+    <CreateThread v-if="showModal" @closeCreateThreadModal="closeCreateThreadModal"/>
   </div>
 </template>
 
