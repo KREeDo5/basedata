@@ -1,17 +1,19 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import CategoryBlock from '@/components/categories/CategoryBlock.vue'
 import ThreadsBlock from '@/components/threads/ThreadsBlock.vue'
 import Loader from '@/components/core/Loader.vue'
 import CreateThread from '@/components/CreateThread.vue'
+import Button from '@/components/core/Button.vue'
 
 import { useHomeStore } from '@/stores/HomeStore'
 
 const homeStore = useHomeStore()
 const isLoading = ref(true)
 const showModal = ref(false)
+const currentCategoryId = ref(null)
 
 const sortOptions = [
   { value: 'date', text: 'По дате создания треда' },
@@ -26,12 +28,19 @@ const closeCreateThreadModal = () => {
   showModal.value = false
 }
 
-const updateThreadList = async (categoryId) => {
+const updateThreadList = async (categoryId = null) => {
   isLoading.value = true
   homeStore.clearThreads()
   await homeStore.fetchThreads(categoryId)
+  currentCategoryId.value = categoryId
   isLoading.value = false
 }
+
+const currentCategoryName = computed(() => {
+  if (currentCategoryId.value === null) return ''
+  const category = homeStore.categories.find((cat) => cat.id === currentCategoryId.value)
+  return category ? category.title : ''
+})
 
 onMounted(async () => {
   isLoading.value = true
@@ -75,10 +84,19 @@ onMounted(async () => {
             />
           </form>
         </div>
+        <div v-if="currentCategoryName" class="flex items-center mb-5">
+          <Button
+            text="&lt;"
+            variant="rounded"
+            @click="updateThreadList(null)"
+            title="Вернуться на главную страницу"
+          />
+          <h2 class="text-2xl text-white ml-5">{{ currentCategoryName }}</h2>
+        </div>
         <ThreadsBlock :threadList="homeStore.threads" />
       </div>
     </div>
-    <CreateThread v-if="showModal" @closeCreateThreadModal="closeCreateThreadModal"/>
+    <CreateThread v-if="showModal" @closeCreateThreadModal="closeCreateThreadModal" />
   </div>
 </template>
 
