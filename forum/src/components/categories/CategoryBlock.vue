@@ -1,8 +1,11 @@
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue'
+import { defineProps, defineEmits, ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/AuthStore'
 
 import Button from '../core/Button.vue'
 import CategoryItem from './CategoryItem.vue'
+
+const authStore = useAuthStore()
 
 const props = defineProps({
   categoryList: Array,
@@ -11,6 +14,8 @@ const props = defineProps({
 const emits = defineEmits(['openCreateThreadModal'])
 
 const expandedCategories = ref([])
+
+const isUserAuthorized = computed(() => !!authStore.user)
 
 const toggleCategory = (categoryId) => {
   if (expandedCategories.value.includes(categoryId)) {
@@ -35,7 +40,7 @@ const createModalOpen = () => {
 
 <template>
   <div class="h-min w-[320px] bg-base-darkgrey rounded-[20px] py-5 px-4 mx-9">
-    <Button class="w-full" text="Создать тред" @click="createModalOpen" />
+    <Button v-if="isUserAuthorized" class="w-full" text="Создать тред" @click="createModalOpen" />
     <div class="space-y-3 mt-2">
       <CategoryItem
         v-for="category in categoryList"
