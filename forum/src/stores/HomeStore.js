@@ -36,6 +36,37 @@ export const useHomeStore = defineStore('homeStore', () => {
     }
   }
 
+  const createThread = async (form) => {
+    try {
+      const formData = new FormData()
+      for (const key in form) {
+        if (Array.isArray(form[key])) {
+          form[key].forEach((file, index) => {
+            formData.append(`${key}[${index}]`, file)
+          })
+        } else {
+          formData.append(key, form[key])
+        }
+      }
+
+      const response = await axios.post('https://forum.kreedo.tech:8443/create/thread', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      const meta = response.data.meta
+      if (meta.success) {
+        console.log('Thread created')
+      } else {
+        throw new Error(meta.error || 'Create thread failed')
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.meta?.error || error.message)
+    }
+  }
+
+
   onMounted(() => {
     fetchThreads()
     fetchCategories()
@@ -46,5 +77,6 @@ export const useHomeStore = defineStore('homeStore', () => {
     categories,
     fetchThreads,
     fetchCategories,
+    createThread,
   }
 })

@@ -27,9 +27,8 @@ const closeModal = () => {
 const emits = defineEmits(['closeCreateThreadModal'])
 
 const createThread = async () => {
-  console.log('Creating thread:')
   sendMessage()
-  showModal.value = false
+  closeModal()
 }
 
 const sendMessage = async () => {
@@ -40,10 +39,7 @@ const sendMessage = async () => {
     text: text.value,
     threadImages: threadImages.value,
   }
-
-  console.log(thread)
-
-  threadImages.value = []
+  await homeStore.createThread(thread)
 }
 
 const addImage = (event) => {
@@ -67,7 +63,7 @@ const removeImage = (index) => {
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
   >
     <div class="max-w-4xl w-full bg-base-grey rounded-[20px] p-6">
-      <form @submit.prevent="createThread">
+      <div >
         <div class="mb-4">
           <label for="category" class="text-2xl text-base-gold font-w500">Категория:</label>
           <div class="h-[10px]" />
@@ -152,9 +148,9 @@ const removeImage = (index) => {
             title="Отменить создание треда"
             class="mr-2"
           />
-          <Button type="submit" text="Создать" @click="closeModal" title="Создать тред" />
+          <Button type="submit" text="Создать" @click="createThread" title="Создать тред" />
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
