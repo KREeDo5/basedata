@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, defineEmits } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, defineEmits } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 
 const props = defineProps({
@@ -12,6 +12,8 @@ const authStore = useAuthStore()
 const newMessage = ref('')
 const messageImages = ref([])
 const imageInputRef = ref(null)
+const emojiList = ['😊', '😂', '😍', '😢', '😎', '👍', '👎', '❤️', '🔥', '🎉']
+const showEmojiPicker = ref(false)
 
 const adjustTextareaHeight = (event) => {
   const textarea = event.target
@@ -29,7 +31,20 @@ onMounted(() => {
     textarea.style.height = 'auto'
     textarea.style.height = `${textarea.scrollHeight}px`
   }
+
+  document.addEventListener('click', handleClickOutside)
 })
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+const handleClickOutside = (event) => {
+  const emojiPicker = document.getElementById('emojiPicker')
+  if (emojiPicker && !emojiPicker.contains(event.target)) {
+    showEmojiPicker.value = false
+  }
+}
 
 const sendMessage = async () => {
   if (!props.threadId) {
@@ -86,6 +101,16 @@ const handleKeyDown = (event) => {
     }
   }
 }
+
+const insertEmoji = (emoji) => {
+  newMessage.value += emoji
+  adjustTextareaHeight({ target: document.getElementById('newMessage') })
+}
+
+const toggleEmojiPicker = (event) => {
+  event.stopPropagation() // Предотвращение всплытия события
+  showEmojiPicker.value = !showEmojiPicker.value
+}
 </script>
 
 <template>
@@ -119,10 +144,35 @@ const handleKeyDown = (event) => {
       <img
         src="/add-image.png"
         alt="add-icon"
-        class="h-[26px] w-[26px] mr-4 mt-1 cursor-pointer hover:opacity-70"
+        class="h-[26px] w-[26px] mr-2 mt-1 cursor-pointer hover:opacity-70"
         @click="imageInputRef.click()"
         title="Добавить изображение"
       />
+      <div class="relative">
+        <img
+          src="/smile.png"
+          @click="toggleEmojiPicker"
+          class="mr-4 mt-1 h-[26px] w-[26px] cursor-pointer"
+          title="Вставить смайлик"
+        />
+        <div
+          v-if="showEmojiPicker"
+          id="emojiPicker"
+          class="absolute bottom-[70px] bg-base-grey border border-base-blue rounded-lg p-2 shadow-lg"
+        >
+          <div class="flex space-x-2">
+            <button
+              v-for="emoji in emojiList"
+              :key="emoji"
+              @click="insertEmoji(emoji)"
+              class="text-xl cursor-pointer"
+              title="Вставить смайлик"
+            >
+              {{ emoji }}
+            </button>
+          </div>
+        </div>
+      </div>
       <form class="bg-base-grey rounded-xl w-full">
         <textarea
           v-model="newMessage"
@@ -145,3 +195,5 @@ const handleKeyDown = (event) => {
     </div>
   </div>
 </template>
+
+<style scoped></style>
