@@ -7,6 +7,7 @@ export const useThreadStore = defineStore('threadStore', () => {
   const text = ref('')
   const threadAuthor = ref(null)
   const threadMessages = ref([])
+  const images = ref([])
   const createdAt = ref(null)
   const isClosed = ref(false)
 
@@ -26,6 +27,9 @@ export const useThreadStore = defineStore('threadStore', () => {
         threadAuthor.value = data.threadInfo.user
         threadMessages.value = data.threadInfo.messages
         isClosed.value = data.threadInfo.isClosed
+        images.value = data.threadInfo.images
+        console.log('threadInfo.images', data.threadInfo.images)
+        console.log('images', images.value)
       } else {
         console.error('Unexpected response data format for thread details:', response.data)
       }
@@ -95,5 +99,6 @@ export const useThreadStore = defineStore('threadStore', () => {
     threadMessages,
     createdAt,
     isClosed,
+    images,
   }
 })

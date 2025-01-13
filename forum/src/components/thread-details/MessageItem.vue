@@ -1,6 +1,6 @@
 <script setup>
 import UserInfo from '@/components/UserInfo.vue'
-import SafeNetworkImage from '../core/SafeNetworkImage.vue';
+import ThreadImages from '@/components/thread-details/ThreadImages.vue'
 
 const props = defineProps({
   id: Number,
@@ -18,13 +18,5 @@ const props = defineProps({
     <div class="px-5 pb-3 text-white break-words whitespace-pre-wrap">
       {{ text }}
     </div>
-    <div class="px-5 pb-3 flex flex-wrap gap-2">
-      <SafeNetworkImage
-        v-for="(image, index) in images"
-        :key="index"
-        :url="image"
-        alt="message image"
-        class="max-h-[300px] object-cover rounded-lg"
-      />
-    </div>
+    <ThreadImages :images="images" />
 </template>

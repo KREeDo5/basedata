@@ -88,7 +88,11 @@ const closeThread = async () => {
     <ThreadImages :images="threadStore.images" />
     <ThreadMessages :messages="threadStore.threadMessages" />
     <div class="mt-auto">
-      <CreateMessage v-if="!threadStore.isClosed && isUserAuthorized" :threadId="threadId" @messageSent="sendMessage" />
+      <CreateMessage
+        v-if="!threadStore.isClosed && isUserAuthorized"
+        :threadId="threadId"
+        @messageSent="sendMessage"
+      />
       <div v-else>
         <hr class="border-t border-base-grey pb-5" />
         <div class="text-base text-base-red text-center w-full">
