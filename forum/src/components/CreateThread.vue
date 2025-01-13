@@ -13,7 +13,7 @@ const imageInputRef = ref(null)
 const title = ref('')
 const text = ref('')
 const categories = ref([])
-const selectedCategory = ref(0)
+const selectedCategory = ref('')
 
 onMounted(async () => {
   categories.value = homeStore.categories
@@ -81,6 +81,7 @@ const removeImage = (index) => {
             class="w-full p-2.5 block bg-base-darkgrey text-base-grey2 border border-base-grey text-base rounded-[8px] focus:outline-none focus:ring-1 focus:ring-base-blue"
             required
           >
+            <option value="" disabled selected hidden>Выберите категорию</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.title }}
             </option>
