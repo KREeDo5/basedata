@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import Button from '@/components/core/Button.vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { useHomeStore } from '@/stores/HomeStore'
@@ -27,11 +27,19 @@ const closeModal = () => {
 const emits = defineEmits(['closeCreateThreadModal'])
 
 const createThread = async () => {
-  sendMessage()
-  closeModal()
+  if (isValidForm) {
+    await sendThread()
+    closeModal()
+  }
 }
 
-const sendMessage = async () => {
+const isValidForm = computed(() => {
+  const result = title.value.trim() !== '' && selectedCategory.value && text.value.trim() !== ''
+  console.log(result)
+  return result
+})
+
+const sendThread = async () => {
   const thread = {
     categoryId: selectedCategory.value,
     userId: authStore.token,
@@ -63,7 +71,7 @@ const removeImage = (index) => {
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
   >
     <div class="max-w-4xl w-full bg-base-grey rounded-[20px] p-6">
-      <div >
+      <div>
         <div class="mb-4">
           <label for="category" class="text-2xl text-base-gold font-w500">Категория:</label>
           <div class="h-[10px]" />
@@ -148,7 +156,13 @@ const removeImage = (index) => {
             title="Отменить создание треда"
             class="mr-2"
           />
-          <Button type="submit" text="Создать" @click="createThread" title="Создать тред" />
+          <Button
+            type="submit"
+            text="Создать"
+            @click="createThread"
+            title="Создать тред"
+            :disabled="!isValidForm"
+          />
         </div>
       </div>
     </div>
