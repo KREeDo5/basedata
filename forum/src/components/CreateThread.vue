@@ -1,10 +1,23 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Button from '@/components/core/Button.vue'
+import { useAuthStore } from '@/stores/AuthStore'
+import { useHomeStore } from '@/stores/HomeStore'
+
+const authStore = useAuthStore()
+const homeStore = useHomeStore()
 
 const showModal = ref(true)
-const messageImages = ref([])
+const threadImages = ref([])
 const imageInputRef = ref(null)
+const title = ref('')
+const text = ref('')
+const categories = ref([])
+const selectedCategory = ref(0)
+
+onMounted(async () => {
+  categories.value = homeStore.categories
+})
 
 const closeModal = () => {
   showModal.value = false
@@ -15,13 +28,28 @@ const emits = defineEmits(['closeCreateThreadModal'])
 
 const createThread = async () => {
   console.log('Creating thread:')
+  sendMessage()
   showModal.value = false
+}
+
+const sendMessage = async () => {
+  const thread = {
+    categoryId: selectedCategory.value,
+    userId: authStore.token,
+    title: title.value,
+    text: text.value,
+    threadImages: threadImages.value,
+  }
+
+  console.log(thread)
+
+  threadImages.value = []
 }
 
 const addImage = (event) => {
   const files = event.target.files
   for (let i = 0; i < files.length; i++) {
-    messageImages.value.push(files[i])
+    threadImages.value.push(files[i])
   }
   event.target.value = ''
 }
@@ -29,7 +57,7 @@ const addImage = (event) => {
 const getObjectURL = (file) => URL.createObjectURL(file)
 
 const removeImage = (index) => {
-  messageImages.value.splice(index, 1)
+  threadImages.value.splice(index, 1)
 }
 </script>
 
@@ -42,7 +70,7 @@ const removeImage = (index) => {
       <form @submit.prevent="createThread">
         <div class="mb-4">
           <label for="category" class="text-2xl text-base-gold font-w500">Категория:</label>
-          <div class="h-[10px]"/>
+          <div class="h-[10px]" />
           <select
             id="category"
             v-model="selectedCategory"
@@ -70,7 +98,7 @@ const removeImage = (index) => {
         </div>
         <div class="mb-4">
           <label for="text" class="text-2xl text-base-gold font-w500">Описание:</label>
-          <div class="h-[10px]"/>
+          <div class="h-[10px]" />
           <textarea
             v-model="text"
             type="text"
@@ -80,7 +108,9 @@ const removeImage = (index) => {
           />
         </div>
         <div class="mb-4 flex">
-          <div class="bg-base-darkgrey h-[120px] w-[180px] rounded-lg cursor-pointer hover:opacity-70 py-5">
+          <div
+            class="bg-base-darkgrey h-[120px] w-[180px] rounded-lg cursor-pointer hover:opacity-70 py-5"
+          >
             <img
               src="/add-thread-image.png"
               alt="add-icon"
@@ -97,22 +127,22 @@ const removeImage = (index) => {
             @change="addImage"
             multiple
           />
-          <div v-if="messageImages.length" class="px-5 flex w-full flex-wrap">
-          <div v-for="(image, index) in messageImages" :key="index" class="mr-2 mb-2 relative">
-            <img
-              :src="getObjectURL(image)"
-              alt="Uploaded Image"
-              class="max-h-[120px] max-w-[180px] rounded-lg cursor-pointer"
-            />
-            <button
-              @click="removeImage(index)"
-              class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
-              title="Удалить"
-            >
-              ×
-            </button>
+          <div v-if="threadImages.length" class="px-5 flex w-full flex-wrap">
+            <div v-for="(image, index) in threadImages" :key="index" class="mr-2 mb-2 relative">
+              <img
+                :src="getObjectURL(image)"
+                alt="Uploaded Image"
+                class="max-h-[120px] max-w-[180px] rounded-lg cursor-pointer"
+              />
+              <button
+                @click="removeImage(index)"
+                class="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                title="Удалить"
+              >
+                ×
+              </button>
+            </div>
           </div>
-        </div>
         </div>
         <div class="flex justify-end">
           <Button
