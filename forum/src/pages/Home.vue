@@ -28,6 +28,7 @@ const closeCreateThreadModal = () => {
 
 const updateThreadList = async (categoryId) => {
   isLoading.value = true
+  homeStore.clearThreads()
   await homeStore.fetchThreads(categoryId)
   isLoading.value = false
 }

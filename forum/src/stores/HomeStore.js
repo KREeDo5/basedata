@@ -76,11 +76,16 @@ export const useHomeStore = defineStore('homeStore', () => {
     fetchCategories()
   })
 
+  const clearThreads = async () => {
+    threads.value = []
+  }
+
   return {
     threads,
     categories,
     fetchThreads,
     fetchCategories,
     createThread,
+    clearThreads,
   }
 })
