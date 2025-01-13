@@ -28,8 +28,6 @@ export const useThreadStore = defineStore('threadStore', () => {
         threadMessages.value = data.threadInfo.messages
         isClosed.value = data.threadInfo.isClosed
         images.value = data.threadInfo.images
-        console.log('threadInfo.images', data.threadInfo.images)
-        console.log('images', images.value)
       } else {
         console.error('Unexpected response data format for thread details:', response.data)
       }

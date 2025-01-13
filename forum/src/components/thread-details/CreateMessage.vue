@@ -15,6 +15,10 @@ const imageInputRef = ref(null)
 
 const adjustTextareaHeight = (event) => {
   const textarea = event.target
+  if (!textarea.value) {
+    textarea.style.height = 'auto'
+    return
+  }
   textarea.style.height = 'auto'
   textarea.style.height = `${textarea.scrollHeight}px`
 }
@@ -22,11 +26,16 @@ const adjustTextareaHeight = (event) => {
 onMounted(() => {
   const textarea = document.getElementById('newMessage')
   if (textarea) {
-    textarea.addEventListener('input', adjustTextareaHeight)
+    textarea.style.height = 'auto'
+    textarea.style.height = `${textarea.scrollHeight}px`
   }
 })
 
 const sendMessage = async () => {
+  if (!props.threadId) {
+    console.error('Отсутствует threadId')
+    return
+  }
   if (!isMessageValid.value) {
     return
   }
@@ -40,6 +49,11 @@ const sendMessage = async () => {
 
   newMessage.value = ''
   messageImages.value = []
+
+  const textarea = document.getElementById('newMessage')
+  if (textarea) {
+    textarea.style.height = 'auto'
+  }
 }
 
 const isMessageValid = computed(() => {
@@ -58,6 +72,18 @@ const getObjectURL = (file) => URL.createObjectURL(file)
 
 const removeImage = (index) => {
   messageImages.value.splice(index, 1)
+}
+
+const handleKeyDown = (event) => {
+  if (event.key === 'Enter') {
+    if (event.shiftKey) {
+      event.preventDefault()
+      newMessage.value += '\n'
+    } else {
+      event.preventDefault()
+      sendMessage()
+    }
+  }
 }
 </script>
 
@@ -104,6 +130,7 @@ const removeImage = (index) => {
           placeholder="Напишите ответ"
           class="bg-base-grey min-h-10 h-10 max-h-[150px] w-full px-4 py-2 rounded-xl text-base text-gray-400 focus:outline-none focus:ring-1 focus:ring-base-blue"
           @input="adjustTextareaHeight"
+          @keydown="handleKeyDown"
         />
       </form>
       <img

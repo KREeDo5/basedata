@@ -20,7 +20,10 @@ const props = defineProps({
 const threadStore = useThreadStore()
 const authStore = useAuthStore()
 
-const isOwner = computed(() => threadStore.threadAuthor.id === authStore.token)
+const isOwner = computed(() => {
+  return threadStore.threadAuthor && threadStore.threadAuthor.id === authStore.token
+})
+
 const isUserAuthorized = computed(() => !!authStore.user)
 
 const isLoading = ref(true)
