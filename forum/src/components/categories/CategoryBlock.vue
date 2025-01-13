@@ -43,7 +43,7 @@ const updateThreadList = (categoryId) => {
 </script>
 
 <template>
-  <div class="h-min w-[320px] bg-base-darkgrey rounded-[20px] py-5 px-4 mx-9">
+  <div class="h-min w-[320px] bg-base-darkgrey rounded-[20px] py-5 px-4 mr-9">
     <Button v-if="isUserAuthorized" class="w-full" text="Создать тред" @click="createModalOpen" />
     <div class="space-y-3 mt-2">
       <CategoryItem

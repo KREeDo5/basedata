@@ -54,7 +54,7 @@ const addImage = (event) => {
   event.target.value = ''
 }
 
-const getObjectURL = (file) => URL.createObjectURL(file);
+const getObjectURL = (file) => URL.createObjectURL(file)
 
 const removeImage = (index) => {
   messageImages.value.splice(index, 1)
@@ -102,7 +102,7 @@ const removeImage = (index) => {
           type="text"
           id="newMessage"
           placeholder="Напишите ответ"
-          class="bg-base-grey min-h-10 h-10 w-full px-4 py-2 rounded-xl text-base text-gray-400 focus:outline-none focus:ring-1 focus:ring-base-blue"
+          class="bg-base-grey min-h-10 h-10 max-h-[150px] w-full px-4 py-2 rounded-xl text-base text-gray-400 focus:outline-none focus:ring-1 focus:ring-base-blue"
           @input="adjustTextareaHeight"
         />
       </form>

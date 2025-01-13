@@ -26,6 +26,7 @@ const openCreateThreadModal = () => {
 
 const closeCreateThreadModal = () => {
   showModal.value = false
+  updateThreadList()
 }
 
 const updateThreadList = async (categoryId = null) => {
@@ -55,7 +56,7 @@ onMounted(async () => {
     <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
       <Loader class="mt-20" />
     </div>
-    <div v-else class="max-w-[1520px] w-full mx-auto mt-10 py-5 flex">
+    <div v-else class="max-w-7xl w-full mx-auto mt-10 py-5 flex">
       <CategoryBlock
         :categoryList="homeStore.categories"
         @openCreateThreadModal="openCreateThreadModal"

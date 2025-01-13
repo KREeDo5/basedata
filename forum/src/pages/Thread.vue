@@ -63,7 +63,7 @@ const closeThread = async () => {
   </div>
   <div
     v-else
-    class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5"
+    class="flex flex-col min-h-[calc(100vh-10rem)] max-w-7xl w-full mx-auto mt-10 mb-10 bg-base-darkgrey rounded-[20px] py-5"
   >
     <div class="flex p-[22px]">
       <div v-if="threadStore.isClosed" class="mr-2 mt-1">

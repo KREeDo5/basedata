@@ -49,8 +49,8 @@ const isNameValid = computed(() => {
 })
 
 const aboutMeText = computed(() => {
-  return aboutMe.value || 'Нет информации';
-});
+  return aboutMe.value || 'Нет информации'
+})
 
 const toggleEditMode = async () => {
   if (isEditing.value) {
@@ -138,13 +138,13 @@ const editPassword = () => {
 
 const saveNewPassword = async (oldPassword, newPassword) => {
   try {
-    await authStore.editPassword({ id: authStore.token, oldPassword, newPassword });
-    isPasswordModalOpen.value = false;
-    emitter.emit('passwordSuccess', error.message || 'Ошибка при смене пароля');
+    await authStore.editPassword({ id: authStore.token, oldPassword, newPassword })
+    isPasswordModalOpen.value = false
+    emitter.emit('passwordSuccess', error.message || 'Ошибка при смене пароля')
   } catch (error) {
-    emitter.emit('passwordError', error.message || 'Ошибка при смене пароля');
+    emitter.emit('passwordError', error.message || 'Ошибка при смене пароля')
   }
-};
+}
 
 const cancelPasswordChange = () => {
   isPasswordModalOpen.value = false
@@ -158,6 +158,11 @@ watch(
     isLoading.value = false
   },
 )
+
+const aboutMeTextComputed = computed(() => {
+  const text = aboutMe.value
+  return text === null || text === 'null' || text.trim() === '' ? 'Нет информации' : text
+})
 </script>
 
 <template>
@@ -250,7 +255,7 @@ watch(
                 v-if="!isEditing"
                 class="bg-base-grey min-h-[220px] rounded-xl px-4 py-3 text-xl text-gray-400 break-words whitespace-pre-wrap"
               >
-                <p>{{ aboutMeText || 'Нет информации' }}</p>
+                <p>{{ aboutMeTextComputed }}</p>
               </div>
               <form v-if="isEditing">
                 <textarea
@@ -258,7 +263,7 @@ watch(
                   type="text"
                   id="aboutMe"
                   placeholder="Расскажите о себе"
-                  class="bg-base-grey w-full min-h-[220px] px-4 py-3 rounded-xl text-xl text-gray-400 break-words whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-base-blue"
+                  class="bg-base-grey w-full min-h-[220px] max-h-[400px] px-4 py-3 rounded-xl text-xl text-gray-400 break-words whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-base-blue"
                 />
               </form>
             </div>
