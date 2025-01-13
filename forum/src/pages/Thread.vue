@@ -21,7 +21,8 @@ const threadStore = useThreadStore()
 const authStore = useAuthStore()
 
 const isOwner = computed(() => {
-  return threadStore.threadAuthor && threadStore.threadAuthor.id === authStore.token
+  const result = threadStore.threadAuthor && threadStore.threadAuthor.id === Number(authStore.token)
+  return result
 })
 
 const isUserAuthorized = computed(() => !!authStore.user)
@@ -76,7 +77,7 @@ const closeThread = async () => {
       <div>
         <UserInfo :user="threadStore.threadAuthor" :createdAt="threadStore.createdAt" />
         <Button
-          v-if="isOwner"
+          v-if="isOwner && !threadStore.isClosed"
           class="w-full mt-3"
           text="закрыть тему"
           variant="edit"
