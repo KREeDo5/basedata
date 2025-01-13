@@ -78,7 +78,7 @@ const handleSubmit = async () => {
 }
 
 const startCountdown = () => {
-  countdown.value = 1 //TODO: Change to 3
+  countdown.value = 3
   if (countdownInterval) clearInterval(countdownInterval)
   countdownInterval = setInterval(() => {
     countdown.value -= 1
