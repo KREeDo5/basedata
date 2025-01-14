@@ -39,6 +39,7 @@ class Thread extends Model
         $sortDirection = $request->header('sortDirection', 'desc');
 
         $page = $request->header('offset', 1);
+        $search = $request->header('search');
 
         $categoriesId = [];
         if ($categoryId)
@@ -52,8 +53,11 @@ class Thread extends Model
             ->with(['user'])
             ->withCount('messages')
             ->where('thread.visibility', 'visible')
-            ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
+            ->when($categoriesId, function ($query, $categoriesId) {
                 return $query->whereIn('id_category', $categoriesId);
+            })
+            ->when($search, function ($query, $search) {
+               return $query->where('title', 'LIKE', '%' . $search . '%');
             });
 
         if ($sortField == 'messagesCount')
