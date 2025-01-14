@@ -14,7 +14,7 @@ const homeStore = useHomeStore()
 const isLoading = ref(true)
 const showModal = ref(false)
 const currentCategoryId = ref(null)
-const optionValue = ref('created_at')
+const optionValue = ref(localStorage.getItem('optionValue') || 'created_at')
 
 const sortOptions = [
   { value: 'created_at', text: 'По дате создания треда' },
@@ -35,7 +35,7 @@ const updateThreadList = async (categoryId = null) => {
   isLoading.value = true
   homeStore.clearThreads()
   console.log(optionValue.value)
-  await homeStore.fetchThreads(categoryId, optionValue.value) // Использование текущего значения сортировки
+  await homeStore.fetchThreads(categoryId, optionValue.value)
   currentCategoryId.value = categoryId
   isLoading.value = false
 }
@@ -48,6 +48,7 @@ const currentCategoryName = computed(() => {
 
 const handleSortChange = (event) => {
   optionValue.value = event.target.value
+  localStorage.setItem('optionValue', optionValue.value)
   updateThreadList(currentCategoryId.value)
 }
 
@@ -77,6 +78,7 @@ onMounted(async () => {
               id="sortType"
               class="w-[260px] p-2.5 block bg-base-grey text-base-grey2 border border-base-grey text-base rounded-[12px] focus:border-blue-500"
               @change="handleSortChange"
+              :value="optionValue"
             >
               <option v-for="option in sortOptions" :key="option.value" :value="option.value">
                 {{ option.text }}
