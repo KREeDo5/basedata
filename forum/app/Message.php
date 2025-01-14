@@ -49,10 +49,11 @@ class Message extends Model
                 return response()->json($response, 409);
             }
             if (!Thread::where('id', $messageData->input('threadId'))
+                ->where('status', 'open')
                 ->exists())
             {
                 $response = [
-                    'meta' => ['success' => false, 'error' => 'this thread does not exist'],
+                    'meta' => ['success' => false, 'error' => 'this thread does not exist or closed'],
                     'data' => (object) []
                 ];
                 return response()->json($response, 405);
