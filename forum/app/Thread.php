@@ -35,8 +35,17 @@ class Thread extends Model
     public function getThreads(Request $request) {
         $categoryId = $request->header('categoryId');
 
-        $sortField = $request->header('sortField', 'created_at');
-        $sortDirection = $request->header('sortDirection', 'desc');
+        $sortField = $request->header('sortField');
+        if (!$sortField)
+        {
+            $sortField = 'created_at';
+        }
+        
+        $sortDirection = $request->header('sortDirection');
+        if (!$sortDirection)
+        {
+            $sortDirection = 'desc';
+        }
 
         $page = $request->header('offset', 1);
         $search = $request->header('search');
@@ -249,7 +258,7 @@ class Thread extends Model
 
         $user = User::where('id', $data->input('userId'))
             ->first();
-            
+
         if (!$user)
         {
             return $this->getResponse(404, 'user not found');
