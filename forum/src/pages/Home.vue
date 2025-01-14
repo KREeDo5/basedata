@@ -14,10 +14,12 @@ const homeStore = useHomeStore()
 const isLoading = ref(true)
 const showModal = ref(false)
 const currentCategoryId = ref(null)
+const optionValue = ref('created_at')
 
 const sortOptions = [
-  { value: 'date', text: 'По дате создания треда' },
-  { value: 'count', text: 'По количеству сообщений' },
+  { value: 'created_at', text: 'По дате создания треда' },
+  { value: 'messagesCount', text: 'По количеству сообщений' },
+  { value: 'lastMessage', text: 'По последнему сообщению' },
 ]
 
 const openCreateThreadModal = () => {
@@ -32,7 +34,8 @@ const closeCreateThreadModal = () => {
 const updateThreadList = async (categoryId = null) => {
   isLoading.value = true
   homeStore.clearThreads()
-  await homeStore.fetchThreads(categoryId)
+  console.log(optionValue.value)
+  await homeStore.fetchThreads(categoryId, optionValue.value) // Использование текущего значения сортировки
   currentCategoryId.value = categoryId
   isLoading.value = false
 }
@@ -43,9 +46,14 @@ const currentCategoryName = computed(() => {
   return category ? category.title : ''
 })
 
+const handleSortChange = (event) => {
+  optionValue.value = event.target.value
+  updateThreadList(currentCategoryId.value)
+}
+
 onMounted(async () => {
   isLoading.value = true
-  await Promise.all([homeStore.fetchThreads(), homeStore.fetchCategories()])
+  //await Promise.all([homeStore.fetchThreads(), homeStore.fetchCategories()])
   isLoading.value = false
 })
 </script>
@@ -68,6 +76,7 @@ onMounted(async () => {
             <select
               id="sortType"
               class="w-[260px] p-2.5 block bg-base-grey text-base-grey2 border border-base-grey text-base rounded-[12px] focus:border-blue-500"
+              @change="handleSortChange"
             >
               <option v-for="option in sortOptions" :key="option.value" :value="option.value">
                 {{ option.text }}

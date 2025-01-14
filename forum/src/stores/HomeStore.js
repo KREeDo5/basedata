@@ -6,11 +6,12 @@ export const useHomeStore = defineStore('homeStore', () => {
   const threads = ref([])
   const categories = ref([])
 
-  const fetchThreads = async (categoryId) => {
+  const fetchThreads = async (categoryId, sortField) => {
     try {
       const response = await axios.get('https://forum.kreedo.tech:8443/threads', {
         headers: {
           categoryId: categoryId,
+          sortField: sortField,
         },
       })
       const meta = response.data.meta
