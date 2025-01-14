@@ -49,10 +49,12 @@ class Message extends Model
                 return response()->json($response, 409);
             }
             if (!Thread::where('id', $messageData->input('threadId'))
+                ->where('status', 'open')
+                ->where('visibility', 'visible')
                 ->exists())
             {
                 $response = [
-                    'meta' => ['success' => false, 'error' => 'this thread does not exist'],
+                    'meta' => ['success' => false, 'error' => 'this thread does not exist or closed'],
                     'data' => (object) []
                 ];
                 return response()->json($response, 405);
@@ -93,5 +95,33 @@ class Message extends Model
         }
     
         return $this->getResponse(200);
+    }
+
+    public function deleteMessage(Request $data) {
+        $message = Message::where('id', $data->input('messageId'))
+                ->first();
+
+        if (!$message)
+        {
+            return $this->getResponse(404, 'message not found');
+        }
+
+        $user = User::where('id', $data->input('userId'))
+            ->first();
+            
+        if (!$user)
+        {
+            return $this->getResponse(404, 'user not found');
+        }
+
+        if ($message->id_user == $data->input('userId') || $user->id_role == 1)
+        {
+            $message->visibility = 'hidden';
+            $message->save();
+
+            return $this->getResponse(200); 
+        }
+
+        return $this->getResponse(403, 'you can not delete this message');
     }
 }

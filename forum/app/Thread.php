@@ -38,6 +38,9 @@ class Thread extends Model
         $sortField = $request->header('sortField', 'created_at');
         $sortDirection = $request->header('sortDirection', 'desc');
 
+        $page = $request->header('offset', 1);
+        $search = $request->header('search');
+
         $categoriesId = [];
         if ($categoryId)
         {
@@ -48,15 +51,18 @@ class Thread extends Model
         $threads = Thread::query()
             ->select('thread.*')
             ->with(['user'])
+            ->withCount('messages')
             ->where('thread.visibility', 'visible')
-            ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
+            ->when($categoriesId, function ($query, $categoriesId) {
                 return $query->whereIn('id_category', $categoriesId);
+            })
+            ->when($search, function ($query, $search) {
+               return $query->where('title', 'LIKE', '%' . $search . '%');
             });
 
         if ($sortField == 'messagesCount')
         {
-            $threads->withCount('messages')
-                ->orderBy('messages_count', $sortDirection);
+            $threads->orderBy('messages_count', $sortDirection);
         }
         elseif ($sortField == 'lastMessage')
         {
@@ -69,8 +75,12 @@ class Thread extends Model
             $threads->orderBy($sortField, $sortDirection);
         }
 
+        $sortedThreads = $threads->paginate(10, ['*'], 'page', $page);
 
-        $sortedThreads = $threads->get();
+        if ($sortedThreads->isEmpty())
+        {
+            return $this->getResponse(200, '', ['threads' => []]);
+        }
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
         $data = [
@@ -81,6 +91,7 @@ class Thread extends Model
                     'text' => $thread->text,
                     'created_at' => $thread->created_at,
                     'isClosed' => $thread->status == 'open' ? false : true,
+                    'messagesCount' => $thread->messages_count ?? 0,
                     'user' => [
                         'id' => $thread->user->id,
                         'name' => $thread->user->name,
@@ -225,5 +236,33 @@ class Thread extends Model
         }
 
         return $this->getResponse(403, 'you can not close this thread');
+    }
+
+    public function deleteThread(Request $data) {
+        $thread = Thread::where('id', $data->input('threadId'))
+                ->first();
+
+        if (!$thread)
+        {
+            return $this->getResponse(404, 'thread not found');
+        }
+
+        $user = User::where('id', $data->input('userId'))
+            ->first();
+            
+        if (!$user)
+        {
+            return $this->getResponse(404, 'user not found');
+        }
+
+        if ($thread->id_user == $data->input('userId') || $user->id_role == 1)
+        {
+            $thread->visibility = 'hidden';
+            $thread->save();
+
+            return $this->getResponse(200); 
+        }
+
+        return $this->getResponse(403, 'you can not delete this thread');
     }
 }

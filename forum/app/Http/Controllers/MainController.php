@@ -141,4 +141,16 @@ class MainController extends Controller
     public function createMessage(Request $data) {
         return Message::find(1)->createMessage($data);
     }
+
+    public function deleteThread(Request $data) {
+        return Thread::find(1)->deleteThread($data);
+    }
+
+    public function deleteMessage(Request $data) {
+        return Message::find(1)->deleteMessage($data);
+    }
+
+    public function giveRole(Request $data) {
+        return User::find(1)->giveRole($data);
+    }
 }
