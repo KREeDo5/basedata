@@ -38,6 +38,8 @@ class Thread extends Model
         $sortField = $request->header('sortField', 'created_at');
         $sortDirection = $request->header('sortDirection', 'desc');
 
+        $page = $request->header('offset', 1);
+
         $categoriesId = [];
         if ($categoryId)
         {
@@ -48,6 +50,7 @@ class Thread extends Model
         $threads = Thread::query()
             ->select('thread.*')
             ->with(['user'])
+            ->withCount('messages')
             ->where('thread.visibility', 'visible')
             ->when(!empty($categoriesId), function ($query) use ($categoriesId) {
                 return $query->whereIn('id_category', $categoriesId);
@@ -55,8 +58,7 @@ class Thread extends Model
 
         if ($sortField == 'messagesCount')
         {
-            $threads->withCount('messages')
-                ->orderBy('messages_count', $sortDirection);
+            $threads->orderBy('messages_count', $sortDirection);
         }
         elseif ($sortField == 'lastMessage')
         {
@@ -69,8 +71,12 @@ class Thread extends Model
             $threads->orderBy($sortField, $sortDirection);
         }
 
+        $sortedThreads = $threads->paginate(10, ['*'], 'page', $page);
 
-        $sortedThreads = $threads->get();
+        if ($sortedThreads->isEmpty())
+        {
+            return $this->getResponse(200, '', []);
+        }
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
         $data = [
@@ -81,6 +87,7 @@ class Thread extends Model
                     'text' => $thread->text,
                     'created_at' => $thread->created_at,
                     'isClosed' => $thread->status == 'open' ? false : true,
+                    'messagesCount' => $thread->messages_count ?? 0,
                     'user' => [
                         'id' => $thread->user->id,
                         'name' => $thread->user->name,
