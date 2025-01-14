@@ -23,7 +23,7 @@ const props = defineProps({
           :id="thread.id"
           :title="thread.title"
           :isClosed="thread.isClosed"
-          :commentsCount="thread.commentsCount"
+          :commentsCount="thread.messagesCount"
           :user="thread.user"
           :created_at="thread.created_at"
         />
