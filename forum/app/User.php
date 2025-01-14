@@ -262,4 +262,25 @@ class User extends Model
         ];
         return response()->json($response, 400);
     }
+
+    public function giveRole(Request $data)
+    {
+        $giver = User::where('id', $data->input('giverId'))
+            ->first();
+        $taker = User::where('id', $data->input('takerId'))
+            ->first();
+
+        if (!$giver || !$taker)
+        {
+            return $this->getResponse(404, 'user not found');
+        }
+
+        if ($giver->id_role == 1)
+        {
+            $taker->id_role = $data->input('giverId');
+            $taker->save();
+            return $this->getResponse(200);
+        }
+        return $this->getResponse(403, 'you are not an admin');
+    }
 }

@@ -22,3 +22,8 @@ Route::post('create/thread', 'MainController@createThread'); // body(categoryId,
 Route::post('create/message', 'MainController@createMessage'); // body(threadId, userId, text, messageImages[])
 
 Route::post('/closeThread', 'MainController@closeThread'); // body(userId, threadId)
+
+Route::post('/delete/thread', 'MainController@deleteThread'); // body(userId, threadId)
+Route::post('/delete/message', 'MainController@deleteMessage'); // body(userId, messageId)
+
+Route::post('/giveRole', 'MainController@giveRole'); // body(giverId, takerId, roleId)

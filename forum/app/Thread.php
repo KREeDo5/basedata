@@ -237,4 +237,32 @@ class Thread extends Model
 
         return $this->getResponse(403, 'you can not close this thread');
     }
+
+    public function deleteThread(Request $data) {
+        $thread = Thread::where('id', $data->input('threadId'))
+                ->first();
+
+        if (!$thread)
+        {
+            return $this->getResponse(404, 'thread not found');
+        }
+
+        $user = User::where('id', $data->input('userId'))
+            ->first();
+            
+        if (!$user)
+        {
+            return $this->getResponse(404, 'user not found');
+        }
+
+        if ($thread->id_user == $data->input('userId') || $user->id_role == 1)
+        {
+            $thread->visibility = 'hidden';
+            $thread->save();
+
+            return $this->getResponse(200); 
+        }
+
+        return $this->getResponse(403, 'you can not delete this thread');
+    }
 }
