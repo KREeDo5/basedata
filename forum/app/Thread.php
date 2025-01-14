@@ -75,7 +75,7 @@ class Thread extends Model
 
         if ($sortedThreads->isEmpty())
         {
-            return $this->getResponse(200, '', []);
+            return $this->getResponse(200, '', ['threads' => []]);
         }
 
         // не делаю проверку на существование, потому что, если нет тредов в категории, пусть всё равно отрисовывается пустая страница
