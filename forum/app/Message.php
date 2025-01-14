@@ -50,6 +50,7 @@ class Message extends Model
             }
             if (!Thread::where('id', $messageData->input('threadId'))
                 ->where('status', 'open')
+                ->where('visibility', 'visible')
                 ->exists())
             {
                 $response = [
