@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useThreadStore } from '@/stores/ThreadStore'
 import { useAuthStore } from '@/stores/AuthStore'
+import { useRouter } from 'vue-router';
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import AppButton from '@/components/core/AppButton.vue'
@@ -17,6 +18,7 @@ const props = defineProps({
   },
 })
 
+const router = useRouter();
 const threadStore = useThreadStore()
 const authStore = useAuthStore()
 

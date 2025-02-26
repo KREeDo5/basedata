@@ -140,7 +140,7 @@ const saveNewPassword = async (oldPassword, newPassword) => {
   try {
     await authStore.editPassword({ id: authStore.token, oldPassword, newPassword })
     isPasswordModalOpen.value = false
-    emitter.emit('passwordSuccess', error.message || 'Ошибка при смене пароля')
+    emitter.emit('passwordSuccess')
   } catch (error) {
     emitter.emit('passwordError', error.message || 'Ошибка при смене пароля')
   }
