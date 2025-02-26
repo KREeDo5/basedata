@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/AuthStore'
 import { emitter } from '@/eventBus'
 
 import AppButton from './core/AppButton.vue'
-import Avatar from './core/Avatar.vue'
+import UserAvatar from './core/UserAvatar.vue'
 
 const props = defineProps({
   isAuthPage: Boolean,
@@ -53,7 +53,7 @@ emitter.on('user-updated', (userData) => {
       </div>
       <div v-if="showUserInfo && isUserLoaded" title="Перейти в профиль">
         <RouterLink to="/profile" class="flex items-center space-x-2">
-          <Avatar :url="userAvatar" />
+          <UserAvatar :url="userAvatar" />
           <span class="text-white">{{ name }}</span>
         </RouterLink>
       </div>

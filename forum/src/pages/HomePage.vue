@@ -4,7 +4,7 @@ import { ref, onMounted, computed } from 'vue'
 import HeaderBar from '@/components/HeaderBar.vue'
 import CategoryBlock from '@/components/categories/CategoryBlock.vue'
 import ThreadsBlock from '@/components/threads/ThreadsBlock.vue'
-import Loader from '@/components/core/Loader.vue'
+import AppLoader from '@/components/core/AppLoader.vue'
 import CreateThread from '@/components/CreateThread.vue'
 import AppButton from '@/components/core/AppButton.vue'
 
@@ -63,7 +63,7 @@ onMounted(async () => {
   <HeaderBar />
   <div>
     <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
-      <Loader class="mt-20" />
+      <AppLoader class="mt-20" />
     </div>
     <div v-else class="max-w-7xl w-full mx-auto mt-10 py-5 flex">
       <CategoryBlock

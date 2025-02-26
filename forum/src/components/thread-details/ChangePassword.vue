@@ -2,7 +2,7 @@
 import { ref, defineProps, defineEmits, watch, onMounted, onUnmounted } from 'vue'
 import { emitter } from '@/eventBus'
 import AppButton from '@/components/core/AppButton.vue'
-import Loader from '@/components/core/Loader.vue'
+import AppLoader from '@/components/core/AppLoader.vue'
 
 const props = defineProps({
   isVisible: {
@@ -35,7 +35,7 @@ const save = async () => {
 
   try {
     isLoading.value = true
-    await emits('save', oldPassword.value, newPassword.value);
+    await emits('save', oldPassword.value, newPassword.value)
   } catch (error) {
     passwordError.value = error.message || 'Ошибка при смене пароля'
   }
@@ -72,13 +72,13 @@ watch(
 
 onMounted(() => {
   emitter.on('passwordError', (message) => {
-    passwordError.value = message;
+    passwordError.value = message
     isLoading.value = false
-  });
+  })
   emitter.on('passwordSuccess', () => {
     successMessage.value = 'Пароль успешно изменен'
     isLoading.value = false
-  });
+  })
 })
 
 onUnmounted(() => {
@@ -95,7 +95,7 @@ onUnmounted(() => {
     <div class="bg-base-darkgrey rounded-lg p-6 w-96">
       <h3 class="text-xl text-base-blue mb-4">Смена пароля</h3>
       <div v-if="isLoading" class="flex justify-center items-center">
-        <Loader :key="isLoading" />
+        <AppLoader :key="isLoading" />
       </div>
       <div v-else>
         <div class="relative flex">

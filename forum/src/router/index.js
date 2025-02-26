@@ -2,18 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores/AuthStore'
 
-import Home from '@/pages/Home.vue'
-import About from '@/pages/About.vue'
-import Auth from '@/pages/Auth.vue'
-import Profile from '@/pages/Profile.vue'
-import Thread from '@/pages/Thread.vue'
+import HomePage from '@/pages/HomePage.vue'
+import AboutPage from '@/pages/AboutPage.vue'
+import AuthPage from '@/pages/AuthPage.vue'
+import ProfilePage from '@/pages/ProfilePage.vue'
+import ThreadPage from '@/pages/ThreadPage.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/about', name: 'About', component: About },
-  { path: '/auth', name: 'Auth', component: Auth },
-  { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true }, props: route => ({ userId: route.query.userId }) },
-  { path: '/thread', name: 'Thread', component: Thread, props: route => ({ threadId: route.query.threadId }) },
+  { path: '/', name: 'HomePage', component: HomePage },
+  { path: '/about', name: 'AboutPage', component: AboutPage },
+  { path: '/auth', name: 'AuthPage', component: AuthPage },
+  { path: '/profile', name: 'ProfilePage', component: ProfilePage, meta: { requiresAuth: true }, props: route => ({ userId: route.query.userId }) },
+  { path: '/thread', name: 'ThreadPage', component: ThreadPage, props: route => ({ threadId: route.query.threadId }) },
 ]
 
 const router = createRouter({

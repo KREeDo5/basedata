@@ -1,5 +1,5 @@
 <script setup>
-import Avatar from '../core/Avatar.vue'
+import UserAvatar from '../core/UserAvatar.vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -23,11 +23,7 @@ const goToProfile = (userId) => {
       </div>
       <div v-else v-for="(item, index) in props.items" :key="index">
         <div class="flex items-center" @click="goToProfile(item.id)" style="cursor: pointer">
-          <Avatar
-            size="small"
-            class="mr-2"
-            :url="item.image_path"
-          />
+          <UserAvatar size="small" class="mr-2" :url="item.image_path" />
           <span class="text-base-blue truncate">{{ item.name || 'Без имени' }}</span>
         </div>
       </div>

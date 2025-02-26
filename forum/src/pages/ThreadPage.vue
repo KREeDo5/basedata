@@ -2,11 +2,11 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useThreadStore } from '@/stores/ThreadStore'
 import { useAuthStore } from '@/stores/AuthStore'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import AppButton from '@/components/core/AppButton.vue'
-import Loader from '@/components/core/Loader.vue'
+import AppLoader from '@/components/core/AppLoader.vue'
 import ThreadImages from '@/components/thread-details/ThreadImages.vue'
 import ThreadMessages from '@/components/thread-details/ThreadMessages.vue'
 import CreateMessage from '@/components/thread-details/CreateMessage.vue'
@@ -18,7 +18,7 @@ const props = defineProps({
   },
 })
 
-const router = useRouter();
+const router = useRouter()
 const threadStore = useThreadStore()
 const authStore = useAuthStore()
 
@@ -65,7 +65,7 @@ const closeThread = async () => {
 <template>
   <HeaderBar />
   <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
-    <Loader class="mt-20" />
+    <AppLoader class="mt-20" />
   </div>
   <div
     v-else

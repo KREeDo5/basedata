@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/AuthStore'
 
 import HeaderBar from '@/components/HeaderBar.vue'
 import AppButton from '@/components/core/AppButton.vue'
-import Modal from '@/components/Modal.vue'
+import AppModal from '@/components/AppModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -106,7 +106,7 @@ const toggleShowPassword = () => {
   <HeaderBar :isAuthPage="true" />
   <div class="flex items-center justify-center mt-10">
     <!-- Модальное окно -->
-    <Modal :isVisible="isModalVisible" :message="modalMessage" :countdown="countdown" />
+    <AppModal :isVisible="isModalVisible" :message="modalMessage" :countdown="countdown" />
 
     <!-- Основной контент -->
     <div class="w-full max-w-[500px] relative">

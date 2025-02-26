@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { format, isValid } from 'date-fns'
 import { useRouter } from 'vue-router'
 
-import Avatar from '@/components/core/Avatar.vue'
+import UserAvatar from '@/components/core/UserAvatar.vue'
 
 const props = defineProps({
   user: Object,
@@ -30,11 +30,7 @@ const formattedDate = computed(() => {
     @click="goToProfile"
     style="cursor: pointer"
   >
-    <Avatar
-      class="mr-3"
-      :url="user.image_path"
-      size="medium"
-    />
+    <UserAvatar class="mr-3" :url="user.image_path" size="medium" />
     <div>
       <div class="text-base font-w600 text-base-blue">
         {{ user.name || 'без имени' }}

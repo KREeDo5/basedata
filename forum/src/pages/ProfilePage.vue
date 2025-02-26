@@ -9,9 +9,9 @@ import { format } from 'date-fns'
 import HeaderBar from '@/components/HeaderBar.vue'
 import AppButton from '@/components/core/AppButton.vue'
 import SubscriptionBlock from '@/components/profile/SubscriptionBlock.vue'
-import Avatar from '@/components/core/Avatar.vue'
+import UserAvatar from '@/components/core/UserAvatar.vue'
 import FilePickerDrop from '@/components/core/FilePickerDrop.vue'
-import Loader from '@/components/core/Loader.vue'
+import AppLoader from '@/components/core/AppLoader.vue'
 import ChangePassword from '@/components/thread-details/ChangePassword.vue'
 
 const props = defineProps({
@@ -165,7 +165,7 @@ const aboutMeTextComputed = computed(() => {
   <HeaderBar />
   <div>
     <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center">
-      <Loader class="mt-20" />
+      <AppLoader class="mt-20" />
     </div>
     <div v-else class="max-w-7xl w-full mx-auto mt-10 bg-base-darkgrey rounded-[20px] py-5">
       <div class="flex mb-5 justify-center text-3xl font-w400">
@@ -179,7 +179,7 @@ const aboutMeTextComputed = computed(() => {
         <div class="flex justify-between gap-9">
           <!-- Левая сторона -->
           <div class="flex flex-col w-[250px]">
-            <Avatar v-if="!isEditing" :key="image" :url="image" size="big" class="mb-[8px]" />
+            <UserAvatar v-if="!isEditing" :key="image" :url="image" size="big" class="mb-[8px]" />
             <div v-if="isEditing" class="flex flex-col space-y-[6px] mb-[6px] text-center">
               <FilePickerDrop :onFileSelectedCallback="onFileSelectedCallback" />
             </div>
@@ -203,7 +203,12 @@ const aboutMeTextComputed = computed(() => {
                   :disabled="isEditing && !isNameValid"
                 />
               </div>
-              <AppButton v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword" />
+              <AppButton
+                v-if="isOwner"
+                variant="edit"
+                text="Сменить пароль"
+                @click="editPassword"
+              />
               <AppButton
                 v-if="isOwner"
                 variant="edit"
