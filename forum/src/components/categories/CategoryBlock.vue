@@ -44,16 +44,21 @@ const updateThreadList = (categoryId) => {
 
 <template>
   <div class="h-min w-[320px] bg-base-darkgrey rounded-[20px] py-5 px-4 mr-9">
-    <AppButton v-if="isUserAuthorized" class="w-full" text="Создать тред" @click="createModalOpen" />
+    <AppButton
+      v-if="isUserAuthorized"
+      class="w-full"
+      text="Создать тред"
+      @click="createModalOpen"
+    />
     <div class="space-y-3 mt-2">
       <CategoryItem
-        v-for="category in categoryList"
+        v-for="category in props.categoryList"
         :key="category.id"
         :title="category.title"
         :hasSubcategories="Boolean(category.has_subcategories)"
         :parentCategoryId="category.id_parent_category"
         :categoryId="category.id"
-        :categoryList="categoryList"
+        :categoryList="props.categoryList"
         :onToggle="toggleCategory"
         v-show="shouldShowCategory(category)"
         @updateThreadList="updateThreadList"

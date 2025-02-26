@@ -12,11 +12,10 @@ const props = defineProps({
 </script>
 
 <template>
-
     <hr class="border-t border-base-grey" />
-    <UserInfo class="pl-5 py-3" :user="user" :createdAt="createdAt" />
+    <UserInfo class="pl-5 py-3" :user="props.user" :createdAt="props.createdAt" />
     <div class="px-5 pb-3 text-white break-words whitespace-pre-wrap">
-      {{ text }}
+      {{ props.text }}
     </div>
-    <ThreadImages :images="images" />
+    <ThreadImages :images="props.images" />
 </template>

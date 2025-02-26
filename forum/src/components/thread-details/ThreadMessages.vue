@@ -8,7 +8,7 @@ const props = defineProps({
 
 <template>
   <MessageItem
-    v-for="message in messages"
+    v-for="message in props.messages"
     :key="message.id"
     :id="message.id"
     :text="message.text"

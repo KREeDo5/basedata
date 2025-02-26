@@ -25,7 +25,7 @@ const loadImage = async(path) => {
       throw new Error('Image not found')
     }
     imageUrl.value = path
-  } catch (error) {
+  } catch (_) {
     handleError()
   }
 }

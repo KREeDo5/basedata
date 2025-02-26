@@ -9,16 +9,15 @@ const props = defineProps({
     required: true,
   },
 })
-
 </script>
 
 <template>
   <div class="h-min bg-base-darkgrey rounded-[20px] p-6">
     <div class="space-y-4">
-      <div v-if="threadList.length === 0">Нет доступных тредов.</div>
+      <div v-if="props.threadList.length === 0">Нет доступных тредов.</div>
       <div v-else>
         <ThreadItem
-          v-for="thread in threadList"
+          v-for="thread in props.threadList"
           :key="thread.id"
           :id="thread.id"
           :title="thread.title"

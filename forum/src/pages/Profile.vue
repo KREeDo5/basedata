@@ -48,10 +48,6 @@ const isNameValid = computed(() => {
   return name.value.trim() !== ''
 })
 
-const aboutMeText = computed(() => {
-  return aboutMe.value || 'Нет информации'
-})
-
 const toggleEditMode = async () => {
   if (isEditing.value) {
     const updatedProfile = {
