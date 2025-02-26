@@ -2,7 +2,7 @@
 import { defineProps, defineEmits, ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 
-import Button from '../core/Button.vue'
+import AppButton from '../core/AppButton.vue'
 import CategoryItem from './CategoryItem.vue'
 
 const authStore = useAuthStore()
@@ -44,7 +44,7 @@ const updateThreadList = (categoryId) => {
 
 <template>
   <div class="h-min w-[320px] bg-base-darkgrey rounded-[20px] py-5 px-4 mr-9">
-    <Button v-if="isUserAuthorized" class="w-full" text="Создать тред" @click="createModalOpen" />
+    <AppButton v-if="isUserAuthorized" class="w-full" text="Создать тред" @click="createModalOpen" />
     <div class="space-y-3 mt-2">
       <CategoryItem
         v-for="category in categoryList"

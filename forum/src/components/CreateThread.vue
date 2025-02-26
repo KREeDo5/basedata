@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { useHomeStore } from '@/stores/HomeStore'
 
@@ -27,7 +27,7 @@ const closeModal = () => {
 const emits = defineEmits(['closeCreateThreadModal'])
 
 const createThread = async () => {
-  if (isValidForm) {
+  if (isValidForm.value) {
     await sendThread()
     closeModal()
   }
@@ -149,14 +149,14 @@ const removeImage = (index) => {
           </div>
         </div>
         <div class="flex justify-end">
-          <Button
+          <AppButton
             variant="rounded"
             text="Отмена"
             @click="closeModal"
             title="Отменить создание треда"
             class="mr-2"
           />
-          <Button
+          <AppButton
             type="submit"
             text="Создать"
             @click="createThread"

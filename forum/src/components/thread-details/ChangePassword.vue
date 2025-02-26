@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch, onMounted, onUnmounted } from 'vue'
 import { emitter } from '@/eventBus'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 import Loader from '@/components/core/Loader.vue'
 
 const props = defineProps({
@@ -131,8 +131,8 @@ onUnmounted(() => {
         <p v-if="passwordError" class="text-red-500 mb-4">{{ passwordError }}</p>
         <p v-if="successMessage" class="text-green-500 mb-4">{{ successMessage }}</p>
         <div class="flex justify-end space-x-2">
-          <Button variant="rounded" text="Сохранить" @click="save" title="Сохранить пароль" />
-          <Button text="Отменить" @click="cancel" title="Отменить смену пароля" />
+          <AppButton variant="rounded" text="Сохранить" @click="save" title="Сохранить пароль" />
+          <AppButton text="Отменить" @click="cancel" title="Отменить смену пароля" />
         </div>
       </div>
     </div>

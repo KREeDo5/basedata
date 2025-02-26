@@ -6,7 +6,7 @@ import CategoryBlock from '@/components/categories/CategoryBlock.vue'
 import ThreadsBlock from '@/components/threads/ThreadsBlock.vue'
 import Loader from '@/components/core/Loader.vue'
 import CreateThread from '@/components/CreateThread.vue'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 
 import { useHomeStore } from '@/stores/HomeStore'
 
@@ -97,7 +97,7 @@ onMounted(async () => {
           </form>
         </div>
         <div v-if="currentCategoryName" class="flex items-center mb-5">
-          <Button
+          <AppButton
             text="&lt;"
             variant="rounded"
             @click="updateThreadList(null)"

@@ -7,7 +7,7 @@ import { emitter } from '@/eventBus'
 import { format } from 'date-fns'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 import SubscriptionBlock from '@/components/profile/SubscriptionBlock.vue'
 import Avatar from '@/components/core/Avatar.vue'
 import FilePickerDrop from '@/components/core/FilePickerDrop.vue'
@@ -197,7 +197,7 @@ const aboutMeTextComputed = computed(() => {
                   @click="removeAvatar"
                   title="Удалить аватар"
                 />
-                <Button
+                <AppButton
                   v-if="isOwner"
                   :variant="isEditing ? 'rounded' : 'edit'"
                   :text="isEditing ? 'Сохранить' : 'Редактировать'"
@@ -207,22 +207,22 @@ const aboutMeTextComputed = computed(() => {
                   :disabled="isEditing && !isNameValid"
                 />
               </div>
-              <Button v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword" />
-              <Button
+              <AppButton v-if="isOwner" variant="edit" text="Сменить пароль" @click="editPassword" />
+              <AppButton
                 v-if="isOwner"
                 variant="edit"
                 text="Выйти"
                 @click="logout"
                 title="Выйти из профиля"
               />
-              <Button
+              <AppButton
                 v-if="!isOwner && isSubscribed"
                 text="Отписаться"
                 variant="rounded"
                 @click="unsubscribe"
                 title="Отписаться"
               />
-              <Button
+              <AppButton
                 v-if="!isOwner && !isSubscribed"
                 text="Подписаться"
                 @click="subscribe"

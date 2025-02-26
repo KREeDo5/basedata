@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'Button',
+  name: 'AppButton',
   props: {
     variant: {
       type: String,
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <button :class="buttonStyle" :style="{ padding: `${paddingY} ${paddingX}` }">
+  <Appbutton :class="buttonStyle" :style="{ padding: `${paddingY} ${paddingX}` }">
     {{ text }}
-  </button>
+  </Appbutton>
 </template>

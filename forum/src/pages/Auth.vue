@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 import Modal from '@/components/Modal.vue'
 
 const route = useRoute()
@@ -28,7 +28,7 @@ let countdownInterval = null
 
 const toggleMode = () => {
   isLogin.value = !isLogin.value
-  form.value.name = '' // Очистка имени при переключении
+  form.value.name = ''
   router.push({ path: '/auth', query: { mode: isLogin.value ? 'login' : 'register' } })
 }
 
@@ -154,7 +154,7 @@ const toggleShowPassword = () => {
               class="absolute right-2 my-2 text-gray-300 h-6 w-6 cursor-pointer"
             />
           </div>
-          <Button
+          <AppButton
             class="w-full flex justify-center"
             type="submit"
             :text="isLogin ? 'Вход' : 'Создать аккаунт'"

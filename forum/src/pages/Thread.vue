@@ -4,7 +4,7 @@ import { useThreadStore } from '@/stores/ThreadStore'
 import { useAuthStore } from '@/stores/AuthStore'
 
 import HeaderBar from '@/components/HeaderBar.vue'
-import Button from '@/components/core/Button.vue'
+import AppButton from '@/components/core/AppButton.vue'
 import Loader from '@/components/core/Loader.vue'
 import ThreadImages from '@/components/thread-details/ThreadImages.vue'
 import ThreadMessages from '@/components/thread-details/ThreadMessages.vue'
@@ -76,7 +76,7 @@ const closeThread = async () => {
       <div class="flex text-white text-2xl font-w600 w-[1040px]">{{ threadStore.title }}</div>
       <div>
         <UserInfo :user="threadStore.threadAuthor" :createdAt="threadStore.createdAt" />
-        <Button
+        <AppButton
           v-if="isOwner && !threadStore.isClosed"
           class="w-full mt-3"
           text="закрыть тему"

@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/AuthStore'
 import { emitter } from '@/eventBus'
 
-import Button from './core/Button.vue'
+import AppButton from './core/AppButton.vue'
 import Avatar from './core/Avatar.vue'
 
 const props = defineProps({
@@ -45,10 +45,10 @@ emitter.on('user-updated', (userData) => {
 
       <div v-if="showAuthButtons" class="flex items-center space-x-2">
         <RouterLink :to="{ path: '/auth', query: { mode: 'login' } }">
-          <Button text="Войти" />
+          <AppButton text="Войти" />
         </RouterLink>
         <RouterLink :to="{ path: '/auth', query: { mode: 'register' } }">
-          <Button variant="free" text="Создать аккаунт" />
+          <AppButton variant="free" text="Создать аккаунт" />
         </RouterLink>
       </div>
       <div v-if="showUserInfo && isUserLoaded" title="Перейти в профиль">
