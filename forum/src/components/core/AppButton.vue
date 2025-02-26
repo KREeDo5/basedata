@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <Appbutton :class="buttonStyle" :style="{ padding: `${paddingY} ${paddingX}` }">
+  <button :class="buttonStyle" :style="{ padding: `${paddingY} ${paddingX}` }">
     {{ text }}
-  </Appbutton>
+  </button>
 </template>
